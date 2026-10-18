@@ -120,7 +120,7 @@ def cmd_studio(a):
     from .studio import run_cheap
     from .util import read_jsonl, read_list
 
-    from .studio import BudgetExceeded
+    from .studio import BudgetExceeded, QuotaExhausted
 
     spent = 0.0
 
@@ -151,8 +151,8 @@ def cmd_studio(a):
         print(f"\n=== [{i}/{len(briefs)}] {brief}", flush=True)
         try:
             run(brief)
-        except BudgetExceeded as e:
-            print(e)
+        except (BudgetExceeded, QuotaExhausted) as e:
+            print(f"stopping: {e}")
             break
         except Exception as e:  # keep the batch going, unless it keeps failing (e.g. daily quota used up)
             print(f"failed: {str(e)[:300]}")

@@ -146,6 +146,10 @@ class BudgetExceeded(RuntimeError):
     pass
 
 
+class QuotaExhausted(RuntimeError):
+    pass
+
+
 class Studio:
     def __init__(self, model: str | None = None, image_model: str = "gemini-3.1-flash-image",
                  thinking: str | None = None):
@@ -176,6 +180,8 @@ class Studio:
                 return call()
             except Exception as e:
                 code = getattr(e, "code", None) or getattr(e, "status_code", None)
+                if "PerDay" in str(e):  # daily free quota used up: waiting won't help until the reset
+                    raise QuotaExhausted("daily free quota used up for this model") from e
                 if code not in (429, 500, 502, 503, 504) or attempt == tries - 1:
                     raise
                 m = re.search(r"retry in ([\d.]+)s", str(e), re.I)

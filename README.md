@@ -151,6 +151,20 @@ Cheap mode writes 3 art directions in one call, builds only the strongest with `
 keep their `data-photo` slots, so `notai dataset build --source gemini-studio` turns them into training
 data for the local model.
 
+## Daily free collection
+
+`scripts/daily.sh` spends each free Gemini model's daily quota on new text-only training pages, with
+the local art director (`gemma3:12b` via Ollama) reviewing every page, and stops by itself when the
+quota runs out. A LaunchAgent can run it nightly just after the Pacific-time reset:
+
+```bash
+launchctl print gui/$(id -u)/com.notai.daily        # status
+launchctl kickstart gui/$(id -u)/com.notai.daily    # run now
+launchctl bootout gui/$(id -u)/com.notai.daily && rm ~/Library/LaunchAgents/com.notai.daily.plist   # remove
+```
+
+Logs go to `runs/daily-YYYYMMDD.log`; the last line counts clean training pages so far.
+
 ## Things to know
 
 - **The critic can learn the wrong thing.** If every negative comes from `notai negatives` with one
