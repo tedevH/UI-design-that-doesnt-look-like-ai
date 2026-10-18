@@ -73,3 +73,12 @@ def test_parse_json_tolerates_fences_and_trailing_text():
 
     assert parse_json('```json\n{"a": 1}\n```') == {"a": 1}
     assert parse_json('{"best": 2}\n{"extra": true}') == {"best": 2}
+
+
+def test_own_photos_only_replaces_hotlinked_images():
+    from notai.studio import own_photos_only
+
+    html = '<img src="https://images.example.com/tesla.jpg" alt="Rolex 5513 dial"><img data-photo="kept" alt="x">'
+    out = own_photos_only(html)
+    assert "example.com" not in out
+    assert 'data-photo="Rolex 5513 dial"' in out and 'data-photo="kept"' in out

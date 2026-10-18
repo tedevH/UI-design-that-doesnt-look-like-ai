@@ -73,7 +73,7 @@ Art direction:
 Requirements:
 - One self-contained HTML file. Hand-written CSS in <style> (CSS custom properties for the palette),
   Google Fonts via <link>. Vanilla JS only if an interaction needs it.
-- Photography is essential. Use <img data-photo="detailed description of one photograph" data-aspect="16:9" alt="...">
+- Photography is essential. Never link images from the web. Use <img data-photo="detailed description of one photograph" data-aspect="16:9" alt="...">
   for every photo (aspects: 1:1, 3:4, 4:3, 4:5, 3:2, 16:9, 21:9, 9:16). Real photos will be generated from
   your descriptions in the art direction's photo style, so describe subject, framing and light precisely.
   Use {min_photos}–{max_photos} photos and make them big: full-bleed heroes, split screens, asymmetric grids, overlaps.
@@ -309,6 +309,23 @@ class Studio:
             return {"best": 0, "scores": [], "fixes": []}
 
 
+def own_photos_only(html: str) -> str:
+    """Turn hotlinked web images (e.g. random stock URLs) into data-photo slots described by their alt text,
+    so every photo on a page is one we generate for it, never an unrelated image off the internet."""
+    def swap(m):
+        tag = m.group(0)
+        if "data-photo=" in tag:
+            return tag
+        if not re.search(r"\ssrc=\"https?://", tag):
+            return tag
+        alt = re.search(r"\salt=\"([^\"]*)\"", tag)
+        desc = (alt.group(1) if alt and alt.group(1).strip() else "photograph that fits this section").replace('"', "'")
+        tag = re.sub(r"\ssrc=\"[^\"]*\"", "", tag)
+        return tag.replace("<img", f'<img data-photo="{desc}" data-aspect="4:3"', 1)
+
+    return re.sub(r"<img\b[^>]*>", swap, html)
+
+
 def parse_json(text: str):
     """First JSON value in a model response; tolerates code fences and trailing text."""
     text = re.sub(r"^```(?:json)?\s*", "", text.strip())
@@ -458,7 +475,7 @@ def run_cheap(brief: str, model: str = "gemini-3.8-flash", image_model: str = "g
     def photos_for(raw: str) -> str:
         return studio.fill_photos(raw, direction.get("photo_style", ""), run_dir, limit=photos) if photos else raw
 
-    raw_html = studio.build(full_brief, direction, max_photos=photos or 4)
+    raw_html = own_photos_only(studio.build(full_brief, direction, max_photos=photos or 4))
     versions = []  # (dir, raw_html, html, review)
     with Renderer() as r:
         d = run_dir / "page"
@@ -484,7 +501,7 @@ def run_cheap(brief: str, model: str = "gemini-3.8-flash", image_model: str = "g
                     print(f"    - {it.get('where', '')}: {str(it.get('fix', ''))[:110]}", flush=True)
                 if review["verdict"] == "accept" or k == rounds:
                     break
-                revised = extract_html(studio.ask([director.revision_request(review, raw)]))
+                revised = own_photos_only(extract_html(studio.ask([director.revision_request(review, raw)])))
                 if "<html" not in revised.lower():
                     break
                 d = run_dir / f"rev{k + 1}"
