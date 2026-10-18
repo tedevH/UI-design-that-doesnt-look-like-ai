@@ -130,6 +130,33 @@
     return r.width > vw * 0.8 && r.height > 200;
   }).length;
 
+  // Overlapping text: pairs of separate text elements whose boxes intersect substantially (layout bugs,
+  // headers covering headlines). Only the first few screens, where it matters most.
+  const texts = [];
+  for (const el of all) {
+    if (texts.length >= 600) break;
+    let own = "";
+    for (const n of el.childNodes) if (n.nodeType === 3) own += n.textContent;
+    if (own.trim().length < 2) continue;
+    const r = el.getBoundingClientRect();
+    const cs = getComputedStyle(el);
+    if (!visible(el, r, cs) || r.top + window.scrollY > vh * 4 || r.width > vw * 1.05) continue;
+    texts.push({ el, r });
+  }
+  let overlaps = 0;
+  for (let i = 0; i < texts.length; i++) {
+    for (let j = i + 1; j < texts.length; j++) {
+      const a = texts[i], b = texts[j];
+      if (a.el.contains(b.el) || b.el.contains(a.el)) continue;
+      const w = Math.min(a.r.right, b.r.right) - Math.max(a.r.left, b.r.left);
+      const h = Math.min(a.r.bottom, b.r.bottom) - Math.max(a.r.top, b.r.top);
+      if (w <= 0 || h <= 0) continue;
+      const small = Math.min(a.r.width * a.r.height, b.r.width * b.r.height);
+      if (w * h > 0.3 * small) overlaps++;
+    }
+  }
+  out.overlaps = overlaps;
+
   const h1 = out.headings.find((h) => h.tag === "h1") || out.headings[0];
   if (h1) {
     const centered = h1.align === "center" || (h1.left > vw * 0.15 && Math.abs(h1.cx - vw / 2) < 30);

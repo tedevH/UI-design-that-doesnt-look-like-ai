@@ -5,6 +5,8 @@ from __future__ import annotations
 import random
 
 from . import config, prompts
+
+EXCLUDE_TELLS = {"text_overlap", "chunky_type", "telemetry_gimmick", "purple_gradient", "gradient_text", "emoji_icons"}
 from .util import read_jsonl, write_jsonl
 
 
@@ -19,6 +21,8 @@ def build(min_score: float = 0.8, valid_frac: float = 0.1, seed: int = 0, top: f
     best: dict[str, dict] = {}
     for row in rows:
         if row.get("score", -1) < min_score:
+            continue
+        if set(row.get("tells") or []) & EXCLUDE_TELLS:  # broken or clichéd pages never become training data
             continue
         key = row["brief"].strip().lower() + "|" + row.get("family_id", "")
         if key not in best or row["score"] > best[key]["score"]:

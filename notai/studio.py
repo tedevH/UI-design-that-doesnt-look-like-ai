@@ -78,8 +78,14 @@ Requirements:
   your descriptions in the art direction's photo style, so describe subject, framing and light precisely.
   Use {min_photos}–{max_photos} photos and make them big: full-bleed heroes, split screens, asymmetric grids, overlaps.
   Never draw placeholder boxes, ovals or empty frames. Use object-fit: cover.
-- Implement every section from the art direction with its own composition. Use the signature color as large
-  fields (whole sections or big blocks), not just accents. Display type should be large and expressive.
+- Implement every section from the art direction with its own composition. Use color the way the art
+  direction says (large color fields where it calls for them, restraint where it doesn't).
+- Typography follows the art direction's fonts and weights exactly. Never use ultra-heavy or extended display
+  faces (Archivo Black, Unbounded, Anton, Bebas Neue, Dela Gothic One, Syne ExtraBold, Big Shoulders, Monument-
+  style wides) and never font-weight 800–900 for display. Headlines are sentence case unless 1–3 words.
+  Hierarchy comes from size, spacing and contrast, not from piling on weight.
+- No fake telemetry or system-status decoration (coordinates, "SYS STATUS", serial numbers, sector codes,
+  live counters, monospace label clutter) unless the product is literally an engineering tool.
 - Fit: every word must stay fully visible at 1440px and at 390px. Size display type with clamp() and
   viewport units sized to the longest word, allow wrapping, and never let text overflow or be clipped.
 - Craft: a consistent spacing scale, deliberate alignment, hover states and subtle transitions, a real
@@ -111,6 +117,29 @@ Return the full revised HTML file in a ```html code block.
 ```html
 {html}
 ```"""
+
+
+FAMILY_DIRECTION = """\
+You are the creative director at a top design studio. Brief: {brief}
+
+Write one art direction for EACH of these style families, in this order. Commit fully to each family's
+look and typography; the attached screenshots show one reference site per family, in the same order.
+{families}
+
+Then pick the direction that fits this brand best.
+
+Return JSON:
+{{"directions": [{{
+  "family": "family id",
+  "name": "...",
+  "concept": "one or two sentences: the idea that makes this brand memorable",
+  "palette": [{{"hex": "#...", "role": "..."}}],
+  "type": {{"display": "Google Font family", "display_weight": 400, "text": "Google Font family", "notes": "sizes, case, tracking"}},
+  "photo_style": "lens, light, color grade, subject matter — consistent across all photos",
+  "sections": [{{"name": "...", "content": "what it says/shows, concretely", "layout": "composition"}}],
+  "signature_detail": "one memorable design move"
+}}], "best": index}}
+Use 3–6 palette colors and 6–8 sections, each composed differently."""
 
 
 class BudgetExceeded(RuntimeError):
@@ -223,14 +252,14 @@ class Studio:
             return []
         listing = "\n".join(f"{s}: {m.get('title', '')[:80]}" for s, m in sites.items())
         try:
-            picks = json.loads(self.ask([REFERENCE_PICK.format(brief=brief, sites=listing, k=k)], json_out=True))["picks"]
+            picks = parse_json(self.ask([REFERENCE_PICK.format(brief=brief, sites=listing, k=k)], json_out=True))["picks"]
         except Exception:
             picks = list(sites)[:k]
         return [(s, fold_jpeg(config.RAW / s / "desktop.png", width=width)) for s in picks if s in sites][:k]
 
     def directions(self, brief: str, refs, n: int) -> list[dict]:
         text = self.ask([ART_DIRECTION.format(brief=brief, n=n)] + [img for _, img in refs], json_out=True)
-        return json.loads(text)["directions"][:n]
+        return parse_json(text)["directions"][:n]
 
     def build(self, brief: str, direction: dict, max_photos: int = MAX_PHOTOS) -> str:
         return extract_html(self.ask([BUILD.format(brief=brief, direction=json.dumps(direction, indent=2),
@@ -275,9 +304,16 @@ class Studio:
         for i, s in enumerate(shots):
             items += [f"candidate {i}:", s]
         try:
-            return json.loads(self.ask(items, json_out=True, temperature=0.2))
+            return parse_json(self.ask(items, json_out=True, temperature=0.2))
         except Exception:
             return {"best": 0, "scores": [], "fixes": []}
+
+
+def parse_json(text: str):
+    """First JSON value in a model response; tolerates code fences and trailing text."""
+    text = re.sub(r"^```(?:json)?\s*", "", text.strip())
+    start = min([i for i in (text.find("{"), text.find("[")) if i != -1] or [0])
+    return json.JSONDecoder().raw_decode(text[start:])[0]
 
 
 def fold_jpeg(png: Path, height: int = 2400, width: int = 900) -> bytes:
@@ -364,22 +400,37 @@ def run_cheap(brief: str, model: str = "gemini-3.8-flash", image_model: str = "g
     Returns (final dir, measured USD for this run)."""
     from .render import Renderer
 
-    studio = Studio(model, image_model=image_model, thinking="low")
+    import random
+    from collections import Counter
+
+    from . import families as fam
+    from .util import read_jsonl
+
+    studio = Studio(model, image_model=image_model, thinking="medium")
     studio.budget, studio.spent_before = budget, spent_before
     run_dir = config.RUNS / f"{datetime.now():%Y%m%d-%H%M%S}-cheap-{slugify(brief, 40)}"
     run_dir.mkdir(parents=True, exist_ok=True)
 
-    refs = studio.references(brief, k=2, width=640)
-    print(f"references: {', '.join(s for s, _ in refs)}", flush=True)
-    prompt = ART_DIRECTION.format(brief=brief, n=3) + \
-        '\nAlso add a top-level "best": the index of the strongest, most distinctive direction for this brief.'
-    plan = json.loads(studio.ask([prompt] + [img for _, img in refs], json_out=True))
+    # Offer the three least-used families so a batch spreads across aesthetics; the model picks the fit.
+    usage = Counter(r.get("family_id") for r in read_jsonl(config.GENERATIONS) if r.get("backend") == "gemini-studio")
+    cands = fam.candidates(usage, k=3, seed=hash(brief) & 0xFFFF)
+    refs = []
+    for f in cands:  # one reference screenshot per family, chosen locally (no model call)
+        have = [r for r in f["refs"] if (config.RAW / r / "desktop.png").exists()]
+        if have:
+            slug = random.Random(brief).choice(have)
+            refs.append((slug, fold_jpeg(config.RAW / slug / "desktop.png", width=640)))
+    print(f"families offered: {', '.join(f['id'] for f in cands)}  refs: {', '.join(s for s, _ in refs)}", flush=True)
+    listing = "\n".join(f"{i}. [{f['id']}] {fam.describe(f)}" for i, f in enumerate(cands))
+    plan = parse_json(studio.ask([FAMILY_DIRECTION.format(brief=brief, families=listing)] + [img for _, img in refs],
+                                 json_out=True))
     directions = plan["directions"]
     pick = plan.get("best", 0)
     pick = pick if isinstance(pick, int) and 0 <= pick < len(directions) else 0
     direction = directions[pick]
+    family_id = direction.get("family") if direction.get("family") in fam.BY_ID else cands[min(pick, len(cands) - 1)]["id"]
     (run_dir / "directions.json").write_text(json.dumps(plan, indent=2))
-    print(f"direction: {direction.get('name')} — {direction.get('concept', '')[:120]}", flush=True)
+    print(f"family: {family_id}  direction: {direction.get('name')} — {direction.get('concept', '')[:100]}", flush=True)
 
     raw_html = studio.build(brief, direction, max_photos=photos or 4)
     html = studio.fill_photos(raw_html, direction.get("photo_style", ""), run_dir, limit=photos) if photos else raw_html
@@ -400,20 +451,21 @@ def run_cheap(brief: str, model: str = "gemini-3.8-flash", image_model: str = "g
                     _render(r, final_dir, html)
 
     cost = studio.cost()
-    usage = {**studio.usage, "usd": round(cost, 4) if cost is not None else None, "model": model, "image_model": image_model}
-    (run_dir / "cost.json").write_text(json.dumps(usage, indent=2))
+    cost_usd = round(cost, 4) if cost is not None else None
+    (run_dir / "cost.json").write_text(json.dumps({**studio.usage, "usd": cost_usd, "model": model,
+                                                   "image_model": image_model}, indent=2))
     found = tells.detect(html, json.loads((final_dir / "styles.json").read_text()))
     print(f"tells: {[t.name for t in found] or 'none'}")
-    print(f"cost: ${usage['usd']}  ({studio.usage['input']} in / {studio.usage['output']} out tokens, "
+    print(f"cost: ${cost_usd}  ({studio.usage['input']} in / {studio.usage['output']} out tokens, "
           f"{studio.usage['images']} images, {studio.usage['calls']} calls)")
     print(f"final: {final_dir / 'page.html'}")
     if log:
         from .util import append_jsonl
 
         append_jsonl(config.GENERATIONS, [{
-            "brief": brief, "family_id": "studio",
-            "family": f"Art direction: {direction.get('name', '')}. {direction.get('concept', '')}",
+            "brief": brief, "family_id": family_id,
+            "family": f"Style: {fam.BY_ID[family_id]['name']}. {direction.get('name', '')}: {direction.get('concept', '')}",
             "html": raw_html, "score": 1.0, "backend": "gemini-studio", "run": str(run_dir),
-            "usd": usage["usd"], "at": datetime.now().isoformat(timespec="seconds"),
+            "tells": [t.name for t in found], "usd": cost_usd, "at": datetime.now().isoformat(timespec="seconds"),
         }])
-    return final_dir, usage["usd"] or 0.0
+    return final_dir, cost_usd or 0.0

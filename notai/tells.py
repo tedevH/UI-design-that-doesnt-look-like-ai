@@ -34,6 +34,8 @@ CLICHES = [
 PLACEHOLDERS = [r"lorem ipsum", r"john doe", r"jane doe", r"\bacme\b", r"your company", r"example\.com",
                 r"placeholder", r"\bcompany name\b"]
 TAILWIND_DEFAULT_ACCENTS = r"\b(?:bg|text|from|via|to|border|ring)-(?:indigo|violet|purple|fuchsia)-(?:4|5|6)00\b"
+CHUNKY_FONTS = ("archivo black", "unbounded", "anton", "bebas", "dela gothic", "big shoulders", "monument",
+                "syne", "druk", "league gothic", "oswald", "chakra petch", "rubik mono", "archivo expanded")
 EMOJI = re.compile("[\U0001F300-\U0001FAFF\U00002600-\U000027BF\U0001F900-\U0001F9FF]")
 
 
@@ -68,6 +70,18 @@ def from_html(html: str) -> list[Tell]:
         add("generic_type_only", 2, "Tailwind default font-sans, no typeface chosen")
     if "poppins" in fonts or "montserrat" in fonts:
         add("template_font", 1, "Poppins/Montserrat: template-default display fonts")
+
+    chunky = [f for f in fonts if any(c in f for c in CHUNKY_FONTS)]
+    heavy = re.findall(r"font-weight:\s*(?:800|900|black|extra-?bold)", low) + re.findall(r"\bfont-(?:extrabold|black)\b", low)
+    if chunky or len(heavy) >= 2:
+        add("chunky_type", 2, ", ".join(chunky[:3]) or f"{len(heavy)} display rules at weight 800–900")
+
+    # Fake "system status" decoration: coordinates, sector/serial codes, status readouts.
+    gimmicks = (len(re.findall(r"\d{1,3}\.\d+°\s*[NSEW]|\d+°\s*\d+['′]", text))
+                + len(re.findall(r"\b(?:SYS(?:TEM)?[ _]STATUS|SECTOR \d+|LIVE TELEMETRY|STATUS:|PROTOCOL|SERIAL|LAT:|LON:)", text))
+                + len(re.findall(r"\b[A-Z]{2,}[-_/ ]\d{2,}[A-Z0-9-]*\b", text)) // 3)
+    if gimmicks >= 4:
+        add("telemetry_gimmick", 2, f"{gimmicks} status/coordinate/serial-code labels")
 
     # Shape and surface
     big_round = len(re.findall(r"\brounded-(?:2xl|3xl|full)\b", low)) + len(re.findall(r"border-radius:\s*(?:1[6-9]|[2-9]\d)px", low))
@@ -137,6 +151,9 @@ def from_styles(styles: dict) -> list[Tell]:
         found.append(Tell("centered_hero", 1, "centered hero headline"))
     if f["emoji"] >= 3:
         found.append(Tell("emoji_icons", 3, f"{int(f['emoji'])} emoji"))
+    overlaps = (styles or {}).get("overlaps") or 0
+    if overlaps:
+        found.append(Tell("text_overlap", 3, f"{overlaps} places where text overlaps other text"))
     return found
 
 

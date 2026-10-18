@@ -66,3 +66,10 @@ def test_budget_guard_stops_before_overspend():
     s._guard(0.10)  # $3.85 is fine
     with pytest.raises(studio.BudgetExceeded):
         s._guard(0.50)  # $4.25 is not
+
+
+def test_parse_json_tolerates_fences_and_trailing_text():
+    from notai.studio import parse_json
+
+    assert parse_json('```json\n{"a": 1}\n```') == {"a": 1}
+    assert parse_json('{"best": 2}\n{"extra": true}') == {"best": 2}
