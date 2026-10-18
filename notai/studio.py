@@ -393,23 +393,45 @@ def run(brief: str, n: int = 3, revise: bool = True, model: str | None = None, l
 
 def run_cheap(brief: str, model: str = "gemini-3.8-flash", image_model: str = "gemini-3.1-flash-lite-image",
               photos: int = 4, polish: bool = False, log: bool = True,
-              budget: float | None = None, spent_before: float = 0.0) -> tuple[Path, float]:
+              budget: float | None = None, spent_before: float = 0.0,
+              director_model: str | None = None, rounds: int = 2) -> tuple[Path, float]:
     """One page per brief: plan three directions in text, build only the strongest, photos for that page only.
 
     photos=0 is text-only (for training data): the page keeps its data-photo slots and no images are made.
+    director_model (an Ollama vision model, e.g. gemma3:4b) turns on the local art director: it expands the
+    brief, reviews each render, and sends up to `rounds` revision requests to the cloud model.
     Returns (final dir, measured USD for this run)."""
-    from .render import Renderer
-
     import random
     from collections import Counter
 
     from . import families as fam
+    from .render import Renderer
     from .util import read_jsonl
 
     studio = Studio(model, image_model=image_model, thinking="medium")
     studio.budget, studio.spent_before = budget, spent_before
     run_dir = config.RUNS / f"{datetime.now():%Y%m%d-%H%M%S}-cheap-{slugify(brief, 40)}"
     run_dir.mkdir(parents=True, exist_ok=True)
+
+    director = None
+    full_brief = brief
+    if director_model:
+        from .director import Director, log_review
+
+        director = Director(director_model)
+        spec = director.expand_brief(brief)
+        (run_dir / "brief.json").write_text(json.dumps(spec, indent=2))
+        extra = []
+        if spec.get("audience"):
+            extra.append(f"Audience: {spec['audience']}")
+        if spec.get("tone"):
+            extra.append(f"Tone: {spec['tone']}")
+        if spec.get("must_show"):
+            extra.append("Must show: " + "; ".join(map(str, spec["must_show"][:6])))
+        if spec.get("avoid"):
+            extra.append("Avoid: " + "; ".join(map(str, spec["avoid"][:5])))
+        full_brief = brief + ("\n" + "\n".join(extra) if extra else "")
+        print(f"director brief: {' | '.join(extra)[:220]}", flush=True)
 
     # Offer the three least-used families so a batch spreads across aesthetics; the model picks the fit.
     usage = Counter(r.get("family_id") for r in read_jsonl(config.GENERATIONS) if r.get("backend") == "gemini-studio")
@@ -422,33 +444,70 @@ def run_cheap(brief: str, model: str = "gemini-3.8-flash", image_model: str = "g
             refs.append((slug, fold_jpeg(config.RAW / slug / "desktop.png", width=640)))
     print(f"families offered: {', '.join(f['id'] for f in cands)}  refs: {', '.join(s for s, _ in refs)}", flush=True)
     listing = "\n".join(f"{i}. [{f['id']}] {fam.describe(f)}" for i, f in enumerate(cands))
-    plan = parse_json(studio.ask([FAMILY_DIRECTION.format(brief=brief, families=listing)] + [img for _, img in refs],
+    plan = parse_json(studio.ask([FAMILY_DIRECTION.format(brief=full_brief, families=listing)] + [img for _, img in refs],
                                  json_out=True))
     directions = plan["directions"]
     pick = plan.get("best", 0)
     pick = pick if isinstance(pick, int) and 0 <= pick < len(directions) else 0
     direction = directions[pick]
     family_id = direction.get("family") if direction.get("family") in fam.BY_ID else cands[min(pick, len(cands) - 1)]["id"]
+    family_text = fam.describe(fam.BY_ID[family_id])
     (run_dir / "directions.json").write_text(json.dumps(plan, indent=2))
     print(f"family: {family_id}  direction: {direction.get('name')} — {direction.get('concept', '')[:100]}", flush=True)
 
-    raw_html = studio.build(brief, direction, max_photos=photos or 4)
-    html = studio.fill_photos(raw_html, direction.get("photo_style", ""), run_dir, limit=photos) if photos else raw_html
+    def photos_for(raw: str) -> str:
+        return studio.fill_photos(raw, direction.get("photo_style", ""), run_dir, limit=photos) if photos else raw
+
+    raw_html = studio.build(full_brief, direction, max_photos=photos or 4)
+    versions = []  # (dir, raw_html, html, review)
     with Renderer() as r:
-        final_dir = run_dir / "page"
-        _render(r, final_dir, html)
-        if polish:
-            shot = fold_jpeg(final_dir / "desktop.png", width=640)
+        d = run_dir / "page"
+        html = photos_for(raw_html)
+        _render(r, d, html)
+        versions.append([d, raw_html, html, None])
+
+        if director:
+            for k in range(rounds + 1):
+                d, raw, html, _ = versions[-1]
+                styles = json.loads((d / "styles.json").read_text())
+                try:
+                    review = director.critique(full_brief, family_text, fold_jpeg(d / "desktop.png", width=768), raw, styles)
+                except Exception as e:  # a failed critique should never lose the page
+                    print(f"  director failed ({str(e)[:100]}); keeping the page as is", flush=True)
+                    break
+                versions[-1][3] = review
+                (d / "review.json").write_text(json.dumps(review, indent=2))
+                log_review(run_dir, k, review)
+                print(f"  director round {k}: score {review['score']}/10, {review['verdict']}, "
+                      f"{len(review['issues'])} issues {review['tells'] or ''}", flush=True)
+                for it in review["issues"][:4]:
+                    print(f"    - {it.get('where', '')}: {str(it.get('fix', ''))[:110]}", flush=True)
+                if review["verdict"] == "accept" or k == rounds:
+                    break
+                revised = extract_html(studio.ask([director.revision_request(review, raw)]))
+                if "<html" not in revised.lower():
+                    break
+                d = run_dir / f"rev{k + 1}"
+                html = photos_for(revised)
+                _render(r, d, html)
+                versions.append([d, revised, html, None])
+        elif polish:
+            shot = fold_jpeg(d / "desktop.png", width=640)
             verdict = studio.judge(brief, refs, [shot])
             if verdict.get("fixes"):
                 fixes = "\n".join(f"- {f}" for f in verdict["fixes"])
                 revised = extract_html(studio.ask([REVISE.format(fixes=fixes, html=raw_html), shot]))
                 if "<html" in revised.lower():
-                    raw_html = revised
-                    html = (studio.fill_photos(revised, direction.get("photo_style", ""), run_dir, limit=photos)
-                            if photos else revised)
-                    final_dir = run_dir / "polished"
-                    _render(r, final_dir, html)
+                    d = run_dir / "polished"
+                    html = photos_for(revised)
+                    _render(r, d, html)
+                    versions.append([d, revised, html, None])
+
+    # Best version: fewest measured problems first (reliable), then the director's score (noisier).
+    def rank(v):
+        rv = v[3] or {}
+        return (-len(rv.get("tells", [])), rv.get("score", 0))
+    final_dir, raw_html, html, review = max(versions, key=rank) if director else versions[-1]
 
     cost = studio.cost()
     cost_usd = round(cost, 4) if cost is not None else None
@@ -465,7 +524,8 @@ def run_cheap(brief: str, model: str = "gemini-3.8-flash", image_model: str = "g
         append_jsonl(config.GENERATIONS, [{
             "brief": brief, "family_id": family_id,
             "family": f"Style: {fam.BY_ID[family_id]['name']}. {direction.get('name', '')}: {direction.get('concept', '')}",
-            "html": raw_html, "score": 1.0, "backend": "gemini-studio", "run": str(run_dir),
-            "tells": [t.name for t in found], "usd": cost_usd, "at": datetime.now().isoformat(timespec="seconds"),
+            "html": raw_html, "score": (review or {}).get("score", 8) / 10, "backend": "gemini-studio",
+            "run": str(run_dir), "tells": [t.name for t in found], "usd": cost_usd,
+            "at": datetime.now().isoformat(timespec="seconds"),
         }])
     return final_dir, cost_usd or 0.0

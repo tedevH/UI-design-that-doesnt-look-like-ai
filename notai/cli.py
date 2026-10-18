@@ -129,7 +129,8 @@ def cmd_studio(a):
         if a.full:
             return run_full(brief, n=a.n, revise=not a.no_revise, model=a.model)
         _, usd = run_cheap(brief, model=a.model or "gemini-3.8-flash", photos=a.photos, polish=a.polish,
-                           budget=a.budget, spent_before=spent)
+                           budget=a.budget, spent_before=spent,
+                           director_model=None if a.no_director else a.director, rounds=a.rounds)
         spent += usd
         print(f"batch spend so far: ${spent:.3f}" + (f" of ${a.budget:.2f}" if a.budget else ""), flush=True)
 
@@ -267,6 +268,9 @@ def main(argv: list[str] | None = None) -> None:
     p.add_argument("--photos", type=int, default=4, help="max generated photos per page; 0 = text only, for training data")
     p.add_argument("--polish", action="store_true", help="one judged revision pass (cheap mode)")
     p.add_argument("--budget", type=float, help="hard USD limit for this command; stops before any call that could pass it")
+    p.add_argument("--director", default="gemma3:4b", help="local Ollama vision model that critiques and requests revisions")
+    p.add_argument("--no-director", action="store_true", help="skip the local art director")
+    p.add_argument("--rounds", type=int, default=2, help="max revision rounds the director can request")
     p.add_argument("--full", action="store_true", help="expensive mode: n full candidates, Pro, judge + revise")
     p.set_defaults(fn=cmd_studio)
 
