@@ -38,8 +38,8 @@ FAMILIES = [
     {
         "id": "playful-color",
         "name": "Playful color",
-        "look": "Confident flat color fields (two or three saturated colors that clash nicely), friendly "
-                "rounded shapes made in CSS, stickers and badges, bouncy but tidy layout, light background.",
+        "look": "Confident flat color fields (two or three saturated colors that clash nicely), custom inline-SVG "
+                "illustrations and friendly shapes, stickers and badges, bouncy but tidy layout, light background.",
         "type": "Rounded or quirky grotesk (Bricolage Grotesque 500–600, DM Sans, Outfit) — friendly, not "
                 "heavy. Mix sizes for energy rather than piling on weight.",
         "refs": ["gumroad-com", "duolingo-com", "cash-app", "headspace-com", "mercury-com"],
@@ -74,8 +74,9 @@ FAMILIES = [
     {
         "id": "expressive",
         "name": "Expressive experimental",
-        "look": "One daring idea — type as image, an unusual grid, an oversized number, a striking color or "
-                "photo treatment — executed with discipline everywhere else. Feels like a design studio site.",
+        "look": "One daring idea — type as image, an unusual grid, an oversized number, a custom SVG graphic, a "
+                "striking color or photo treatment — executed with discipline everywhere else. Feels like a design "
+                "studio site.",
         "type": "Characterful display (Instrument Serif italic, Space Grotesk, Syne 500, Fraunces italic) at "
                 "regular weight, paired with a neutral text face.",
         "refs": ["teenage-engineering", "readymag-com", "instrument-com", "metalab-com", "spline-design"],

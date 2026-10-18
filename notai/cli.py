@@ -129,6 +129,7 @@ def cmd_studio(a):
         if a.full:
             return run_full(brief, n=a.n, revise=not a.no_revise, model=a.model)
         _, usd = run_cheap(brief, model=a.model or "gemini-3.8-flash", photos=a.photos, polish=a.polish,
+                           image_model=a.image_model,
                            budget=a.budget, spent_before=spent,
                            director_model=None if a.no_director else a.director, rounds=a.rounds)
         spent += usd
@@ -162,6 +163,12 @@ def cmd_studio(a):
                 break
             continue
         failures = 0
+
+
+def cmd_notes(a):
+    from .notes import write_notes
+
+    print(json.dumps(write_notes(a.model, force=a.force, limit=a.limit), indent=2))
 
 
 def cmd_lint(a):
@@ -203,7 +210,7 @@ def main(argv: list[str] | None = None) -> None:
 
     p = sub.add_parser("scrape", help="screenshot + extract styles from a list of sites")
     p.add_argument("--list", default=str(config.SITES / "good.txt"))
-    p.add_argument("--source", default="good", choices=["good", "vibe"], help="label prior for these sites")
+    p.add_argument("--source", default="good", choices=["good", "vibe", "corporate"], help="label prior for these sites (corporate = unrated until reviewed)")
     p.add_argument("--limit", type=int)
     p.add_argument("--delay", type=float, default=2.0, help="seconds between sites")
     p.add_argument("--force", action="store_true", help="re-capture sites already on disk")
@@ -267,12 +274,20 @@ def main(argv: list[str] | None = None) -> None:
     p.add_argument("--model", help="Gemini text model (cheap default: gemini-3.8-flash)")
     p.add_argument("--photos", type=int, default=4, help="max generated photos per page; 0 = text only, for training data")
     p.add_argument("--polish", action="store_true", help="one judged revision pass (cheap mode)")
+    p.add_argument("--image-model", default="local",
+                   help="'local' = FLUX.1-schnell on this Mac (free); or gemini-3.1-flash-lite-image (~$0.034/photo)")
     p.add_argument("--budget", type=float, help="hard USD limit for this command; stops before any call that could pass it")
     p.add_argument("--director", default="gemma3:4b", help="local Ollama vision model that critiques and requests revisions")
     p.add_argument("--no-director", action="store_true", help="skip the local art director")
     p.add_argument("--rounds", type=int, default=2, help="max revision rounds the director can request")
     p.add_argument("--full", action="store_true", help="expensive mode: n full candidates, Pro, judge + revise")
     p.set_defaults(fn=cmd_studio)
+
+    p = sub.add_parser("notes", help="local vision model writes design notes for every scraped site")
+    p.add_argument("--model", default="gemma3:12b")
+    p.add_argument("--limit", type=int)
+    p.add_argument("--force", action="store_true", help="rewrite notes that already exist")
+    p.set_defaults(fn=cmd_notes)
 
     p = sub.add_parser("lint", help="list vibecoded tells in HTML files (no dependencies)")
     p.add_argument("files", nargs="+")

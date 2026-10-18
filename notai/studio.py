@@ -25,7 +25,7 @@ TEXT_PRICES = {
     "gemini-3-flash-preview": (0.50, 3.00),
     "gemini-3.1-pro-preview": (2.00, 12.00),
 }
-IMAGE_PRICES = {"gemini-3.1-flash-lite-image": 0.0336, "gemini-3.1-flash-image": 0.067}
+IMAGE_PRICES = {"gemini-3.1-flash-lite-image": 0.0336, "gemini-3.1-flash-image": 0.067, "local": 0.0}
 
 ASPECTS = {"1:1", "2:3", "3:2", "3:4", "4:3", "4:5", "5:4", "9:16", "16:9", "21:9"}
 MAX_PHOTOS = 7
@@ -78,6 +78,9 @@ Requirements:
   your descriptions in the art direction's photo style, so describe subject, framing and light precisely.
   Use {min_photos}–{max_photos} photos and make them big: full-bleed heroes, split screens, asymmetric grids, overlaps.
   Never draw placeholder boxes, ovals or empty frames. Use object-fit: cover.
+- Graphics: where the style or brand suits illustration (playful, expressive, product, diagrams, maps,
+  patterns, icons), draw custom graphics as inline SVG in the palette — simple, confident shapes. Keep each
+  SVG under ~60 lines and never repeat long path data.
 - Implement every section from the art direction with its own composition. Use color the way the art
   direction says (large color fields where it calls for them, restraint where it doesn't).
 - Typography follows the art direction's fonts and weights exactly. Never use ultra-heavy or extended display
@@ -228,6 +231,16 @@ class Studio:
         if out.exists():
             return True
         self._guard(IMAGE_PRICES.get(self.image_model, 0.07))
+        if self.image_model == "local":  # FLUX.1-schnell on this Mac: free
+            from . import localimage
+
+            try:
+                localimage.generate(f"{prompt}. Style: {style}. Photograph, no text, no watermark.", aspect, out)
+                self.usage["images"] += 1
+                return True
+            except Exception as e:
+                print(f"    local photo failed ({aspect}): {str(e)[:160]}")
+                return False
         full = (f"A single photograph — one frame, not a collage or diptych. No text, logos or watermarks. "
                 f"Style: {style}. Subject: {prompt}")
         try:
@@ -284,7 +297,7 @@ class Studio:
             key = hashlib.sha1(f"{style}|{desc}|{aspect}".encode()).hexdigest()[:16]
             jobs[desc] = (aspect, photos_dir / f"{key}.jpg")
         jobs = dict(list(jobs.items())[:limit])
-        with ThreadPoolExecutor(max_workers=4) as ex:
+        with ThreadPoolExecutor(max_workers=1 if self.image_model == "local" else 4) as ex:
             list(ex.map(lambda kv: self.photo(kv[0], kv[1][0], style, kv[1][1]), jobs.items()))
 
         made = [p for _, p in jobs.values() if p.exists()]
@@ -459,14 +472,26 @@ def run_cheap(brief: str, model: str = "gemini-3.8-flash", image_model: str = "g
     # Offer the three least-used families so a batch spreads across aesthetics; the model picks the fit.
     usage = Counter(r.get("family_id") for r in read_jsonl(config.GENERATIONS) if r.get("backend") == "gemini-studio")
     cands = fam.candidates(usage, k=3, seed=hash(brief) & 0xFFFF)
-    refs = []
+    from . import notes as notes_mod
+
+    refs, family_notes = [], {}
     for f in cands:  # one reference screenshot per family, chosen locally (no model call)
-        have = [r for r in f["refs"] if (config.RAW / r / "desktop.png").exists()]
+        strong = notes_mod.for_family(f["id"], min_quality=7, k=3)
+        family_notes[f["id"]] = strong
+        have = [n["slug"] for n in strong if (config.RAW / n["slug"] / "desktop.png").exists()]
+        have = have[:1] or [r for r in f["refs"] if (config.RAW / r / "desktop.png").exists()]
         if have:
             slug = random.Random(brief).choice(have)
             refs.append((slug, fold_jpeg(config.RAW / slug / "desktop.png", width=640)))
     print(f"families offered: {', '.join(f['id'] for f in cands)}  refs: {', '.join(s for s, _ in refs)}", flush=True)
-    listing = "\n".join(f"{i}. [{f['id']}] {fam.describe(f)}" for i, f in enumerate(cands))
+    def family_entry(i, f):
+        entry = f"{i}. [{f['id']}] {fam.describe(f)}"
+        if family_notes.get(f["id"]):
+            entry += "\n   Notes on strong real sites in this family (learn the principles, don't copy):\n" + \
+                "\n".join("   " + notes_mod.as_text(n).replace("\n", "\n   ") for n in family_notes[f["id"]])
+        return entry
+
+    listing = "\n".join(family_entry(i, f) for i, f in enumerate(cands))
     plan = parse_json(studio.ask([FAMILY_DIRECTION.format(brief=full_brief, families=listing)] + [img for _, img in refs],
                                  json_out=True))
     directions = plan["directions"]

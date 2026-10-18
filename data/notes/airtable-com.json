@@ -1,0 +1,23 @@
+{
+  "family": "product-precise",
+  "quality": 6,
+  "layout": "Strict grid system, primarily vertical scrolling. Hero section uses a large, impactful headline and call-to-action buttons. Density is high, with a lot of information presented in a compact space.  Subsequent sections utilize cards and lists for organization.",
+  "typography": "Uses Haas, a sans-serif font. Hierarchy is established through size and weight.  Primarily uses uppercase for headings and labels, with body copy in sentence case. Tracking appears relatively tight.  The pairing is clean and functional, prioritizing readability over stylistic flair.",
+  "color": "A predominantly light background (#ffffff) with a secondary, warm off-white (#faf5e8) used for accents and cards.  A muted terracotta (#912e1f) is used sparingly for highlights and calls to action.  The color palette is restrained and professional, reinforcing the product's utility.",
+  "imagery": "The hero image is a stylized, abstract representation of data workflows. Subsequent sections feature logos of prominent clients (Netflix, Walmart, Amazon, Coca-Cola) to build trust and demonstrate credibility. Imagery is clean and professional, avoiding any unnecessary visual clutter.",
+  "sections": [
+    "Hero section with headline and call to action",
+    "Cookie preference modal",
+    "Client logos",
+    "Feature highlights (cards)",
+    "Competitor comparison",
+    "Testimonial/Case study section",
+    "Footer with links and legal information"
+  ],
+  "what_makes_it_work": "The clear hierarchy and consistent grid system make the information easily digestible. The use of client logos effectively builds trust and demonstrates the product's value. The overall design is clean and professional, reflecting the product's purpose.",
+  "signature_move": "The abstract, stylized hero image, while not visually striking, effectively communicates the core concept of data workflows in a modern and sophisticated way. It avoids literal depictions, opting for a more conceptual representation.",
+  "slug": "airtable-com",
+  "url": "https://airtable.com",
+  "source": "good",
+  "model": "gemma3:12b"
+}
