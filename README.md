@@ -126,6 +126,12 @@ model.
 - Generation with qwen2.5-coder:14b: the pages lose the AI clichés but stay bland and
   placeholder-heavy. Best critic scores were 0.28 and 0.006. A 14B base model is the bottleneck;
   this is why the plan bootstraps the fine-tuning data with a stronger model.
+- Overnight (7 h, qwen2.5-coder:14b): 52 briefs, median score 0.12, best 0.71. The top-scoring pages
+  are mostly monospace + thin borders, so the critic partly rewards a surface style.
+- LoRA on Qwen2.5-Coder-7B with the top 26 pages: the first run diverged to NaN (now guarded). The
+  retrain was stable (val loss 0.41 → 0.33). On two unseen briefs, mean critic score went from
+  0.016 (base 7B) to 0.079 (fine-tuned): more layout ambition (asymmetric grid, large numerals), but
+  still placeholder-heavy. Four samples, so treat this as a direction, not a result.
 
 ## Things to know
 
