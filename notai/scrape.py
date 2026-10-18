@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import time
+import urllib.error
 import urllib.robotparser
 from datetime import datetime, timezone
 from pathlib import Path
@@ -15,10 +16,18 @@ from .util import normalize_url, read_list, slugify
 
 def allowed_by_robots(url: str) -> bool:
     parts = urlparse(url)
+    import urllib.request
+
     rp = urllib.robotparser.RobotFileParser()
-    rp.set_url(f"{parts.scheme}://{parts.netloc}/robots.txt")
     try:
-        rp.read()
+        req = urllib.request.Request(f"{parts.scheme}://{parts.netloc}/robots.txt",
+                                     headers={"User-Agent": config.USER_AGENT})
+        with urllib.request.urlopen(req, timeout=15) as r:  # RobotFileParser.read() has no timeout
+            rp.parse(r.read().decode("utf-8", "ignore").splitlines())
+    except urllib.error.HTTPError as e:
+        if e.code in (401, 403):
+            return False  # same rule RobotFileParser applies: access to robots.txt denied
+        return True  # missing robots.txt: no rules
     except Exception:
         return True  # unreachable robots.txt: treat as no rules
     return rp.can_fetch(config.USER_AGENT, url)
