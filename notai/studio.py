@@ -153,13 +153,48 @@ class QuotaExhausted(RuntimeError):
     pass
 
 
+# Free-tier providers that speak the OpenAI-compatible chat API. Use them as "provider:model",
+# e.g. "groq:openai/gpt-oss-120b" or "openrouter:nvidia/nemotron-3-ultra-550b-a55b:free".
+OPENAI_COMPATIBLE = {
+    "groq": ("https://api.groq.com/openai/v1", "GROQ_API_KEY"),
+    "openrouter": ("https://openrouter.ai/api/v1", "OPENROUTER_API_KEY"),
+    "mistral": ("https://api.mistral.ai/v1", "MISTRAL_API_KEY"),
+}
+
+
+def model_is_free(provider: str, model: str) -> bool:
+    """Free-tier usage: OpenRouter ':free' models, and Groq/Mistral free plans (no billing attached)."""
+    return model.endswith(":free") or provider in ("groq", "mistral")
+
+
+class ProviderError(RuntimeError):
+    def __init__(self, code: int, text: str):
+        super().__init__(f"{code}: {text[:400]}")
+        self.code = code
+
+
 class Studio:
     def __init__(self, model: str | None = None, image_model: str = "gemini-3.1-flash-image",
                  thinking: str | None = None):
-        from .backends import Gemini
+        model = model or config.DEFAULT_GEMINI_MODEL
+        provider, _, name = model.partition(":")
+        self.provider = provider if name and provider in OPENAI_COMPATIBLE else "gemini"
+        if self.provider == "gemini" or image_model.startswith("gemini"):
+            from .backends import Gemini
 
-        g = Gemini(model or config.DEFAULT_GEMINI_MODEL)
-        self.client, self.types, self.model = g.client, g.types, g.model
+            g = Gemini(model if self.provider == "gemini" else config.DEFAULT_GEMINI_MODEL)
+            self.client, self.types = g.client, g.types
+        if self.provider == "gemini":
+            self.model = model
+        else:
+            import os
+
+            base, env = OPENAI_COMPATIBLE[self.provider]
+            key = os.environ.get(env, "")
+            if not key:
+                raise SystemExit(f"Set {env} in the .env file to use {self.provider} (free key from its website).")
+            self.httpx = need("httpx", "generate")
+            self.base, self.key, self.model = base, key, name
         self.image_model = image_model
         self.thinking = thinking
         self.usage = {"input": 0, "output": 0, "images": 0, "calls": 0}
@@ -195,6 +230,8 @@ class Studio:
     def cost(self) -> float | None:
         """Measured cost in USD from token counts, or None if a model's price is unknown."""
         tp, ip = TEXT_PRICES.get(self.model), IMAGE_PRICES.get(self.image_model)
+        if self.provider != "gemini" and model_is_free(self.provider, self.model):
+            tp = (0.0, 0.0)
         if not tp or (self.usage["images"] and ip is None):
             return None
         return (self.usage["input"] * tp[0] + self.usage["output"] * tp[1]) / 1e6 + self.usage["images"] * (ip or 0)
@@ -211,7 +248,38 @@ class Studio:
                 parts.append(self.types.Part.from_text(text=str(it)))
         return parts
 
+    def _ask_openai(self, items, json_out: bool, temperature: float) -> str:
+        """OpenAI-compatible providers. Text only: reference screenshots are skipped (the design notes carry
+        the same information in words), so non-vision models work too."""
+        text = "\n\n".join(str(it) for it in items if not isinstance(it, (bytes, bytearray)))
+        body = {"model": self.model, "messages": [{"role": "user", "content": text}],
+                "temperature": min(temperature, 1.0), "max_tokens": 32000}
+        if json_out:
+            body["response_format"] = {"type": "json_object"}
+
+        def call():
+            r = self.httpx.post(f"{self.base}/chat/completions", json=body, timeout=900,
+                                headers={"Authorization": f"Bearer {self.key}"})
+            if r.status_code == 400 and json_out and "response_format" in body:
+                body.pop("response_format")  # some models reject JSON mode; the prompt still asks for JSON
+                r = self.httpx.post(f"{self.base}/chat/completions", json=body, timeout=900,
+                                    headers={"Authorization": f"Bearer {self.key}"})
+            if r.status_code >= 400:
+                daily = r.status_code == 429 and re.search(r"per.?day|daily|RPD|TPD", r.text, re.I)
+                raise ProviderError(r.status_code, ("PerDay " if daily else "") + r.text)
+            return r.json()
+
+        data = self._with_retry(call)
+        u = data.get("usage") or {}
+        self.usage["input"] += u.get("prompt_tokens") or 0
+        self.usage["output"] += u.get("completion_tokens") or 0
+        self.usage["calls"] += 1
+        msg = (data.get("choices") or [{}])[0].get("message") or {}
+        return msg.get("content") or ""
+
     def ask(self, items, json_out: bool = False, temperature: float = 1.0) -> str:
+        if self.provider != "gemini":
+            return self._ask_openai(items, json_out, temperature)
         tp = TEXT_PRICES.get(self.model, (2.0, 12.0))
         self._guard(30000 * tp[1] / 1e6)  # worst case for one call: ~30k output tokens
         cfg = self.types.GenerateContentConfig(
@@ -430,7 +498,8 @@ def run(brief: str, n: int = 3, revise: bool = True, model: str | None = None, l
 def run_cheap(brief: str, model: str = "gemini-3.8-flash", image_model: str = "gemini-3.1-flash-lite-image",
               photos: int = 4, polish: bool = False, log: bool = True,
               budget: float | None = None, spent_before: float = 0.0,
-              director_model: str | None = None, rounds: int = 2) -> tuple[Path, float]:
+              director_model: str | None = None, rounds: int = 2,
+              force_family: str | None = None) -> tuple[Path, float]:
     """One page per brief: plan three directions in text, build only the strongest, photos for that page only.
 
     photos=0 is text-only (for training data): the page keeps its data-photo slots and no images are made.
@@ -471,7 +540,7 @@ def run_cheap(brief: str, model: str = "gemini-3.8-flash", image_model: str = "g
 
     # Offer the three least-used families so a batch spreads across aesthetics; the model picks the fit.
     usage = Counter(r.get("family_id") for r in read_jsonl(config.GENERATIONS) if r.get("backend") == "gemini-studio")
-    cands = fam.candidates(usage, k=3, seed=hash(brief) & 0xFFFF)
+    cands = [fam.BY_ID[force_family]] if force_family else fam.candidates(usage, k=3, seed=hash(brief) & 0xFFFF)
     from . import notes as notes_mod
 
     refs, family_notes = [], {}

@@ -151,6 +151,21 @@ Cheap mode writes 3 art directions in one call, builds only the strongest with `
 keep their `data-photo` slots, so `notai dataset build --source gemini-studio` turns them into training
 data for the local model.
 
+## Free designer models and the bake-off
+
+Besides Gemini, studio mode can use any OpenAI-compatible free tier as the designer, written as
+`provider:model`: `groq:...`, `openrouter:...:free`, `mistral:...` (keys in `.env`). Photos come from
+FLUX.1-schnell on your Mac (`--image-model local`, the default), so pages with photos cost $0.
+
+```bash
+notai bakeoff                                   # same 3 briefs and families for every model with a key
+notai bakeoff --models gemini-3.8-flash,groq:openai/gpt-oss-120b
+notai studio "..." --model openrouter:nvidia/nemotron-3-ultra-550b-a55b:free
+```
+
+The bake-off writes one side-by-side sheet per brief to `runs/bakeoff-*/` with the director's score and
+any measured problems under each page.
+
 ## Daily free collection
 
 `scripts/daily.sh` spends each free Gemini model's daily quota on new text-only training pages, with

@@ -171,6 +171,13 @@ def cmd_notes(a):
     print(json.dumps(write_notes(a.model, force=a.force, limit=a.limit), indent=2))
 
 
+def cmd_bakeoff(a):
+    from .bakeoff import SUGGESTED, run
+
+    run(a.models.split(",") if a.models else SUGGESTED, photos=a.photos,
+        director=None if a.no_director else a.director)
+
+
 def cmd_lint(a):
     from .tells import detect, penalty
 
@@ -288,6 +295,13 @@ def main(argv: list[str] | None = None) -> None:
     p.add_argument("--limit", type=int)
     p.add_argument("--force", action="store_true", help="rewrite notes that already exist")
     p.set_defaults(fn=cmd_notes)
+
+    p = sub.add_parser("bakeoff", help="compare designer models side by side on the same briefs")
+    p.add_argument("--models", help="comma-separated; default: Gemini Flash plus the free Groq/OpenRouter models")
+    p.add_argument("--photos", type=int, default=3, help="local FLUX photos per page")
+    p.add_argument("--director", default="gemma3:12b")
+    p.add_argument("--no-director", action="store_true")
+    p.set_defaults(fn=cmd_bakeoff)
 
     p = sub.add_parser("lint", help="list vibecoded tells in HTML files (no dependencies)")
     p.add_argument("files", nargs="+")

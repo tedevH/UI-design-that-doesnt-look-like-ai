@@ -60,7 +60,7 @@ def test_budget_guard_stops_before_overspend():
     from notai import studio
 
     s = studio.Studio.__new__(studio.Studio)
-    s.model, s.image_model = "gemini-3.8-flash", "gemini-3.1-flash-lite-image"
+    s.provider, s.model, s.image_model = "gemini", "gemini-3.8-flash", "gemini-3.1-flash-lite-image"
     s.usage = {"input": 0, "output": 1_000_000, "images": 0, "calls": 1}  # $3.75 spent
     s.budget, s.spent_before = 4.0, 0.0
     s._guard(0.10)  # $3.85 is fine
@@ -82,3 +82,15 @@ def test_own_photos_only_replaces_hotlinked_images():
     out = own_photos_only(html)
     assert "example.com" not in out
     assert 'data-photo="Rolex 5513 dial"' in out and 'data-photo="kept"' in out
+
+
+def test_provider_parsing_needs_key(monkeypatch):
+    import pytest
+
+    from notai import studio
+
+    monkeypatch.delenv("GROQ_API_KEY", raising=False)
+    with pytest.raises(SystemExit, match="GROQ_API_KEY"):
+        studio.Studio("groq:openai/gpt-oss-120b", image_model="local")
+    assert studio.model_is_free("openrouter", "nvidia/nemotron-3-ultra-550b-a55b:free")
+    assert not studio.model_is_free("openrouter", "anthropic/claude-opus-5.5")
