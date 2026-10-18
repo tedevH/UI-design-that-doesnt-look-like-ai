@@ -221,7 +221,7 @@ def main(argv: list[str] | None = None) -> None:
     p.add_argument("--model", default=config.DEFAULT_MLX_MODEL)
     p.add_argument("--iters", type=int, default=600)
     p.add_argument("--layers", type=int, default=16)
-    p.add_argument("--lr", type=float, default=1e-5)
+    p.add_argument("--lr", type=float, default=5e-6)
     p.add_argument("--max-seq", type=int, default=8192)
     p.add_argument("--name", default="notai")
     p.add_argument("--fuse", action="store_true", help="fuse an existing adapter into the base model")

@@ -27,7 +27,7 @@ echo "== $(date) building dataset (top ${TOP})"
 "$NOTAI" dataset build --top "$TOP" || { echo "dataset build failed"; exit 1; }
 
 TRAIN=$(wc -l < data/sft/train.jsonl | tr -d ' ')
-ITERS=$(( TRAIN * 3 > 100 ? TRAIN * 3 : 100 ))   # ~3 epochs
+ITERS=$(( TRAIN * 5 / 2 )); ITERS=$(( ITERS < 40 ? 40 : ITERS > 400 ? 400 : ITERS ))   # ~2.5 epochs
 echo "== $(date) fine-tuning on ${TRAIN} examples for ${ITERS} iters"
 "$NOTAI" finetune --iters "$ITERS" || { echo "fine-tune failed"; exit 1; }
 
