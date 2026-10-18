@@ -111,7 +111,7 @@ def _q(n: dict) -> int:
 
 
 def as_text(n: dict) -> str:
-    sections = " → ".join(map(str, n.get("sections") or [])[:8])
+    sections = " → ".join(map(str, (n.get("sections") or [])[:8]))
     return (f"[{n.get('url')}] quality {n.get('quality')}/10\n"
             f"  layout: {n.get('layout')}\n  type: {n.get('typography')}\n  color: {n.get('color')}\n"
             f"  imagery: {n.get('imagery')}\n  sections: {sections}\n"

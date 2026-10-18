@@ -94,3 +94,10 @@ def test_provider_parsing_needs_key(monkeypatch):
         studio.Studio("groq:openai/gpt-oss-120b", image_model="local")
     assert studio.model_is_free("openrouter", "nvidia/nemotron-3-ultra-550b-a55b:free")
     assert not studio.model_is_free("openrouter", "anthropic/claude-opus-5.5")
+
+
+def test_notes_as_text():
+    from notai import notes
+
+    t = notes.as_text({"url": "https://x.com", "quality": 8, "sections": ["hero", "menu", "footer"]})
+    assert "hero → menu → footer" in t and "8/10" in t

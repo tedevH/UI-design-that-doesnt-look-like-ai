@@ -141,18 +141,23 @@
     const r = el.getBoundingClientRect();
     const cs = getComputedStyle(el);
     if (!visible(el, r, cs) || r.top + window.scrollY > vh * 4 || r.width > vw * 1.05) continue;
-    texts.push({ el, r });
+    // Per-fragment boxes: a paragraph split across CSS columns or lines must not count as one big box.
+    texts.push({ el, rects: Array.from(el.getClientRects()).filter((q) => q.width > 1 && q.height > 1) });
   }
+  const hit = (a, b) => {
+    for (const p of a) for (const q of b) {
+      const w = Math.min(p.right, q.right) - Math.max(p.left, q.left);
+      const h = Math.min(p.bottom, q.bottom) - Math.max(p.top, q.top);
+      if (w > 0 && h > 0 && w * h > 0.3 * Math.min(p.width * p.height, q.width * q.height)) return true;
+    }
+    return false;
+  };
   let overlaps = 0;
   for (let i = 0; i < texts.length; i++) {
     for (let j = i + 1; j < texts.length; j++) {
       const a = texts[i], b = texts[j];
       if (a.el.contains(b.el) || b.el.contains(a.el)) continue;
-      const w = Math.min(a.r.right, b.r.right) - Math.max(a.r.left, b.r.left);
-      const h = Math.min(a.r.bottom, b.r.bottom) - Math.max(a.r.top, b.r.top);
-      if (w <= 0 || h <= 0) continue;
-      const small = Math.min(a.r.width * a.r.height, b.r.width * b.r.height);
-      if (w * h > 0.3 * small) overlaps++;
+      if (hit(a.rects, b.rects)) overlaps++;
     }
   }
   out.overlaps = overlaps;
