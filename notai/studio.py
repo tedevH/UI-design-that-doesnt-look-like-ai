@@ -113,6 +113,10 @@ Return the full revised HTML file in a ```html code block.
 ```"""
 
 
+class BudgetExceeded(RuntimeError):
+    pass
+
+
 class Studio:
     def __init__(self, model: str | None = None, image_model: str = "gemini-3.1-flash-image",
                  thinking: str | None = None):
@@ -123,6 +127,15 @@ class Studio:
         self.image_model = image_model
         self.thinking = thinking
         self.usage = {"input": 0, "output": 0, "images": 0, "calls": 0}
+        self.budget: float | None = None  # USD; checked before every call
+        self.spent_before = 0.0  # spend from earlier runs in the same batch
+
+    def _guard(self, next_cost: float) -> None:
+        if self.budget is None:
+            return
+        so_far = self.spent_before + (self.cost() or 0.0)
+        if so_far + next_cost > self.budget:
+            raise BudgetExceeded(f"stopping: ${so_far:.3f} spent, next call could pass the ${self.budget:.2f} limit")
 
     def cost(self) -> float | None:
         """Measured cost in USD from token counts, or None if a model's price is unknown."""
@@ -144,6 +157,8 @@ class Studio:
         return parts
 
     def ask(self, items, json_out: bool = False, temperature: float = 1.0) -> str:
+        tp = TEXT_PRICES.get(self.model, (2.0, 12.0))
+        self._guard(30000 * tp[1] / 1e6)  # worst case for one call: ~30k output tokens
         cfg = self.types.GenerateContentConfig(
             temperature=temperature, max_output_tokens=65536,
             response_mime_type="application/json" if json_out else None,
@@ -159,6 +174,7 @@ class Studio:
     def photo(self, prompt: str, aspect: str, style: str, out: Path) -> bool:
         if out.exists():
             return True
+        self._guard(IMAGE_PRICES.get(self.image_model, 0.07))
         full = (f"A single photograph — one frame, not a collage or diptych. No text, logos or watermarks. "
                 f"Style: {style}. Subject: {prompt}")
         try:
@@ -171,6 +187,8 @@ class Studio:
                     out.write_bytes(p.inline_data.data)
                     self.usage["images"] += 1
                     return True
+        except BudgetExceeded:
+            raise
         except Exception as e:
             print(f"    photo failed ({aspect}): {str(e)[:120]}")
         return False
@@ -320,11 +338,16 @@ def run(brief: str, n: int = 3, revise: bool = True, model: str | None = None, l
 
 
 def run_cheap(brief: str, model: str = "gemini-3.8-flash", image_model: str = "gemini-3.1-flash-lite-image",
-              photos: int = 4, polish: bool = False, log: bool = True) -> Path:
-    """One page per brief: plan three directions in text, build only the strongest, photos for that page only."""
+              photos: int = 4, polish: bool = False, log: bool = True,
+              budget: float | None = None, spent_before: float = 0.0) -> tuple[Path, float]:
+    """One page per brief: plan three directions in text, build only the strongest, photos for that page only.
+
+    photos=0 is text-only (for training data): the page keeps its data-photo slots and no images are made.
+    Returns (final dir, measured USD for this run)."""
     from .render import Renderer
 
     studio = Studio(model, image_model=image_model, thinking="low")
+    studio.budget, studio.spent_before = budget, spent_before
     run_dir = config.RUNS / f"{datetime.now():%Y%m%d-%H%M%S}-cheap-{slugify(brief, 40)}"
     run_dir.mkdir(parents=True, exist_ok=True)
 
@@ -340,8 +363,8 @@ def run_cheap(brief: str, model: str = "gemini-3.8-flash", image_model: str = "g
     (run_dir / "directions.json").write_text(json.dumps(plan, indent=2))
     print(f"direction: {direction.get('name')} — {direction.get('concept', '')[:120]}", flush=True)
 
-    raw_html = studio.build(brief, direction, max_photos=photos)
-    html = studio.fill_photos(raw_html, direction.get("photo_style", ""), run_dir, limit=photos)
+    raw_html = studio.build(brief, direction, max_photos=photos or 4)
+    html = studio.fill_photos(raw_html, direction.get("photo_style", ""), run_dir, limit=photos) if photos else raw_html
     with Renderer() as r:
         final_dir = run_dir / "page"
         _render(r, final_dir, html)
@@ -353,7 +376,8 @@ def run_cheap(brief: str, model: str = "gemini-3.8-flash", image_model: str = "g
                 revised = extract_html(studio.ask([REVISE.format(fixes=fixes, html=raw_html), shot]))
                 if "<html" in revised.lower():
                     raw_html = revised
-                    html = studio.fill_photos(revised, direction.get("photo_style", ""), run_dir, limit=photos)
+                    html = (studio.fill_photos(revised, direction.get("photo_style", ""), run_dir, limit=photos)
+                            if photos else revised)
                     final_dir = run_dir / "polished"
                     _render(r, final_dir, html)
 
@@ -374,4 +398,4 @@ def run_cheap(brief: str, model: str = "gemini-3.8-flash", image_model: str = "g
             "html": raw_html, "score": 1.0, "backend": "gemini-studio", "run": str(run_dir),
             "usd": usage["usd"], "at": datetime.now().isoformat(timespec="seconds"),
         }])
-    return final_dir
+    return final_dir, usage["usd"] or 0.0

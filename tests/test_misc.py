@@ -52,3 +52,17 @@ def test_dataset_top_fraction(tmp_path, monkeypatch):
     ])
     out = dataset.build(top=0.5)
     assert out["kept"] == 5 and out["min_score"] == 0.5
+
+
+def test_budget_guard_stops_before_overspend():
+    import pytest
+
+    from notai import studio
+
+    s = studio.Studio.__new__(studio.Studio)
+    s.model, s.image_model = "gemini-3.8-flash", "gemini-3.1-flash-lite-image"
+    s.usage = {"input": 0, "output": 1_000_000, "images": 0, "calls": 1}  # $3.75 spent
+    s.budget, s.spent_before = 4.0, 0.0
+    s._guard(0.10)  # $3.85 is fine
+    with pytest.raises(studio.BudgetExceeded):
+        s._guard(0.50)  # $4.25 is not
