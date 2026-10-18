@@ -1,0 +1,15 @@
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+# Collected data, models and runs are large and personal; keep them out of git.
+data/raw/
+data/cache/
+data/labels.jsonl
+data/generations.jsonl
+data/sft/
+data/stylebook.json
+data/stylebook.md
+models/
+runs/
+.DS_Store

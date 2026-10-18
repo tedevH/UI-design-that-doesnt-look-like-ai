@@ -1,0 +1,41 @@
+# One product brief per line. Used by `notai negatives` and `notai batch`.
+Invoice tool for freelance illustrators who bill in multiple currencies
+Booking system for independent climbing gyms
+Ceramics studio selling handmade tableware in small batches
+Open-source observability agent for Kubernetes clusters
+Meal-prep subscription for night-shift nurses
+Bike repair shop in Copenhagen with a cargo-bike specialty
+Note-taking app for PhD students that links papers to notes
+Architecture firm focused on timber mid-rise housing
+Payroll API for companies hiring contractors in Latin America
+Natural wine bar with a rotating weekly menu
+Personal finance app for couples splitting rent and bills
+Language-learning app built around reading real news
+Analog film lab offering mail-in developing and scanning
+Hiring platform for restaurant line cooks
+Developer tool that turns SQL queries into internal dashboards
+Physical therapy clinic for runners
+Recording studio rental by the hour in Brooklyn
+Plant-based skincare brand with refill pouches
+Fleet maintenance software for small trucking companies
+Board game cafe with a library of 800 games
+AI meeting notes app for sales teams
+Typeface foundry selling variable fonts
+Community solar co-op for apartment renters
+Weekly newsletter about urban design
+Rental marketplace for camera gear
+Pediatric dental practice
+Code review bot for monorepos
+Tea importer specializing in Taiwanese oolong
+Coworking space for parents with on-site childcare
+Password manager for families
+Electric boat charter on a mountain lake
+Grant-writing service for nonprofits
+Indie video game about lighthouse keepers
+Accounting firm for creative agencies
+Smart thermostat for old radiator heating systems
+Running shoe brand made from recycled materials
+Translation agency for medical documents
+Static site hosting for documentation
+Furniture restoration workshop
+Home insurance for renters in their twenties
