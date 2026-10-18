@@ -39,3 +39,93 @@ Translation agency for medical documents
 Static site hosting for documentation
 Furniture restoration workshop
 Home insurance for renters in their twenties
+Ski touring guide service in the Alps
+Specialty coffee roaster with a wholesale program for cafes
+Inventory software for independent bookstores
+Telehealth service for pet owners
+Community radio station streaming online
+Customer support inbox for Shopify stores
+Vintage watch dealer with authenticated listings
+Daycare center with a forest school program
+Open-source vector database
+Kitchen renovation contractor in Austin
+Sleep tracking ring for shift workers
+Music lessons marketplace for adult beginners
+Bakery selling sourdough by subscription
+Legal document automation for small law firms
+E-bike rental for tourists in Lisbon
+Mental health app for college students
+Carbon accounting software for manufacturers
+Wedding photographer in Kyoto
+Home cleaning service with eco-friendly products
+Learning platform for data engineers
+Cheese shop with a monthly tasting club
+Real estate listings for co-living spaces
+Drone inspection service for wind turbines
+Personal trainer app for strength training
+Print shop for zines and artist books
+API monitoring tool for startups
+Secondhand outdoor gear marketplace
+Dog walking service with GPS tracked walks
+Podcast hosting platform for independent creators
+Vineyard tours in Oregon
+Budgeting app for freelancers with irregular income
+Swimming school for toddlers
+Feature flag service for mobile apps
+Custom bicycle frame builder
+Ramen restaurant with two locations
+Scheduling software for hair salons
+Hiking trail guidebook app
+Cybersecurity training for small businesses
+Florist offering weekly flower subscriptions
+Electric vehicle charging network for apartment buildings
+Online pottery classes
+Shared bookkeeping for roommates
+Product analytics for B2B SaaS
+Language school teaching Japanese to engineers
+Organic farm selling vegetable boxes
+Video editing app for YouTubers
+Insurance for freelance photographers
+Museum of industrial design
+Laptop repair shop
+Mortgage broker for first-time buyers
+Robot vacuum for homes with pets
+Translation API for e-commerce sites
+Yoga studio with heated classes
+Sneaker resale authentication service
+Remote team offsite planning service
+Climbing shoe resoling service
+Open-source CMS for newsrooms
+Bike-share program for a mid-sized city
+Medical scheduling for dental clinics
+Kids coding camp in the summer
+Handmade leather goods workshop
+Spreadsheet-to-API tool for no-code builders
+Theater company staging new plays
+Solar panel installer for farms
+Car detailing at your office parking lot
+Online marketplace for used textbooks
+Cloud GPU rental for researchers
+Craft brewery taproom and kitchen
+Retirement planning tool for teachers
+Architecture photography studio
+Grocery delivery for rural towns
+Code search for large engineering orgs
+Bridal boutique in Chicago
+Esports team merchandise store
+Air quality sensor for classrooms
+Vegan restaurant with a tasting menu
+Background check service for landlords
+Typesetting tool for academic papers
+Sailing school in Croatia
+Office furniture rental for startups
+Habit tracker app with no streaks
+Jazz club with nightly live music
+Moving company specializing in pianos
+Webhooks infrastructure for developers
+Bouldering competition organizer
+Eyewear brand with home try-on
+Sustainable fashion rental subscription
+Local news site for a small town
+Accessibility audit service for websites
+Tattoo studio with guest artists

@@ -161,7 +161,9 @@ def negatives(backend: Backend, briefs: list[str], limit: int | None = None) -> 
     briefs = briefs[:limit] if limit else briefs
     with Renderer() as r:
         for i, brief in enumerate(briefs, 1):
-            slug = f"neg-{backend.name}-{slugify(brief, 40)}"
+            model = getattr(backend, "model", None)
+            tag = slugify(model if isinstance(model, str) else backend.name, 24)
+            slug = f"neg-{tag}-{slugify(brief, 40)}"
             out = config.RAW / slug
             if (out / "meta.json").exists():
                 continue
@@ -176,5 +178,5 @@ def negatives(backend: Backend, briefs: list[str], limit: int | None = None) -> 
                 continue
             (out / "page.html").write_text(html)
             (out / "meta.json").write_text(json.dumps({
-                "slug": slug, "url": f"generated:{backend.name}", "source": "vibe", "brief": brief,
+                "slug": slug, "url": f"generated:{backend.name}:{tag}", "source": "vibe", "brief": brief,
                 "captured_at": datetime.now(timezone.utc).isoformat(timespec="seconds")}, indent=2))
