@@ -16,3 +16,6 @@ runs/
 
 # Local secrets
 .env
+data/notes/
+data/reviews.jsonl
+data/generations.backup.jsonl
