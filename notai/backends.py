@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import base64
+import os
 from pathlib import Path
 
 from . import config
@@ -119,11 +120,46 @@ class Anthropic(Backend):
         ]}], 8000)
 
 
+class Gemini(Backend):
+    """Google Gemini via the google-genai SDK. Reads GEMINI_API_KEY (free key at aistudio.google.com)."""
+
+    name = "gemini"
+
+    def __init__(self, model: str = config.DEFAULT_GEMINI_MODEL):
+        genai = need("google.genai", "gemini")
+        if not (os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY")):
+            raise SystemExit("Set GEMINI_API_KEY (get one at https://aistudio.google.com/apikey), "
+                             "e.g. a line GEMINI_API_KEY=... in the .env file at the project root.")
+        self.types = need("google.genai.types", "gemini")
+        self.client = genai.Client()
+        self.model = model
+
+    def _run(self, system: str, contents, temperature: float, max_tokens: int) -> str:
+        r = self.client.models.generate_content(
+            model=self.model,
+            contents=contents,
+            config=self.types.GenerateContentConfig(
+                system_instruction=system, temperature=temperature, max_output_tokens=max_tokens),
+        )
+        return r.text or ""
+
+    def complete(self, system, messages, temperature=0.8, max_tokens=32000):
+        contents = [self.types.Content(role="model" if m["role"] == "assistant" else "user",
+                                       parts=[self.types.Part.from_text(text=m["content"])]) for m in messages]
+        return self._run(system, contents, temperature, max(max_tokens, 32000))
+
+    def critique(self, png):
+        img = self.types.Part.from_bytes(data=Path(png).read_bytes(), mime_type="image/png")
+        return self._run(CRITIQUE_SYSTEM, [img, "Critique this page."], 0.3, 4000)
+
+
 def make(name: str, model: str | None = None, adapter: str | None = None, vision_model: str | None = None) -> Backend:
     if name == "ollama":
         return Ollama(model or config.DEFAULT_OLLAMA_MODEL, vision_model=vision_model)
     if name == "mlx":
         return MLX(model or config.DEFAULT_MLX_MODEL, adapter=adapter)
+    if name == "gemini":
+        return Gemini(model or config.DEFAULT_GEMINI_MODEL)
     if name == "anthropic":
         return Anthropic(model or config.DEFAULT_ANTHROPIC_MODEL)
-    raise SystemExit(f"Unknown backend '{name}' (use ollama, mlx, or anthropic)")
+    raise SystemExit(f"Unknown backend '{name}' (use ollama, mlx, gemini, or anthropic)")

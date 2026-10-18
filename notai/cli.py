@@ -11,7 +11,7 @@ from . import config
 
 
 def _backend_args(p: argparse.ArgumentParser, default: str = "ollama") -> None:
-    p.add_argument("--backend", default=default, choices=["ollama", "mlx", "anthropic"])
+    p.add_argument("--backend", default=default, choices=["ollama", "mlx", "gemini", "anthropic"])
     p.add_argument("--model", help="model name for the backend (defaults per backend)")
     p.add_argument("--adapter", help="LoRA adapter path (mlx backend)")
     p.add_argument("--vision-model", help="Ollama vision model for critiques, e.g. qwen2.5vl:7b")
@@ -192,7 +192,7 @@ def main(argv: list[str] | None = None) -> None:
     p.add_argument("-n", type=int, default=3, help="candidates per round")
     p.add_argument("--rounds", type=int, default=3)
     p.add_argument("--target", type=float, default=0.85, help="stop when the score reaches this")
-    p.add_argument("--critique-with", choices=["anthropic"], help="use this backend for screenshot critiques")
+    p.add_argument("--critique-with", choices=["gemini", "anthropic"], help="use this backend for screenshot critiques")
     p.set_defaults(fn=cmd_generate)
 
     p = sub.add_parser("batch", help="run generate for every brief in a file")

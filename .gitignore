@@ -13,3 +13,6 @@ data/stylebook.md
 models/
 runs/
 .DS_Store
+
+# Local secrets
+.env
