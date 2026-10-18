@@ -107,6 +107,19 @@ model.
 - Not run here: Claude backend calls and an actual `mlx_lm lora` training run. Their flags and
   parameters were checked against the installed `mlx-lm` and `anthropic` 1.15 packages.
 
+## First real run (Oct 2026, 24 GB M-series Mac, all local)
+
+- Data: 95 sites scraped, 82 kept as good after review (13 dropped for bot walls, cookie walls,
+  app screens). 80 lazy-prompt negatives from gemma3:4b, qwen2.5-coder:7b and 14b; 68 kept
+  (12 near-blank renders dropped).
+- Critic: cross-validated AUC 1.0 on 150 pages, which mostly means real sites and generated pages are
+  easy to tell apart. Sanity check on hand-made pages: an editorial page scores 0.53, a stock AI
+  landing page 0.20.
+- Stylebook: 10 families, mostly light or dark grotesk, plus a mono-technical group and one serif site.
+- Generation with qwen2.5-coder:14b: the pages lose the AI clichés but stay bland and
+  placeholder-heavy. Best critic scores were 0.28 and 0.006. A 14B base model is the bottleneck;
+  this is why the plan bootstraps the fine-tuning data with a stronger model.
+
 ## Things to know
 
 - **The critic can learn the wrong thing.** If every negative comes from `notai negatives` with one
