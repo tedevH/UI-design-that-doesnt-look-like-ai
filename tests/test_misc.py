@@ -39,3 +39,16 @@ def test_default_families_render_into_prompt():
         system = prompts.generation_system(fam)
         assert fam["rules"][0] in system
         assert "Never do any of these" in system
+
+
+def test_dataset_top_fraction(tmp_path, monkeypatch):
+    from notai import config, dataset
+
+    monkeypatch.setattr(config, "GENERATIONS", tmp_path / "g.jsonl")
+    monkeypatch.setattr(config, "SFT", tmp_path / "sft")
+    util.write_jsonl(config.GENERATIONS, [
+        {"brief": f"b{i}", "family_id": "f", "family": "F", "html": "<html></html>", "score": i / 10}
+        for i in range(10)
+    ])
+    out = dataset.build(top=0.5)
+    assert out["kept"] == 5 and out["min_score"] == 0.5

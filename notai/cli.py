@@ -94,10 +94,19 @@ def cmd_batch(a):
     from .generate import run
     from .util import read_list
 
+    import time
+
+    from .util import read_jsonl
+
     backend = _backend(a)
-    briefs = read_list(Path(a.briefs))[: a.limit]
+    done = {r["brief"] for r in read_jsonl(config.GENERATIONS)}
+    briefs = [b for b in read_list(Path(a.briefs)) if b not in done][: a.limit]
+    deadline = time.time() + a.hours * 3600 if a.hours else None
     for i, brief in enumerate(briefs, 1):
-        print(f"\n=== [{i}/{len(briefs)}] {brief}")
+        if deadline and time.time() > deadline:
+            print(f"\ntime limit reached after {i - 1} briefs")
+            break
+        print(f"\n=== [{i}/{len(briefs)}] {brief}", flush=True)
         try:
             run(brief, backend, family=a.family, n=a.n, rounds=a.rounds, target=a.target, vision=bool(a.vision_model))
         except Exception as e:  # keep the batch going
@@ -125,7 +134,7 @@ def cmd_lint(a):
 def cmd_dataset(a):
     from .dataset import build
 
-    print(json.dumps(build(min_score=a.min_score), indent=2))
+    print(json.dumps(build(min_score=a.min_score, top=a.top), indent=2))
 
 
 def cmd_finetune(a):
@@ -194,6 +203,7 @@ def main(argv: list[str] | None = None) -> None:
     p.add_argument("-n", type=int, default=3)
     p.add_argument("--rounds", type=int, default=2)
     p.add_argument("--target", type=float, default=0.85)
+    p.add_argument("--hours", type=float, help="stop starting new briefs after this many hours")
     p.set_defaults(fn=cmd_batch)
 
     p = sub.add_parser("lint", help="list vibecoded tells in HTML files (no dependencies)")
@@ -204,6 +214,7 @@ def main(argv: list[str] | None = None) -> None:
     p = sub.add_parser("dataset", help="build the fine-tuning set from generations")
     p.add_argument("action", choices=["build"])
     p.add_argument("--min-score", type=float, default=0.8)
+    p.add_argument("--top", type=float, help="instead of --min-score, keep this top fraction (e.g. 0.5) by score")
     p.set_defaults(fn=cmd_dataset)
 
     p = sub.add_parser("finetune", help="LoRA fine-tune a local model with mlx-lm")

@@ -94,6 +94,13 @@ notai finetune --iters 600               # LoRA on Qwen2.5-Coder-7B (4-bit) with
 notai generate "..." --backend mlx --adapter models/adapters/notai
 ```
 
+Or run the whole chain unattended (generation for N hours, then the top half by score, then the
+fine-tune, then a test page), logging to `runs/overnight.log`:
+
+```bash
+HOURS=7 caffeinate -i scripts/overnight.sh
+```
+
 Repeat: generate with the fine-tuned model, filter with the critic, retrain. A practical way to bootstrap
 is to run `batch` with `--backend anthropic` for the first few hundred pages, then switch to your own
 model.
