@@ -142,6 +142,7 @@ def cmd_studio(a):
     done = {r["brief"] for r in read_jsonl(config.GENERATIONS) if r.get("backend") == "gemini-studio"}
     briefs = [b for b in read_list(Path(a.briefs)) if b not in done][: a.limit]
     deadline = time.time() + a.hours * 3600 if a.hours else None
+    failures = 0
     for i, brief in enumerate(briefs, 1):
         if deadline and time.time() > deadline:
             print(f"time limit reached after {i - 1} briefs")
@@ -152,8 +153,14 @@ def cmd_studio(a):
         except BudgetExceeded as e:
             print(e)
             break
-        except Exception as e:  # keep the batch going
+        except Exception as e:  # keep the batch going, unless it keeps failing (e.g. daily quota used up)
             print(f"failed: {str(e)[:300]}")
+            failures += 1
+            if failures >= 3:
+                print("3 failures in a row; stopping the batch")
+                break
+            continue
+        failures = 0
 
 
 def cmd_lint(a):

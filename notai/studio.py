@@ -137,6 +137,23 @@ class Studio:
         if so_far + next_cost > self.budget:
             raise BudgetExceeded(f"stopping: ${so_far:.3f} spent, next call could pass the ${self.budget:.2f} limit")
 
+    @staticmethod
+    def _with_retry(call, tries: int = 6):
+        """Free-tier keys hit per-minute limits (429) and the API has transient 5xx: wait and retry."""
+        import time
+
+        for attempt in range(tries):
+            try:
+                return call()
+            except Exception as e:
+                code = getattr(e, "code", None) or getattr(e, "status_code", None)
+                if code not in (429, 500, 502, 503, 504) or attempt == tries - 1:
+                    raise
+                m = re.search(r"retry in ([\d.]+)s", str(e), re.I)
+                wait = float(m.group(1)) + 1 if m else min(120, 10 * 2 ** attempt)
+                print(f"    rate limited ({code}); waiting {wait:.0f}s", flush=True)
+                time.sleep(wait)
+
     def cost(self) -> float | None:
         """Measured cost in USD from token counts, or None if a model's price is unknown."""
         tp, ip = TEXT_PRICES.get(self.model), IMAGE_PRICES.get(self.image_model)
@@ -163,7 +180,8 @@ class Studio:
             temperature=temperature, max_output_tokens=65536,
             response_mime_type="application/json" if json_out else None,
             thinking_config=self.types.ThinkingConfig(thinking_level=self.thinking) if self.thinking else None)
-        r = self.client.models.generate_content(model=self.model, contents=self._parts(items), config=cfg)
+        r = self._with_retry(lambda: self.client.models.generate_content(
+            model=self.model, contents=self._parts(items), config=cfg))
         u = r.usage_metadata
         if u:
             self.usage["input"] += u.prompt_token_count or 0
