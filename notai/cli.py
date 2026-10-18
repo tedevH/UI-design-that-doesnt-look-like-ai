@@ -116,11 +116,17 @@ def cmd_batch(a):
 def cmd_studio(a):
     import time
 
-    from .studio import run
+    from .studio import run as run_full
+    from .studio import run_cheap
     from .util import read_jsonl, read_list
 
+    def run(brief):
+        if a.full:
+            return run_full(brief, n=a.n, revise=not a.no_revise, model=a.model)
+        return run_cheap(brief, model=a.model or "gemini-3.8-flash", photos=a.photos, polish=a.polish)
+
     if a.brief:
-        run(a.brief, n=a.n, revise=not a.no_revise, model=a.model)
+        run(a.brief)
         return
     done = {r["brief"] for r in read_jsonl(config.GENERATIONS) if r.get("backend") == "gemini-studio"}
     briefs = [b for b in read_list(Path(a.briefs)) if b not in done][: a.limit]
@@ -131,7 +137,7 @@ def cmd_studio(a):
             break
         print(f"\n=== [{i}/{len(briefs)}] {brief}", flush=True)
         try:
-            run(brief, n=a.n, revise=not a.no_revise, model=a.model)
+            run(brief)
         except Exception as e:  # keep the batch going
             print(f"failed: {str(e)[:300]}")
 
@@ -157,7 +163,7 @@ def cmd_lint(a):
 def cmd_dataset(a):
     from .dataset import build
 
-    print(json.dumps(build(min_score=a.min_score, top=a.top), indent=2))
+    print(json.dumps(build(min_score=a.min_score, top=a.top, backend=a.source), indent=2))
 
 
 def cmd_finetune(a):
@@ -234,9 +240,12 @@ def main(argv: list[str] | None = None) -> None:
     p.add_argument("--briefs", default=str(config.BRIEFS))
     p.add_argument("--limit", type=int)
     p.add_argument("--hours", type=float)
-    p.add_argument("-n", type=int, default=3, help="art directions / candidates")
+    p.add_argument("-n", type=int, default=3, help="candidates (--full mode)")
     p.add_argument("--no-revise", action="store_true")
-    p.add_argument("--model", help="Gemini text model (default: NOTAI_GEMINI_MODEL or gemini-pro-latest)")
+    p.add_argument("--model", help="Gemini text model (cheap default: gemini-3.8-flash)")
+    p.add_argument("--photos", type=int, default=4, help="max generated photos per page (cheap mode)")
+    p.add_argument("--polish", action="store_true", help="one judged revision pass (cheap mode)")
+    p.add_argument("--full", action="store_true", help="expensive mode: n full candidates, Pro, judge + revise")
     p.set_defaults(fn=cmd_studio)
 
     p = sub.add_parser("lint", help="list vibecoded tells in HTML files (no dependencies)")
@@ -248,6 +257,7 @@ def main(argv: list[str] | None = None) -> None:
     p.add_argument("action", choices=["build"])
     p.add_argument("--min-score", type=float, default=0.8)
     p.add_argument("--top", type=float, help="instead of --min-score, keep this top fraction (e.g. 0.5) by score")
+    p.add_argument("--source", help="only use generations from this backend, e.g. gemini-studio")
     p.set_defaults(fn=cmd_dataset)
 
     p = sub.add_parser("finetune", help="LoRA fine-tune a local model with mlx-lm")

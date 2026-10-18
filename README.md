@@ -133,6 +133,24 @@ model.
   0.016 (base 7B) to 0.079 (fine-tuned): more layout ambition (asymmetric grid, large numerals), but
   still placeholder-heavy. Four samples, so treat this as a direction, not a result.
 
+## Studio mode (Gemini)
+
+Small local models can't design on their own, so `notai studio` uses Gemini as the designer and keeps
+the rest of the pipeline: your scraped reference screenshots, an art-direction step, generated
+photography, rendering, and the tell linter. Each run's cost is measured from the API's token counts.
+
+```bash
+notai studio "Natural wine bar in Lisbon with a rotating weekly list"   # cheap: ~$0.20/page
+notai studio --limit 20                                                # batch over data/briefs.txt
+notai studio "..." --polish                                            # + one judged revision
+notai studio "..." --full                                              # 3 candidates on Pro: ~$2/page
+```
+
+Cheap mode writes 3 art directions in one call, builds only the strongest with `gemini-3.8-flash`
+(low thinking), and generates at most 4 photos with `gemini-3.1-flash-lite-image`. The pages it logs
+keep their `data-photo` slots, so `notai dataset build --source gemini-studio` turns them into training
+data for the local model.
+
 ## Things to know
 
 - **The critic can learn the wrong thing.** If every negative comes from `notai negatives` with one

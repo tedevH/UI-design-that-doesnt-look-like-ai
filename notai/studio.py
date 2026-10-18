@@ -19,6 +19,14 @@ from . import config, tells
 from .config import need
 from .util import extract_html, slugify
 
+# USD, Standard paid tier, from ai.google.dev/gemini-api/docs/pricing (Oct 2026). (input/M, output incl. thinking/M)
+TEXT_PRICES = {
+    "gemini-3.8-flash": (0.75, 3.75),
+    "gemini-3-flash-preview": (0.50, 3.00),
+    "gemini-3.1-pro-preview": (2.00, 12.00),
+}
+IMAGE_PRICES = {"gemini-3.1-flash-lite-image": 0.0336, "gemini-3.1-flash-image": 0.067}
+
 ASPECTS = {"1:1", "2:3", "3:2", "3:4", "4:3", "4:5", "5:4", "9:16", "16:9", "21:9"}
 MAX_PHOTOS = 7
 
@@ -68,10 +76,12 @@ Requirements:
 - Photography is essential. Use <img data-photo="detailed description of one photograph" data-aspect="16:9" alt="...">
   for every photo (aspects: 1:1, 3:4, 4:3, 4:5, 3:2, 16:9, 21:9, 9:16). Real photos will be generated from
   your descriptions in the art direction's photo style, so describe subject, framing and light precisely.
-  Use 4–{max_photos} photos and make them big: full-bleed heroes, split screens, asymmetric grids, overlaps.
+  Use {min_photos}–{max_photos} photos and make them big: full-bleed heroes, split screens, asymmetric grids, overlaps.
   Never draw placeholder boxes, ovals or empty frames. Use object-fit: cover.
 - Implement every section from the art direction with its own composition. Use the signature color as large
   fields (whole sections or big blocks), not just accents. Display type should be large and expressive.
+- Fit: every word must stay fully visible at 1440px and at 390px. Size display type with clamp() and
+  viewport units sized to the longest word, allow wrapping, and never let text overflow or be clipped.
 - Craft: a consistent spacing scale, deliberate alignment, hover states and subtle transitions, a real
   header and footer, responsive down to 390px wide with no horizontal scroll.
 - Copy: specific, believable names, prices, times, addresses and details. Short, confident sentences.
@@ -104,12 +114,22 @@ Return the full revised HTML file in a ```html code block.
 
 
 class Studio:
-    def __init__(self, model: str | None = None, image_model: str = "gemini-3.1-flash-image"):
+    def __init__(self, model: str | None = None, image_model: str = "gemini-3.1-flash-image",
+                 thinking: str | None = None):
         from .backends import Gemini
 
         g = Gemini(model or config.DEFAULT_GEMINI_MODEL)
         self.client, self.types, self.model = g.client, g.types, g.model
         self.image_model = image_model
+        self.thinking = thinking
+        self.usage = {"input": 0, "output": 0, "images": 0, "calls": 0}
+
+    def cost(self) -> float | None:
+        """Measured cost in USD from token counts, or None if a model's price is unknown."""
+        tp, ip = TEXT_PRICES.get(self.model), IMAGE_PRICES.get(self.image_model)
+        if not tp or (self.usage["images"] and ip is None):
+            return None
+        return (self.usage["input"] * tp[0] + self.usage["output"] * tp[1]) / 1e6 + self.usage["images"] * (ip or 0)
 
     # ---- model calls ----
 
@@ -126,8 +146,14 @@ class Studio:
     def ask(self, items, json_out: bool = False, temperature: float = 1.0) -> str:
         cfg = self.types.GenerateContentConfig(
             temperature=temperature, max_output_tokens=65536,
-            response_mime_type="application/json" if json_out else None)
+            response_mime_type="application/json" if json_out else None,
+            thinking_config=self.types.ThinkingConfig(thinking_level=self.thinking) if self.thinking else None)
         r = self.client.models.generate_content(model=self.model, contents=self._parts(items), config=cfg)
+        u = r.usage_metadata
+        if u:
+            self.usage["input"] += u.prompt_token_count or 0
+            self.usage["output"] += (u.candidates_token_count or 0) + (u.thoughts_token_count or 0)
+        self.usage["calls"] += 1
         return r.text or ""
 
     def photo(self, prompt: str, aspect: str, style: str, out: Path) -> bool:
@@ -143,6 +169,7 @@ class Studio:
             for p in r.candidates[0].content.parts:
                 if p.inline_data:
                     out.write_bytes(p.inline_data.data)
+                    self.usage["images"] += 1
                     return True
         except Exception as e:
             print(f"    photo failed ({aspect}): {str(e)[:120]}")
@@ -150,7 +177,7 @@ class Studio:
 
     # ---- pipeline pieces ----
 
-    def references(self, brief: str, k: int = 3) -> list[tuple[str, bytes]]:
+    def references(self, brief: str, k: int = 3, width: int = 900) -> list[tuple[str, bytes]]:
         from .label import resolved_labels
         from .scrape import iter_sites
 
@@ -163,17 +190,17 @@ class Studio:
             picks = json.loads(self.ask([REFERENCE_PICK.format(brief=brief, sites=listing, k=k)], json_out=True))["picks"]
         except Exception:
             picks = list(sites)[:k]
-        return [(s, fold_jpeg(config.RAW / s / "desktop.png")) for s in picks if s in sites][:k]
+        return [(s, fold_jpeg(config.RAW / s / "desktop.png", width=width)) for s in picks if s in sites][:k]
 
     def directions(self, brief: str, refs, n: int) -> list[dict]:
         text = self.ask([ART_DIRECTION.format(brief=brief, n=n)] + [img for _, img in refs], json_out=True)
         return json.loads(text)["directions"][:n]
 
-    def build(self, brief: str, direction: dict) -> str:
+    def build(self, brief: str, direction: dict, max_photos: int = MAX_PHOTOS) -> str:
         return extract_html(self.ask([BUILD.format(brief=brief, direction=json.dumps(direction, indent=2),
-                                                    max_photos=MAX_PHOTOS)]))
+                                                    min_photos=min(4, max_photos), max_photos=max_photos)]))
 
-    def fill_photos(self, html: str, style: str, d: Path) -> str:
+    def fill_photos(self, html: str, style: str, d: Path, limit: int = MAX_PHOTOS) -> str:
         """Generate every data-photo image (in parallel) and point the <img> at the file."""
         photos_dir = config.RUNS / "_photos"
         photos_dir.mkdir(parents=True, exist_ok=True)
@@ -185,16 +212,22 @@ class Studio:
             aspect = m.group(1) if m and m.group(1) in ASPECTS else "4:3"
             key = hashlib.sha1(f"{style}|{desc}|{aspect}".encode()).hexdigest()[:16]
             jobs[desc] = (aspect, photos_dir / f"{key}.jpg")
-        jobs = dict(list(jobs.items())[:MAX_PHOTOS + 2])
+        jobs = dict(list(jobs.items())[:limit])
         with ThreadPoolExecutor(max_workers=4) as ex:
             list(ex.map(lambda kv: self.photo(kv[0], kv[1][0], style, kv[1][1]), jobs.items()))
+
+        made = [p for _, p in jobs.values() if p.exists()]
+        spare = iter(made * 4)
 
         def swap(m):
             tag = m.group(0)
             desc = re.search(r"data-photo=\"([^\"]+)\"", tag).group(1)
             aspect, path = jobs.get(desc, (None, None))
             if not path or not path.exists():
-                return tag
+                # Over the photo budget (or a failed photo): reuse one we have rather than show a broken image.
+                path = next(spare, None)
+                if path is None:
+                    return tag
             rel = f"../../_photos/{path.name}"  # pages live in runs/<run>/<cand>/
             tag = re.sub(r"\ssrc=\"[^\"]*\"", "", tag)
             return tag.replace("<img", f'<img src="{rel}"', 1)
@@ -283,4 +316,62 @@ def run(brief: str, n: int = 3, revise: bool = True, model: str | None = None, l
     found = tells.detect(final_html, json.loads((final_dir / "styles.json").read_text()))
     print(f"tells: {[t.name for t in found] or 'none'}")
     print(f"final: {final_dir / 'page.html'}")
+    return final_dir
+
+
+def run_cheap(brief: str, model: str = "gemini-3.8-flash", image_model: str = "gemini-3.1-flash-lite-image",
+              photos: int = 4, polish: bool = False, log: bool = True) -> Path:
+    """One page per brief: plan three directions in text, build only the strongest, photos for that page only."""
+    from .render import Renderer
+
+    studio = Studio(model, image_model=image_model, thinking="low")
+    run_dir = config.RUNS / f"{datetime.now():%Y%m%d-%H%M%S}-cheap-{slugify(brief, 40)}"
+    run_dir.mkdir(parents=True, exist_ok=True)
+
+    refs = studio.references(brief, k=2, width=640)
+    print(f"references: {', '.join(s for s, _ in refs)}", flush=True)
+    prompt = ART_DIRECTION.format(brief=brief, n=3) + \
+        '\nAlso add a top-level "best": the index of the strongest, most distinctive direction for this brief.'
+    plan = json.loads(studio.ask([prompt] + [img for _, img in refs], json_out=True))
+    directions = plan["directions"]
+    pick = plan.get("best", 0)
+    pick = pick if isinstance(pick, int) and 0 <= pick < len(directions) else 0
+    direction = directions[pick]
+    (run_dir / "directions.json").write_text(json.dumps(plan, indent=2))
+    print(f"direction: {direction.get('name')} — {direction.get('concept', '')[:120]}", flush=True)
+
+    raw_html = studio.build(brief, direction, max_photos=photos)
+    html = studio.fill_photos(raw_html, direction.get("photo_style", ""), run_dir, limit=photos)
+    with Renderer() as r:
+        final_dir = run_dir / "page"
+        _render(r, final_dir, html)
+        if polish:
+            shot = fold_jpeg(final_dir / "desktop.png", width=640)
+            verdict = studio.judge(brief, refs, [shot])
+            if verdict.get("fixes"):
+                fixes = "\n".join(f"- {f}" for f in verdict["fixes"])
+                revised = extract_html(studio.ask([REVISE.format(fixes=fixes, html=raw_html), shot]))
+                if "<html" in revised.lower():
+                    raw_html = revised
+                    html = studio.fill_photos(revised, direction.get("photo_style", ""), run_dir, limit=photos)
+                    final_dir = run_dir / "polished"
+                    _render(r, final_dir, html)
+
+    cost = studio.cost()
+    usage = {**studio.usage, "usd": round(cost, 4) if cost is not None else None, "model": model, "image_model": image_model}
+    (run_dir / "cost.json").write_text(json.dumps(usage, indent=2))
+    found = tells.detect(html, json.loads((final_dir / "styles.json").read_text()))
+    print(f"tells: {[t.name for t in found] or 'none'}")
+    print(f"cost: ${usage['usd']}  ({studio.usage['input']} in / {studio.usage['output']} out tokens, "
+          f"{studio.usage['images']} images, {studio.usage['calls']} calls)")
+    print(f"final: {final_dir / 'page.html'}")
+    if log:
+        from .util import append_jsonl
+
+        append_jsonl(config.GENERATIONS, [{
+            "brief": brief, "family_id": "studio",
+            "family": f"Art direction: {direction.get('name', '')}. {direction.get('concept', '')}",
+            "html": raw_html, "score": 1.0, "backend": "gemini-studio", "run": str(run_dir),
+            "usd": usage["usd"], "at": datetime.now().isoformat(timespec="seconds"),
+        }])
     return final_dir

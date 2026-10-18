@@ -8,8 +8,9 @@ from . import config, prompts
 from .util import read_jsonl, write_jsonl
 
 
-def build(min_score: float = 0.8, valid_frac: float = 0.1, seed: int = 0, top: float | None = None) -> dict:
-    rows = list(read_jsonl(config.GENERATIONS))
+def build(min_score: float = 0.8, valid_frac: float = 0.1, seed: int = 0, top: float | None = None,
+          backend: str | None = None) -> dict:
+    rows = [r for r in read_jsonl(config.GENERATIONS) if not backend or r.get("backend") == backend]
     total = len(rows)
     if top:
         # Relative cut: keep the best `top` fraction, for when absolute scores are all low.
