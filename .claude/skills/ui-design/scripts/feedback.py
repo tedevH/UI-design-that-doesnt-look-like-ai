@@ -110,6 +110,9 @@ def main() -> int:
     refresh_stats()
     print(f"recorded {row['kind']}; taste statistics updated in {TASTE}")
     print("Now update the 'Learned rules' section of references/taste.md from the user's words.")
+    total = sum(1 for l in PREFS.read_text().splitlines() if l.strip())
+    if total % 5 == 0:
+        print(f"EVOLVE: {total} reactions recorded — run scripts/evolve.py and update the skill's taste and rules.")
     return 0
 
 

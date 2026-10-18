@@ -49,3 +49,8 @@
 - Do edges align to a grid? Is anything floating?
 - Is body text comfortably readable (contrast ≥ 4.5:1, size, measure)?
 - Would a design director believe a studio made this for this specific brand?
+
+## House rules learned from the user
+<!-- Added by Claude when evolving, only for preferences the user confirmed at least twice.
+     These override anything above. -->
+- (none yet)

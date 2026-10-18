@@ -80,6 +80,36 @@ newer one wins — rewrite it. Keep at most 30 rules, most important first.
 
 If they asked for changes, apply them to the chosen page, re-run the checks, and show it again.
 
+## 8. Keep looping until the user is happy
+
+This skill is a loop, not a one-shot. After recording feedback, immediately start the next round unless the
+user says they're done (or only asked for one page):
+
+- **Round 1:** two different families (step 2).
+- **Next rounds:** keep the winner and push it further using the feedback, and pit it against **one
+  challenger** that tests a single open question about the user's taste — a different type pairing, a
+  bolder or quieter palette, denser or airier layout, photos vs illustration. Change one thing in the
+  challenger so the pick teaches something specific. Say in one line what the challenger is testing.
+- Re-read `references/taste.md` at the start of every round; it changed.
+- Stop when the user says it's done, picks the same page twice with no changes, or asks to stop. Then hand
+  over the final page and its screenshots.
+
+## 9. Evolve the skill itself
+
+`feedback.py` prints **EVOLVE** every 5 reactions. When it does, run `scripts/evolve.py` and follow its
+instructions: it summarizes all the evidence (win rates per family, recurring comments, what the checks keep
+catching), and you then edit this skill's own files so future designs start closer to the user's taste:
+
+- `references/taste.md` → tighten the Learned rules (merge, reorder by evidence, drop rules contradicted
+  by later picks) and update the **Family priority** list.
+- `references/rules.md` → add any rule the user has confirmed at least twice to the **House rules learned
+  from the user** section; never delete the original rules, only add or override.
+- Then run `scripts/evolve.py --commit` to commit the changes with a summary, so every change to the skill
+  is tracked in git and can be reverted.
+
+Never change the scripts' behavior or remove safety checks while evolving — only taste, rules and
+priorities.
+
 ## Scripts
 
 All scripts locate the notai project themselves; run them with any Python (they re-launch inside the
@@ -88,3 +118,4 @@ project's virtual environment).
 - `scripts/check.py page.html` — render + measured problems + screenshot paths
 - `scripts/photos.py page.html [--style "..."]` — fill photo slots with local FLUX photos
 - `scripts/feedback.py ...` — record a preference and refresh taste statistics
+- `scripts/evolve.py [--commit]` — summarize all evidence for a self-update; `--commit` records it in git
