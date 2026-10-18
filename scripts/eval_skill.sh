@@ -15,12 +15,16 @@ BRIEFS=(
 )
 echo "results in $OUT"
 
+# Clean environment: no settings inherited from a parent Claude session.
+CLEAN=(env -i HOME="$HOME" USER="$USER" PATH="$PATH" TERM=xterm-256color)
+
 for i in "${!BRIEFS[@]}"; do
   b="${BRIEFS[$i]}"
-  # Without the skill: a clean folder with no project skills, plain request.
-  P="$REPO/$OUT/plain-$i"; mkdir -p "$P"
-  ( cd "$P" && claude -p "Design a landing page for: $b. Write one self-contained HTML file named page.html in the current directory. Do not ask questions." \
-      --permission-mode acceptEdits --allowedTools Write Read Edit > claude.log 2>&1 ) &
+  # Without the skill: a temp folder outside this project, so no project skills can load.
+  P="$(mktemp -d -t notai-plain)"; mkdir -p "$REPO/$OUT/plain-$i"
+  ( cd "$P" && "${CLEAN[@]}" claude -p "Design a landing page for: $b. Write one self-contained HTML file named page.html in the current directory. Do not ask questions." \
+      --permission-mode acceptEdits --allowedTools Write Read Edit > "$REPO/$OUT/plain-$i/claude.log" 2>&1
+    cp "$P/page.html" "$REPO/$OUT/plain-$i/page.html" 2>/dev/null; cp -R "$P"/* "$REPO/$OUT/plain-$i/" 2>/dev/null ) &
 done
 wait
 
@@ -28,7 +32,7 @@ for i in "${!BRIEFS[@]}"; do
   b="${BRIEFS[$i]}"
   S="$OUT/skill-$i"; mkdir -p "$S"
   # With the skill: run inside the project so .claude/skills/ui-design is available.
-  claude -p "Use the ui-design skill to design a landing page for: $b. This is an automated test, so: make ONE variant only (skip the second variant and skip asking the user or recording feedback). Write it to $S/page.html, then run the skill's photos.py and check.py on it and fix every problem before finishing." \
+  "${CLEAN[@]}" claude -p "Use the ui-design skill to design a landing page for: $b. This is an automated test, so: make ONE variant only (skip the second variant and skip asking the user or recording feedback). Write it to $S/page.html, then run the skill's photos.py and check.py on it and fix every problem before finishing." \
       --permission-mode acceptEdits --allowedTools Write Read Edit Skill "Bash(python3:*)" "Bash(.claude/skills/ui-design/scripts/*)" \
       > "$S/claude.log" 2>&1
   echo "done: skill-$i"
