@@ -113,6 +113,29 @@ def cmd_batch(a):
             print(f"failed: {e}")
 
 
+def cmd_studio(a):
+    import time
+
+    from .studio import run
+    from .util import read_jsonl, read_list
+
+    if a.brief:
+        run(a.brief, n=a.n, revise=not a.no_revise, model=a.model)
+        return
+    done = {r["brief"] for r in read_jsonl(config.GENERATIONS) if r.get("backend") == "gemini-studio"}
+    briefs = [b for b in read_list(Path(a.briefs)) if b not in done][: a.limit]
+    deadline = time.time() + a.hours * 3600 if a.hours else None
+    for i, brief in enumerate(briefs, 1):
+        if deadline and time.time() > deadline:
+            print(f"time limit reached after {i - 1} briefs")
+            break
+        print(f"\n=== [{i}/{len(briefs)}] {brief}", flush=True)
+        try:
+            run(brief, n=a.n, revise=not a.no_revise, model=a.model)
+        except Exception as e:  # keep the batch going
+            print(f"failed: {str(e)[:300]}")
+
+
 def cmd_lint(a):
     from .tells import detect, penalty
 
@@ -205,6 +228,16 @@ def main(argv: list[str] | None = None) -> None:
     p.add_argument("--target", type=float, default=0.85)
     p.add_argument("--hours", type=float, help="stop starting new briefs after this many hours")
     p.set_defaults(fn=cmd_batch)
+
+    p = sub.add_parser("studio", help="Gemini art direction + generated photos + visual judging")
+    p.add_argument("brief", nargs="?", help="one brief; omit to run every brief in --briefs")
+    p.add_argument("--briefs", default=str(config.BRIEFS))
+    p.add_argument("--limit", type=int)
+    p.add_argument("--hours", type=float)
+    p.add_argument("-n", type=int, default=3, help="art directions / candidates")
+    p.add_argument("--no-revise", action="store_true")
+    p.add_argument("--model", help="Gemini text model (default: NOTAI_GEMINI_MODEL or gemini-pro-latest)")
+    p.set_defaults(fn=cmd_studio)
 
     p = sub.add_parser("lint", help="list vibecoded tells in HTML files (no dependencies)")
     p.add_argument("files", nargs="+")
