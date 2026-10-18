@@ -30,7 +30,7 @@ USER_AGENT = "notai-research-bot/0.1 (+https://github.com/tedevH/UI-design-that-
 DEFAULT_OLLAMA_MODEL = "qwen2.5-coder:7b"
 DEFAULT_MLX_MODEL = "mlx-community/Qwen2.5-Coder-7B-Instruct-4bit"
 DEFAULT_ANTHROPIC_MODEL = "claude-opus-5-5"
-DEFAULT_GEMINI_MODEL = os.environ.get("NOTAI_GEMINI_MODEL", "gemini-2.5-pro")
+DEFAULT_GEMINI_MODEL = os.environ.get("NOTAI_GEMINI_MODEL", "gemini-pro-latest")
 DEFAULT_EMBED_MODEL = "google/siglip-base-patch16-224"
 
 
