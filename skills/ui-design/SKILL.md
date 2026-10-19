@@ -38,7 +38,7 @@ For a standalone design, choose the simplest useful format. A single HTML file i
 
 Script paths in this guide are relative to the skill directory. Run a script from that directory or use its full path. If a visual check reports that Playwright or Chromium is missing, run `bash scripts/setup.sh` once from the skill directory.
 
-Decide the page type from the user's goal, not from visual appearance alone. Read the relevant section of `references/page-types.md`. Infer ordinary missing details; ask only when a decision would materially change the design or required functionality.
+Decide the page type from the user's goal, not from visual appearance alone. Read the relevant section of `references/page-types.md`. For product-specific content and interaction, consult `references/product-patterns.md`; use it to identify what the user must see and do, never as a template. Infer ordinary missing details; ask only when a decision would materially change the design or required functionality.
 
 ### 2. Find the visual idea
 
@@ -58,7 +58,7 @@ Do not make competing directions by default. Make one confident direction. When 
 
 ### 3. Set the design system
 
-Use this compact design brief when it helps the user understand or approve a direction. Keep it specific and useful; do not print a long token report for routine work.
+Use the direction card in `references/quality-bar.md` when it helps the user understand or approve a direction. Keep it specific and useful; do not print a long token report for routine work.
 
 - **Concept:** one sentence that states the page's visual premise.
 - **Hierarchy:** the first, second, and third things a viewer should notice.
@@ -125,7 +125,7 @@ Inspect both desktop and mobile screenshots. Judge the page against its art dire
 - Do interactions have useful states and feedback?
 - Are accessibility and reduced-motion basics respected?
 
-Fix the most consequential mismatches first: usually the concept, focal point, hierarchy, composition, or asset choice. Do not spend the fix pass polishing tiny details while the page still has no strong idea. Re-render after meaningful changes. Do not accept a clean detector report as proof of a beautiful page; do not add a visual flourish just to satisfy a checklist.
+Use the critique order in `references/quality-bar.md` and fix the earliest consequential mismatch first: purpose, identity, hierarchy, composition, or specificity. Do not spend the fix pass polishing tiny details while the page still has no strong idea. Re-render after meaningful changes. Do not accept a clean detector report as proof of a beautiful page; do not add a visual flourish just to satisfy a checklist.
 
 For HTML checks, look at both screenshots printed by `check.py`. Fix all serious measured issues and clear visual defects. A second check is appropriate after fixes. Keep the loop short and targeted; stop when the agreed visual direction is present and the design is coherent at the tested sizes.
 
@@ -150,6 +150,8 @@ When `feedback.py` prints `EVOLVE`, read the evidence from `python3 scripts/evol
 ## Reference guide
 
 - `references/page-types.md` — what visual quality means for different kinds of pages
+- `references/product-patterns.md` — task, content, and interaction prompts by product context
+- `references/quality-bar.md` — direction card, critique order, and evaluation guidance
 - `references/families.md` — optional art-direction vocabulary and references
 - `references/rules.md` — practical design and implementation defaults
 - `references/beauty.md` — deeper composition, image, type, and visual craft guidance
