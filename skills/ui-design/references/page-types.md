@@ -1,52 +1,39 @@
 # Page types
 
-Not everything is a business landing page. Identify the type first; it changes structure, density, copy and
-what "beautiful" means. Pass the type to `check.py --type <type>` so it judges the right things.
+Identify the user's goal first. These page types are prompts for content, hierarchy, and behavior—not templates. Use the type with `check.py --type <type>` for standalone HTML, and adapt its principles to an existing project.
 
-## landing — marketing page for a business, product or project
-Hero with a centerpiece, proof, what it is, how it works, details (menu, pricing, schedule), visit/contact.
-Copy sells with specifics. 6–8 sections.
+## landing — marketing page for a product, service, or project
 
-## app — a screen of a web app (study app, habit tracker, editor, inbox, planner, dashboard)
-- Design **the app itself**, not a page about it: navigation (sidebar or tabs), the main working view, and
-  the user's real data.
-- Make it work: real interactions in vanilla JS — flashcards flip, the timer counts, tasks check off, tabs
-  switch, a chart updates. Keep state in memory (and `localStorage` if useful).
-- Show a believable, lived-in state: a named user, realistic content (actual vocabulary, real course names,
-  dates relative to today), progress mid-way, one notification. Include one empty or completion state if there's room.
-- Density is good when it's organized: clear hierarchy, aligned columns, consistent spacing, 13–15px UI text.
-- Beauty comes from delight in the details: a satisfying progress ring, a streak flame drawn in SVG, card
-  flip with a soft shadow, a calm color system for categories, a celebratory moment on completion.
-- Study apps specifically: spaced repetition cues ("due today: 24"), a focus timer, decks or subjects with
-  their own colors, a calm reading surface, keyboard shortcuts shown subtly (space to flip, 1–4 to grade).
+Make the offer, audience, evidence, and next step clear. Choose only the sections that answer the visitor's questions. A landing page may be short or long; do not add sections to reach a fixed count.
 
-## mobile — a phone app screen
-Design at 390×844 inside a device-like frame centered on a soft background, or fill the viewport on mobile.
-Thumb-reachable primary actions at the bottom, a tab bar, 16–17px body text, large touch targets (44px).
-Show 2–3 key screens side by side on desktop if the brief is about the app as a whole.
+## app — a web application screen
 
-## portfolio — a person's work or personal site
-The work is the hero: large project tiles with drawn or typographic covers (or the person's own images),
-a short sharp intro in their voice, selected projects with role/year/outcome, an about with personality,
-contact. One signature interaction (hover reveals, a custom cursor label, an index list that previews).
+Design the application itself: its navigation, working area, data, and important state. Inspect the project's components and patterns. Show believable content, not a landing page pretending to be software. Implement the interactions included in the brief. Use density that fits the task; compact UI can be clear and beautiful.
 
-## article — blog post, essay, newsletter, documentation page
-Reading first: 65–72ch measure, 18–21px serif or humanist text, generous line-height, strong headings,
-pull quotes, footnotes or sidenotes, figures with captions, a table of contents for long pieces. Docs add a
-sidebar nav, code blocks with copy buttons, and callouts.
+## mobile — a phone interface
 
-## commerce — a product or shop page
-A large product visual (drawn, CSS-built, or the user's photos), variant selectors that work, price and
-delivery clearly, details/specs in a calm table, reviews with substance, related items.
+Design for the actual viewport and device behavior. Put common actions within comfortable reach, preserve readable text and touch targets, and account for safe areas and keyboard use. Use a device frame only when presenting a mockup, not as a default layout.
 
-## event — event page, invitation, conference, wedding, party
-The date, place and time unmissable; a strong poster-like centerpiece; schedule; people/speakers; how to get
-there; RSVP that works (form with validation, confirmation state).
+## portfolio — an individual or studio's work
 
-## tool — a single-purpose utility (calculator, converter, generator, timer)
-The tool is the page: inputs and the live result above the fold, immediate feedback, sensible defaults,
-copy/share actions, a short explanation below. Make the result the most beautiful thing on the page.
+Let the work lead. Give projects enough space to show their character and provide role, date, context, or result when known. Use a voice and navigation that fit the person; avoid inventing credentials or outcomes.
 
-## game — a small playable or interactive piece
-Playable on load, clear rules in one line, satisfying feedback (sound optional, motion yes), score and
-restart, works with keyboard and touch.
+## article — editorial, essay, newsletter, or documentation
+
+Prioritize reading, navigation, and useful supporting material. Choose a measure and type style that suit the content. For long documents, consider a table of contents, figures, captions, footnotes, or sidenotes where they help readers.
+
+## commerce — product and shop pages
+
+Make the product, price, options, availability, delivery, and purchase path easy to understand. Show the actual product and meaningful details. Do not invent ratings, reviews, or scarcity.
+
+## event — event page or invitation
+
+Make date, time, location, schedule, people, access, and RSVP clear as relevant. Give the event an identity through its content and visual direction rather than a stock conference layout.
+
+## tool — a single-purpose utility
+
+Make inputs and result easy to find, with sensible defaults, immediate feedback, and a useful explanation or next action. The result can be the focal visual.
+
+## game — a small playable experience
+
+Make the core action and goal apparent, with meaningful feedback and restart behavior. Support keyboard and touch where appropriate; the game should work when opened.

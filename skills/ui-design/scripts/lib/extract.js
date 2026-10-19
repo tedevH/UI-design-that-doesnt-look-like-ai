@@ -222,5 +222,79 @@
     out.hero = { align: h1.align, centered, size: h1.size, family: h1.family, text: h1.text };
   }
 
+  // Objective checks to complement, not replace, visual inspection.
+  const parseColor = (value) => {
+    const m = value && value.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)/);
+    return m ? { r: +m[1], g: +m[2], b: +m[3], a: m[4] === undefined ? 1 : +m[4] } : null;
+  };
+  const composite = (fg, bg) => {
+    const a = fg.a + bg.a * (1 - fg.a);
+    if (!a) return { r: 0, g: 0, b: 0, a: 0 };
+    return { r: (fg.r * fg.a + bg.r * bg.a * (1 - fg.a)) / a,
+      g: (fg.g * fg.a + bg.g * bg.a * (1 - fg.a)) / a,
+      b: (fg.b * fg.a + bg.b * bg.a * (1 - fg.a)) / a, a };
+  };
+  const luminance = (c) => {
+    const channel = (n) => { n /= 255; return n <= 0.04045 ? n / 12.92 : Math.pow((n + 0.055) / 1.055, 2.4); };
+    return 0.2126 * channel(c.r) + 0.7152 * channel(c.g) + 0.0722 * channel(c.b);
+  };
+  const contrast = (a, b) => {
+    const x = luminance(a), y = luminance(b);
+    return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05);
+  };
+  const backgroundFor = (el) => {
+    const chain = [];
+    for (let node = el; node && node.nodeType === 1; node = node.parentElement) {
+      const cs = getComputedStyle(node);
+      if (cs.backgroundImage && cs.backgroundImage !== "none") return null;
+      if (parseFloat(cs.opacity) < 0.98) return null;
+      chain.unshift(cs.backgroundColor);
+    }
+    let bg = { r: 255, g: 255, b: 255, a: 1 };
+    for (const value of chain) { const color = parseColor(value); if (color) bg = composite(color, bg); }
+    return bg;
+  };
+  const lowContrast = [];
+  for (const el of all) {
+    let own = "";
+    for (const n of el.childNodes) if (n.nodeType === 3) own += n.textContent;
+    own = own.trim();
+    if (!own || !visible(el, el.getBoundingClientRect(), getComputedStyle(el)) || lowContrast.length >= 12) continue;
+    const cs = getComputedStyle(el), fg = parseColor(cs.color), bg = backgroundFor(el);
+    if (!fg || !bg || fg.a < 0.98) continue;
+    const ratio = contrast(composite(fg, bg), bg);
+    const size = px(cs.fontSize), weight = parseInt(cs.fontWeight, 10) || 400;
+    const minimum = size >= 24 || (size >= 18.66 && weight >= 700) ? 3 : 4.5;
+    if (ratio < minimum) lowContrast.push({ text: own.replace(/\s+/g, " ").slice(0, 48), ratio: Math.round(ratio * 100) / 100, minimum });
+  }
+
+  const unlabeledControls = [];
+  const controls = Array.from(document.querySelectorAll('button, input:not([type="hidden"]), select, textarea, a[href], [role="button"], [role="link"]'));
+  let targetsUnder24px = 0;
+  for (const el of controls) {
+    const r = el.getBoundingClientRect(), cs = getComputedStyle(el);
+    if (!visible(el, r, cs)) continue;
+    const labelledBy = (el.getAttribute("aria-labelledby") || "").split(/\s+/).filter(Boolean)
+      .map((id) => document.getElementById(id)?.innerText || "").join(" ").trim();
+    const labels = el.labels ? Array.from(el.labels).map((l) => l.innerText).join(" ").trim() : "";
+    const imageAlt = Array.from(el.querySelectorAll("img[alt]")).map((img) => img.alt).join(" ").trim();
+    const name = el.getAttribute("aria-label") || labelledBy || el.innerText?.trim() || el.value || el.title || labels || imageAlt;
+    if (!name && unlabeledControls.length < 12) unlabeledControls.push(el.tagName.toLowerCase() + (el.type ? "[" + el.type + "]" : ""));
+    if (r.width < 24 || r.height < 24) targetsUnder24px++;
+  }
+  const visibleImages = Array.from(document.images).filter((img) => visible(img, img.getBoundingClientRect(), getComputedStyle(img)));
+  out.audit = {
+    viewportWidth: vw,
+    scrollWidth: document.documentElement.scrollWidth,
+    documentTitle: document.title.trim(),
+    documentLanguage: document.documentElement.lang.trim(),
+    h1Count: Array.from(document.querySelectorAll("h1")).filter((el) => visible(el, el.getBoundingClientRect(), getComputedStyle(el))).length,
+    imagesMissingAlt: visibleImages.filter((img) => !img.hasAttribute("alt")).length,
+    brokenImages: visibleImages.filter((img) => (img.currentSrc || img.src) && img.complete && img.naturalWidth === 0).map((img) => img.currentSrc || img.src).slice(0, 8),
+    unlabeledControls,
+    targetsUnder24px,
+    lowContrast
+  };
+
   return out;
 }

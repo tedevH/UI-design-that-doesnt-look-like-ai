@@ -1,84 +1,65 @@
-# Beauty
+# Visual craft
 
-Avoiding AI clichés gets you to "clean". Beautiful takes more: a page someone screenshots and sends to a
-friend. Every page needs the things below. Avoid timid: when in doubt, make the centerpiece bigger, the color
-more confident and the details finer.
+This guide helps a strong visual idea become a finished design. It is a set of choices, not a checklist to satisfy. Do not add visual effects just to make a page appear more elaborate.
 
-## 1. A centerpiece visual (required)
+## Start with the idea
 
-Every page has one visual that someone remembers. It's built in code and it's rich: layered, detailed, specific
-to this brand or product. Never a lone icon, a flat rectangle or a blob. Pick one:
+Before choosing detail, be able to say what makes the design belong to this product. Connect the visual idea to something real: its use, audience, material, content, place, process, data, or voice. A motif is strongest when it explains or reveals something, not when it is a decorative synonym for the brand name.
 
-- **An illustrated scene** in inline SVG: several layers (background shapes, midground objects, foreground
-  details), a limited palette with 2–3 tones of each color for light and shade, small details that reward a
-  second look (steam from a cup, a price tag, a pencil mark, grain).
-- **The product, staged:** the real UI built in HTML/CSS at full fidelity, then presented with depth: tilted
-  with `perspective` and `rotateX/Y`, floating panels overlapping at different depths, a soft colored shadow,
-  a detail callout. For an app: show the most delightful moment (a streak, a completed deck, a chart going up).
-- **A typographic composition:** one word or number set huge, cropped by the viewport, layered with a second
-  typeface, outlined text, or an image clipped inside the letters.
-- **Generative art:** an SVG or CSS pattern made from the brand's own motif (sardines in a tiling grid, kiln
-  flames as concentric rings, a constellation of study topics), with variation in size, rotation and color.
-- **A CSS object:** a convincing physical thing built with gradients and shadows: a ticket, a book cover, a
-  card stack, a vinyl record, a phone, a jar label.
+Choose the visual form that best expresses the idea:
 
-## 2. Depth and layering
+- **Product scene:** Show a believable interface or object at a useful scale, with the details a user would actually see.
+- **Photography:** Use provided or intentionally sourced images when the subject matters. Choose the crop, lighting, palette, and placement as part of the composition.
+- **Illustration or diagram:** Draw a specific scene, process, system, or relationship with a consistent visual language.
+- **Typography:** Let scale, line breaks, alignment, contrast, or an expressive typeface carry the visual identity.
+- **Data or information:** Make the information itself legible and striking through a clear hierarchy and well-chosen representation.
+- **Material and atmosphere:** Use texture, surface, shadow, and light when they support the concept and remain quiet enough for content.
 
-Flat pages look unfinished. Create planes:
-- Overlap elements across section boundaries (a card that hangs half into the next section, a visual that
-  breaks the container).
-- Layered, soft shadows that match the light: `box-shadow: 0 1px 2px rgb(0 0 0 / .06), 0 8px 24px -8px
-  rgb(40 20 0 / .18)` tinted toward the palette, never default gray `0 10px 30px`.
-- Subtle surfaces: a 1px inner highlight (`inset 0 1px 0 rgb(255 255 255 / .5)`), a hairline border, a
-  slightly different paper tone per layer.
+A page may use more than one form when they work together. Avoid an illustration, texture, badge, or floating object that could be removed without losing meaning.
 
-## 3. Texture and atmosphere
+## Composition and rhythm
 
-- A whisper of grain over large flat areas (an SVG `feTurbulence` noise as a background image at 3–6% opacity).
-- Gradients are welcome when they're **subtle and on-palette**: a background that drifts from cream to a
-  warmer cream, a radial light behind the centerpiece, a duotone. Banned only: purple/blue/pink AI gradients,
-  gradient text, neon glow.
-- Fine details: hairline rules, tick marks, small labels, a dotted leader in a price list, a stamp, a
-  hand-drawn underline (an SVG path) under one key word. Not generic icons — see "Icons" in rules.md.
+- Decide the first, second, and third read. Give each a clear size, position, contrast, and amount of space.
+- Establish a grid or alignment logic, then break it deliberately where the concept benefits.
+- Use crop, overlap, scale shifts, whitespace, density, and color to create emphasis. None is required on every page.
+- Make long pages change pace. A different section can shift width, alignment, background, image treatment, or information density; do not vary everything at once.
+- Keep the primary action visible in the visual hierarchy without making every section a conversion banner.
+- Treat mobile as a composition with different constraints. Reframe or reorder visuals instead of shrinking the desktop arrangement.
 
-## 4. Color with conviction
+## Type
 
-- One **color moment** per screen: a full section in the signature color, a big shape behind the centerpiece,
-  a colored band. Large areas of a confident color look designed; sprinkles of accent look timid.
-- Build tints and shades of each palette color (light, base, deep) and use them for layering.
-- Dark sections are great for rhythm: alternate light and dark at least once on long pages.
+- Give display, reading, interface, and data text distinct roles. Not every page needs four typefaces or a display serif.
+- Contrast can come from size, weight, width, case, slant, spacing, line length, or position. Use heavy weights only when the concept benefits from them.
+- Use typefaces that fit the brand and are available in the project or appropriate to load. Check actual glyph coverage and wrapping.
+- Use balanced heading wraps as a preference, not a guarantee about exact word placement. Keep natural wrapping readable at narrow widths and zoom.
+- Use tabular numerals for aligned data where helpful. Keep small labels readable and restrained.
 
-## 5. Typography with finesse
+## Color, material, and detail
 
-- Big contrast in size between display and text (5–8× on landing pages), tight display tracking (-0.02 to
-  -0.04em), optical sizes when the font has them (`font-optical-sizing: auto`).
-- Mix in one expressive moment: an italic word in the headline, a second typeface for a pull quote, a number
-  set very large.
-- `text-wrap: balance` on headings, `text-wrap: pretty` on paragraphs, `font-variant-numeric: tabular-nums`
-  for prices and data, hanging punctuation for quotes.
+- Give colors clear roles: canvas, text, supporting surface, accent, and status where applicable.
+- Use contrast to establish hierarchy and preserve readability. A small palette can be vivid or quiet; neither is inherently more designed.
+- Use gradients, shadows, borders, grain, translucency, and texture selectively. A single well-made surface is often more convincing than effects applied everywhere.
+- Fine details—rules, captions, annotations, underlines, pattern, or a distinctive edge—should sharpen the idea or improve navigation.
+- Do not alternate dark and light sections mechanically. Use a new field only when it changes the pace or meaning.
 
-## 6. Motion and interaction
+## Motion and interaction
 
-Pages should feel alive, quietly:
-- An entrance: the centerpiece and headline fade/rise in once on load (CSS `@keyframes`, 400–700ms,
-  `cubic-bezier(.2,.7,.2,1)`), staggered by 60–100ms. Respect `prefers-reduced-motion`.
-- Hover states on every interactive element: a lift, an underline that draws in, an arrow that nudges.
-- One ambient detail if it fits: steam that drifts, a timer that ticks, a marquee of real content.
-- Never require motion to read content; never animate on scroll in a way that hides content in a screenshot.
+- Motion should explain a change, show a relationship, or add a fitting sense of life. Static pages can be excellent.
+- Give interactions clear hover, focus, active, disabled, loading, success, and error states as relevant.
+- Keep content available without animation. Respect `prefers-reduced-motion`; never hide important content until an animation runs.
+- Use motion durations and easing that suit the action. Avoid defaulting every transition to the same entrance fade.
 
-## 7. Composition
+## Critique the rendered design
 
-- A strong grid with deliberate breaks. Vary section layouts: split, full-bleed, offset, stacked, a band.
-- Generous space around the centerpiece; density where information lives.
-- Something should cross a line on purpose — a visual over a section edge, a heading over an image.
+Review the page as a whole before polishing details:
 
-## The beauty pass (after the checks are clean)
+1. **Identity:** Could this page be mistaken for another product? What specific choice makes it recognizable?
+2. **Hierarchy:** What do you notice first? Is that what the brief says matters?
+3. **Composition:** Are proportions, alignments, crops, and spacing deliberate? Does the page have rhythm?
+4. **Meaning:** Do the product, imagery, data, and interaction show something real and useful?
+5. **Coherence:** Do type, color, surfaces, icons, and motion feel like the same design?
+6. **Fit:** Does the design suit the audience, task, brand, and content rather than a fashionable template?
+7. **Responsive craft:** Does the design remain clear and intentional at desktop and mobile sizes?
+8. **Finish:** Are text, controls, focus, contrast, loading, and empty states handled?
 
-Look at the screenshots and ask, one by one. Fix every "no".
-1. Is there one centerpiece someone would remember? Is it rich (layers, detail), not a single icon?
-2. Is there depth — at least one overlap and one soft, palette-tinted shadow or layered surface?
-3. Is there a color moment — a big confident area of the signature color?
-4. Does the type have one expressive moment and real size contrast?
-5. Is there texture or fine detail somewhere (grain, hairlines, labels, a drawn underline)?
-6. Do interactive elements have hover states, and is there a gentle entrance?
-7. Would this make someone stop scrolling? If it's merely tidy, push the centerpiece and color further.
+Fix the biggest mismatch first. More decoration will not repair a weak idea or unclear hierarchy.

@@ -86,18 +86,23 @@ class Renderer:
         ctx, page = self._page(DESKTOP, mobile=False)
         try:
             self._load(page, url, html)
-            styles = page.evaluate(self._extract_js)
+            desktop_styles = page.evaluate(self._extract_js)
             self._shot(page, out_dir / "desktop.png", DESKTOP)
         finally:
             ctx.close()
 
+        viewports = {"desktop": desktop_styles}
         if mobile:
             ctx, page = self._page(MOBILE, mobile=True)
             try:
                 self._load(page, url, html)
+                viewports["mobile"] = page.evaluate(self._extract_js)
                 self._shot(page, out_dir / "mobile.png", MOBILE)
             finally:
                 ctx.close()
 
-        (out_dir / "styles.json").write_text(json.dumps(styles))
-        return styles
+        # Keep desktop metrics at the root for existing consumers while exposing
+        # each rendered viewport to the responsive audit.
+        desktop_styles["viewports"] = viewports
+        (out_dir / "styles.json").write_text(json.dumps(desktop_styles))
+        return desktop_styles

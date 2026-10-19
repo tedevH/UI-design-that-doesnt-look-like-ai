@@ -83,7 +83,7 @@ NOW UPDATE THE TASTE FILE: {TASTE}
 def commit() -> int:
     ensure_taste()
     n = len(rows())
-    subprocess.run(["git", "-C", str(TASTE_DIR), "add", "-A"], check=True)
+    subprocess.run(["git", "-C", str(TASTE_DIR), "add", "--", "taste.md"], check=True)
     if subprocess.run(["git", "-C", str(TASTE_DIR), "diff", "--cached", "--quiet"]).returncode == 0:
         print("nothing changed in your taste")
         return 0

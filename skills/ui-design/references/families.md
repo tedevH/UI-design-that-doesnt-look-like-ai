@@ -1,102 +1,41 @@
 # Style families
 
-Families work for every page type — landing pages, apps, portfolios, articles, tools. Pick two different
-families per brief. Each lists its look, its typography, and notes on strong real
-sites in the family (written by a local vision model from screenshots). Learn the principles; never copy.
+These names are shorthand for visual behaviors, not complete recipes. A family should help explain a direction; it does not choose a layout, font, palette, or component library for you. Start with the product, audience, content, and existing brand. Then borrow only the traits that serve the premise.
 
-## editorial-serif — Editorial serif
+For each direction, name the actual choices: what leads the page, how information is arranged, what material or image treatment belongs, and what is deliberately restrained. Do not combine family labels to make a direction sound specific. Make a second direction only when the user asks to compare, and vary one meaningful decision.
 
-**Look:** A beautifully typeset magazine. Serif display in regular or light weight, often italic for emphasis; a calm sans or serif for text; warm paper or ink-on-cream palette; columns, pull quotes, captions, generous margins.
+| Family | Useful visual behaviors | Watch for |
+| --- | --- | --- |
+| **Editorial** | Reading hierarchy, deliberate measure, captions, annotations, strong typographic contrast, and pacing borrowed from publications. | A decorative serif does not make a page editorial; preserve scanning, navigation, and task clarity. |
+| **Swiss / systematic** | Clear grid, precise alignment, functional typography, controlled color, and hierarchy built through scale and position. | A rigid grid can flatten content; let important material break the system when it earns emphasis. |
+| **Warm / crafted** | Tactile materials, human-scale details, visible process, and an approachable rhythm grounded in the real product or place. | Avoid fake handmade marks, generic earth tones, and texture without a material story. |
+| **Playful / expressive** | Confident color, unexpected scale, custom graphic language, and energetic but legible interaction. | Keep the play tied to the audience and task; don't let stickers, motion, or novelty overwhelm the content. |
+| **Quiet / restrained** | Space, precise proportion, subtle materials, and a small number of highly considered focal elements. | Restraint still needs useful content and contrast; emptiness alone does not signal quality. |
+| **Photo-led** | Photography carries meaning through subject, crop, sequence, and context; typography supports the image rather than competing with it. | Use images that are relevant and available to the project; avoid generic stock scenes or unreadable text overlays. |
+| **Product-precise** | Real interface details, clear data hierarchy, meaningful states, careful density, and disciplined use of color. | Don't invent dashboards or data to create a product-looking hero; show credible workflows and label examples. |
+| **Expressive / experimental** | One memorable formal idea—type, image, diagram, unusual grid, or material—supported by a coherent system. | One strong move is usually enough; don't turn every section into a new concept. |
+| **Calm / focused** | Reduced visual noise, predictable interaction, readable content, and small moments of reward or warmth. | Calm should not become low-contrast, generic, or so sparse that key actions disappear. |
+| **Atmospheric / night** | A deliberate dark environment shaped by lighting, depth, color temperature, and a clear focal object. | Avoid neon glow, low-contrast labels, and decorative status readouts without product meaning. |
 
-**Typography:** Display: Newsreader, Fraunces (opsz, weight 300–500), Instrument Serif, Cormorant. Text: Newsreader, Source Serif 4, or Inter Tight 400. Headlines in sentence case.
+## Use references as evidence
 
-**References:** stripe-press, are-na, sequoiacap-com, ycombinator-com, ghost-org
+The sites and products below are starting points for observation, not templates. Inspect the live work before relying on an old description; products and their interfaces change.
 
-## swiss-minimal — Swiss minimal
+- **Editorial and publishing:** Stripe Press, Are.na, Ghost
+- **Systematic software:** Vercel, Linear, Supabase, Raycast
+- **Craft and commerce:** Allbirds, Everlane, Rapha
+- **Playful products:** Duolingo, Gumroad, Headspace
+- **Photography and product imagery:** Leica, Sonos, Rivian
+- **Expressive studios and brands:** a16z, Pentagram, Nike
+- **Calm tools:** Things, Bear, Readwise
 
-**Look:** Strict grid, lots of white space, black and white plus one clear color. Hierarchy from size and position, not weight. Thin rules, precise alignment, restrained motion.
+When discussing a reference, identify a transferable principle—such as how it uses image scale or navigates a dense table—instead of copying its visual identity or page composition.
 
-**Typography:** One neutral grotesk (Geist, Hanken Grotesk, Schibsted Grotesk) at 400–500; large display sizes in regular weight with tight tracking. No heavy weights.
+## Turn a family into a product-specific direction
 
-**References:** vercel-com, nextjs-org, culturedcode-com, pentagram-com, linear-app
-
-## warm-crafted — Warm crafted
-
-**Look:** Tactile and human: earthy palette (clay, olive, oat, terracotta), hand-drawn-feeling SVG illustration of materials and tools (or the user's own photos), rounded corners, relaxed rhythm, handmade details.
-
-**Typography:** Soft serif display (Gambetta-like: Lora, Libre Caslon Display, Fraunces soft) at 400–500 with a humanist sans for text (Figtree, Karla). Sentence case.
-
-**References:** allbirds-com, everlane-com, ouraring-com, glossier-com, rapha-cc
-
-## playful-color — Playful color
-
-**Look:** Confident flat color fields (two or three saturated colors that clash nicely), custom inline-SVG illustrations and friendly shapes, stickers and badges, bouncy but tidy layout, light background.
-
-**Typography:** Rounded or quirky grotesk (Bricolage Grotesque 500–600, DM Sans, Outfit) — friendly, not heavy. Mix sizes for energy rather than piling on weight.
-
-**References:** gumroad-com, duolingo-com, cash-app, headspace-com, mercury-com
-
-## quiet-luxury — Quiet luxury
-
-**Look:** Expensive restraint: huge white or stone space, a few large, quiet visuals (the user's own product photos, or restrained line drawings), tiny tracked uppercase labels, slow pace, almost no color.
-
-**Typography:** Light or regular display serif or fashion sans (Cormorant Garamond 300, Italiana, Jost 300) with small tracked labels (letter-spacing 0.15em). Never bold.
-
-**References:** leica-camera-com, everlane-com, wearecollins-com, rapha-cc, apple-com
-
-## photo-led — Photo-led immersive (only with the user's own photos)
-
-**Look:** Use only when the user provides strong photos of their own. Cinematic, full-bleed photography carries the page; type sits on or beside images; dark or photo-derived palette; long scroll of image-and-caption scenes.
-
-**Typography:** Medium-weight grotesk (Inter Tight 500, Manrope 500) or elegant serif; display large but not heavy; captions small.
-
-**References:** nike-com, squarespace-com, rivian-com, sonos-com, monzo-com
-
-## product-precise — Product precise
-
-**Look:** For software: the product itself shown as crisp, realistic UI built in HTML/CSS (tables, panels, code), subtle grays, one accent, dense information with clear hierarchy.
-
-**Typography:** Clean grotesk (Geist, Inter Tight 400–600) plus a mono (Geist Mono, JetBrains Mono) only for code and data.
-
-**References:** stripe-com, linear-app, raycast-com, resend-com, supabase-com
-
-## expressive — Expressive experimental
-
-**Look:** One daring idea — type as image, an unusual grid, an oversized number, a custom SVG graphic, a striking color treatment — executed with discipline everywhere else. Feels like a design studio site.
-
-**Typography:** Characterful display (Instrument Serif italic, Space Grotesk, Syne 500, Fraunces italic) at regular weight, paired with a neutral text face.
-
-**Strong real sites:**
-
-- [https://a16z.com] quality 8/10
-    layout: The layout is unconventional, prioritizing a full-bleed image and a central, slightly obscured text overlay. There's no visible grid structure. The mobile version is a simplified, full-screen image with a text overlay. The hero composition is highly cinematic and abstract.
-    type: Domaine Text and Domaine Sans Text are used. The text is primarily in all caps, which contributes to the bold, impactful feel. Type sizes are minimal, with a focus on legibility within the image. Tracking is tight, adding to the sense of density. The pairing is clean and modern.
-    color: The color palette is extremely limited: primarily dark gray/black backgrounds and a warm, golden yellow derived from the image. Color is used to create a dramatic, almost ethereal atmosphere. The limited palette reinforces the sense of high-end, understated design.
-    imagery: The imagery is a highly stylized, abstract photograph resembling a futuristic cityscape or a cosmic event. It's heavily filtered and processed, creating a dreamlike quality. The image dominates the page, acting as the primary visual element.
-    sections: Full-bleed hero image with text overlay → Footer with legal information and social media links
-    why it works: The site's strength lies in its bold, abstract imagery and the confident use of a limited color palette. The unconventional layout and typography choices create a memorable and distinctive brand identity. The simplicity of the mobile version maintains the impact.
-    signature: The use of a heavily stylized, abstract image as the primary visual element, combined with a minimal typographic treatment and a restricted color palette, creates a powerful and instantly recognizable brand statement.
-
-## calm-productivity — Calm productivity
-
-**Look:** The quiet confidence of the best tools (Things, Linear, Bear, Readwise): soft off-white or deep
-graphite surfaces, one gentle accent plus a small set of category colors, crisp hairlines, precise spacing,
-delightful micro-details (a progress ring, a satisfying check animation, a tiny illustrated empty state).
-Rich through precision and a few moments of color, not decoration.
-
-**Typography:** A refined UI sans (Inter Tight, Geist, Figtree, Manrope) at 400–600 for interface text, with
-an optional serif (Newsreader, Source Serif 4) for reading surfaces and big numbers. Tabular numerals.
-
-**Good for:** study apps, planners, habit trackers, note apps, dashboards, docs.
-
-## night-focus — Night focus
-
-**Look:** A dark, atmospheric workspace for deep focus: near-black with a hint of color (ink blue, aubergine,
-forest), soft radial light behind the main object, warm accent like lamplight, subtle grain, large calm
-numerals. Feels like studying at 1 a.m. with a good lamp — cozy, not neon.
-
-**Typography:** A warm grotesk or rounded sans (Figtree, Nunito Sans, DM Sans) for UI, a characterful serif or
-mono for the big timer/number (Fraunces, IBM Plex Mono), never all-caps heavy display.
-
-**Good for:** focus timers, study sessions, music or reading apps, games, night-time tools.
-
+1. State the user's task and the content that proves the page serves it.
+2. Find a real brand, product, audience, or context detail that can shape the premise.
+3. Choose the focal form: interface, image, data, typography, diagram, object, or scene.
+4. Choose a composition that makes that form legible and memorable.
+5. Pick a restraint that protects the focal idea from competing decoration.
+6. Define what changes on mobile while preserving the intent.

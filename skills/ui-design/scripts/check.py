@@ -1,10 +1,5 @@
 #!/usr/bin/env python3
-"""Render a page (desktop + mobile) and report measured design problems.
-
-usage: check.py page.html [--type landing|app|mobile|portfolio|article|commerce|event|tool|game]
-Prints facts, problems with evidence, and the two screenshot paths to look at.
-Exit code 1 if anything serious was found.
-"""
+"""Render a standalone page and report objective issues plus style signals for review."""
 
 import json
 import sys
@@ -14,51 +9,93 @@ from _env import bootstrap
 
 bootstrap()
 
-from lib import tells, tokens  # noqa: E402
+from lib import audit, tells, tokens  # noqa: E402
 from lib.render import Renderer  # noqa: E402
+
+PAGE_TYPES = ["landing", "app", "mobile", "portfolio", "article", "commerce", "event", "tool", "game"]
+LANDING_ONLY = {"centered_hero", "three_card_grids", "uniform_sections", "round_vanity_stats", "icon_feature_cards"}
 
 
 def facts(styles: dict) -> str:
-    s, f = tokens.summary(styles), tokens.features(styles)
+    summary = tokens.summary(styles)
+    viewport = styles.get("viewport") or {}
+    audit_data = styles.get("audit") or {}
     return "\n".join([
-        f"- fonts in use: {', '.join(s['fonts']) or 'unknown'}",
-        f"- type sizes (px): {s['type_sizes']}; largest/body ratio {s['type_scale']}",
-        f"- main colors: text {s['text_colors']}, backgrounds {s['bg_colors']}",
-        f"- page height: {round((styles.get('docHeight') or 0) / 900, 1)} screens; ~{round(f['words_per_screen'])} words per screen",
+        f"- viewport: {viewport.get('w', '?')} × {viewport.get('h', '?')}px",
+        f"- fonts: {', '.join(summary['fonts']) or 'unknown'}",
+        f"- type sizes: {summary['type_sizes']}; largest/body ratio {summary['type_scale']}",
+        f"- text colors: {summary['text_colors']}; backgrounds: {summary['bg_colors']}",
+        f"- page height: {round((styles.get('docHeight') or 0) / (viewport.get('h') or 900), 1)} screens",
+        f"- horizontal overflow: {max(0, (audit_data.get('scrollWidth') or viewport.get('w', 0)) - viewport.get('w', 0))}px",
         f"- overlapping text boxes: {styles.get('overlaps', 0)}",
     ])
-
-
-# Landing-page clichés that are normal elsewhere (a flashcard grid is not "three identical cards").
-LANDING_ONLY = {"centered_hero", "three_card_grids", "uniform_sections", "round_vanity_stats", "icon_feature_cards"}
 
 
 def main() -> int:
     import argparse
 
-    ap = argparse.ArgumentParser(usage=__doc__)
-    ap.add_argument("page")
-    ap.add_argument("--type", default="landing")
+    ap = argparse.ArgumentParser(description=__doc__)
+    ap.add_argument("page", help="standalone HTML file to render")
+    ap.add_argument("--type", default="landing", choices=PAGE_TYPES, help="page type for contextual style signals")
     a = ap.parse_args()
-    page = Path(a.page).resolve()
-    html = page.read_text()
+
+    page = Path(a.page).expanduser().resolve()
+    if not page.is_file():
+        ap.error(f"page not found: {page}")
+    html = page.read_text(encoding="utf-8")
     shots = page.parent / f"{page.stem}-shots"
-    with Renderer() as r:
-        styles = r.capture(shots, url=page.as_uri(), mobile=True)
-    found = tells.detect(html, styles)
+
+    with Renderer() as renderer:
+        styles = renderer.capture(shots, url=page.as_uri(), mobile=True)
+
+    viewports = styles.get("viewports") or {"desktop": styles}
+    desktop = viewports.get("desktop") or styles
+    issues = audit.inspect(styles)
+    signals = tells.detect(html, desktop)
     if a.type != "landing":
-        found = [t for t in found if t.name not in LANDING_ONLY]
-    print("FACTS\n" + facts(styles))
-    print("\nPROBLEMS" + (" (fix all of these)" if found else ": none measured"))
-    for t in found:
-        print(f"  [{'!' * t.severity:<3}] {t.name}: {t.evidence}")
-    empty = html.count("data-photo=") - html.count('src="images/')
-    if empty > 0:
-        print(f"\nNOTE: {empty} slot(s) waiting for the user's own photos (shown as striped blocks). Tell the user what to send.")
-    print(f"\nSCREENSHOTS (look at both)\n  desktop: {shots / 'desktop.png'}\n  mobile:  {shots / 'mobile.png'}")
-    (shots / "check.json").write_text(json.dumps({"tells": [t.as_dict() for t in found],
-                                                  "overlaps": styles.get("overlaps", 0)}, indent=2))
-    return 1 if any(t.severity >= 2 for t in found) else 0
+        signals = [signal for signal in signals if signal.name not in LANDING_ONLY]
+
+    print("DESKTOP\n" + facts(desktop))
+    print("\nOBJECTIVE CHECKS" + (": no measured issues" if not issues else " (review and fix these)"))
+    for finding in issues:
+        print(f"  [{finding.severity.upper()}] {finding.code} ({finding.viewport}): {finding.evidence}")
+        print(f"    → {finding.recommendation}")
+
+    print("\nSTYLE SIGNALS (prompts for human review; not pass/fail)")
+    if not signals:
+        print("  none detected")
+    for signal in signals:
+        print(f"  [{signal.severity}] {signal.name}: {signal.evidence}")
+        print("    Review in context; this pattern can be right when the brief calls for it.")
+
+    if "mobile" in viewports:
+        mobile = viewports["mobile"]
+        mobile_audit = mobile.get("audit") or {}
+        print("\nMOBILE")
+        print(f"  viewport: {mobile.get('viewport', {}).get('w', '?')} × {mobile.get('viewport', {}).get('h', '?')}px")
+        print(f"  document width: {mobile_audit.get('scrollWidth', '?')}px")
+        print(f"  text overlaps: {mobile.get('overlaps', 0)}")
+
+    print(f"\nSCREENSHOTS\n  desktop: {shots / 'desktop.png'}")
+    if "mobile" in viewports:
+        print(f"  mobile:  {shots / 'mobile.png'}")
+
+    report = {
+        "page": str(page),
+        "type": a.type,
+        "objective_findings": [finding.as_dict() for finding in issues],
+        "style_signals": [signal.as_dict() for signal in signals],
+        "viewports": {
+            name: {
+                "viewport": data.get("viewport"),
+                "audit": data.get("audit"),
+                "overlaps": data.get("overlaps", 0),
+            }
+            for name, data in viewports.items()
+        },
+    }
+    (shots / "check.json").write_text(json.dumps(report, indent=2), encoding="utf-8")
+    return 1 if any(finding.severity == "error" for finding in issues) else 0
 
 
 if __name__ == "__main__":

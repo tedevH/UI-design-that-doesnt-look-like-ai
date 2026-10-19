@@ -1,108 +1,164 @@
 ---
 name: ui-design
-description: Design beautiful websites and app interfaces that look made by a real design studio, not AI-generated or template-like, and keep learning the user's taste from their picks. Use when asked to design, build, mock up, redesign or restyle a website, landing page, web or mobile app screen (study app, dashboard, planner, tracker), portfolio, blog or docs page, shop page, event page, tool or small game, or when the user reacts to a design made with this skill.
+description: Design, build, critique, or improve websites and app interfaces with product-specific art direction, strong visual hierarchy, and careful responsive execution. Use for marketing pages, software, mobile screens, portfolios, editorial pages, shops, events, tools, games, or feedback on a design made with this skill.
 ---
 
-# UI design that doesn't look like AI
+# UI design with a point of view
 
-You are the designer. This skill gives you the user's learned taste, ten distinct style families, page-type
-playbooks (landing pages, apps, mobile, portfolios, articles, shops, events, tools, games), the rules that
-separate studio work from AI templates, a guide to making pages genuinely beautiful, and scripts that render
-and check your work. Work like a
-studio: commit to a direction, make its visuals yourself, build it right the first time, check it once,
-show it, learn from the reaction.
+Make interfaces that feel designed for this product, this audience, and this moment. The goal is not to avoid a list of visual clichés. The goal is to make a clear idea visible in the page, then execute it with enough hierarchy, detail, and restraint that the idea feels inevitable.
 
-All script paths below are relative to this skill's base directory. Run them with `python3`.
-If a script says first-time setup is needed, run `bash scripts/setup.sh --photos none` once (~2 minutes).
+Use the references in this skill as a working library, not a template catalog. A style label, font pairing, or checklist cannot replace a strong composition.
 
-## 0. Read the user's taste
+## What good work looks like
 
-Run `python3 scripts/taste.py`. It prints the user's taste file (learned rules, house rules, family priority,
-recent comments). **The user's house rules and learned rules override this skill's defaults.**
+A strong result has:
 
-## 1. Understand the brief
+- **A specific premise.** A person should be able to describe what makes this page belong to this product.
+- **A clear first read.** The most important message or task is obvious, and secondary material has a deliberate order.
+- **A memorable visual move.** One image, product scene, typographic gesture, data view, or composition gives the page its identity.
+- **A coherent visual system.** Type, color, spacing, surfaces, imagery, and interaction all support the same idea.
+- **Real content.** The page shows the product, work, offer, schedule, or information people came to see.
+- **Careful behavior at real sizes.** Desktop and mobile feel composed, readable, and usable; mobile is not just a squeezed desktop.
+- **Craft without decoration for its own sake.** Every visual detail has a job.
 
-First decide the **page type** and read its section in `references/page-types.md` — a study app is not a
-landing page. Then note for yourself: who uses it, the tone (3–4 adjectives), the concrete content it must
-show (the flashcard deck, the pricing table, the schedule, the real product UI…), and what would feel wrong.
-Invent plausible specifics — names, numbers with units, real-looking data. Ask only if something essential
-is unknowable.
+A page can be quiet, dense, playful, austere, bright, or dark. Do not force an overlap, a bright color block, a centerpiece illustration, animation, a serif headline, or a card grid when the brief does not call for it.
 
-## Speed
+## Workflow
 
-Aim for roughly the time a plain request would take, plus a minute for checking. Get it right while
-writing instead of in loops: keep planning to a few lines in your head (no long written plans), write the
-page once, then make small targeted `Edit`s — never rewrite the whole file to fix something. One design by
-default; a second only when the user asks to compare.
+### 1. Read the brief and the project
 
-## 2. Choose a direction
+For a project that already exists, inspect its structure before choosing a solution:
 
-Skim `references/families.md` and pick **one** family — the one the taste file favors for this kind of
-brief, or the best fit if there's no taste yet. Decide quickly: palette (3–6 hex), Google Fonts pairing with
-weights, the graphic language, the **centerpiece visual** (`references/beauty.md` §1), and the sections.
-If the user asks for options, make a second page in a clearly different family. Skip photo-led unless the
-user gave you their own photos.
+- Identify the framework, routes, existing components, tokens, fonts, and conventions.
+- Look at the actual screen or page being changed, plus nearby pages that establish the product's visual language.
+- Find available logos, photography, product screenshots, copy, and other brand assets.
+- Keep working interactions and reuse the parts that already fit. Do not replace an existing app with a detached demo unless the user asks for a standalone concept.
 
-## 3. Build — right the first time
+For a standalone design, choose the simplest useful format. A single HTML file is a good preview format when there is no existing app to extend.
 
-One self-contained HTML file (default `designs/<slug>/page.html`; `b.html` for a second direction). Write it
-in a single pass with the whole bar in mind: `references/rules.md` (the floor) and `references/beauty.md`
-(the ceiling) — a rich centerpiece, depth, one bold color moment, an expressive type moment, texture,
-gentle motion. Draw visuals yourself (inline SVG, CSS, typography, product UI in HTML); no generic icons,
-no stock or generated photos; use the user's photos if they gave any. Apps, tools and games must work.
-If a section truly needs a photo only the client has, leave a labeled `data-photo="Your photo: …"` slot
-(at most 2–3) and tell the user what to send. Generated photos only if the user explicitly asks
-(`python3 scripts/photos.py <page> --style "…"`, run in the background).
+Script paths in this guide are relative to the skill directory. Run a script from that directory or use its full path. If a visual check reports that Playwright or Chromium is missing, run `bash scripts/setup.sh` once from the skill directory.
 
-## 4. One check, one fix pass
+Decide the page type from the user's goal, not from visual appearance alone. Read the relevant section of `references/page-types.md`. For product-specific content and interaction, consult `references/product-patterns.md`; use it to identify what the user must see and do, never as a template. Infer ordinary missing details; ask only when a decision would materially change the design or required functionality.
 
-Run `python3 scripts/check.py <page.html> --type <page type>` (≈5 s). Then, in one pass:
-- fix every problem it reports with small `Edit`s;
-- Read the **desktop** screenshot once and fix what's clearly off — broken layout, a weak or missing
-  centerpiece, poor contrast, something that looks templated (the beauty checklist in `beauty.md`, as a
-  quick scan, not a separate round).
+### 2. Find the visual idea
 
-Re-run `check.py` only if it reported a `[!!!]` problem; otherwise you're done. Never more than two checks.
+Read the user's taste with `python3 scripts/taste.py`. User house rules and learned preferences take precedence. For a first-time user, choose a direction from `references/families.md` only if it helps. Treat families as ingredients, not fixed kits.
 
-## 5. Present and ask
+Write a short internal art direction before building. It should answer:
 
-Show the page: the screenshot paths, the family and concept in one line, and anything you're unsure about.
-Ask what they think — what to change, or whether they'd like a second direction to compare. One question.
+1. **Who is this for, and what should they feel or do?**
+2. **What is the one idea that makes this page specific to this product?**
+3. **What should the eye notice first, second, and third?**
+4. **What visual form can express that idea best?** Consider the actual product UI, a supplied photograph, a custom illustration, a diagram, typography, data, material, or a combination.
+5. **What is the restraint that keeps the page coherent?** For example, an unusual composition with quiet color, or vivid color with simple type.
 
-## 6. Learn from every reaction
+Avoid choosing a design by stacking adjectives such as “modern, clean, premium.” Translate each useful adjective into a visible choice. “Premium” might mean a narrow palette, generous image scale, precise type, and tactile print detail; it does not automatically mean a serif and gold accents.
 
-Record it, even partial feedback ("A, but the font is too thin"):
+Do not make competing directions by default. Make one confident direction. When the user asks to compare, make a second direction that tests one meaningful variable, such as composition, image treatment, or density. Keep the content and quality level comparable.
+
+### 3. Set the design system
+
+Use the direction card in `references/quality-bar.md` when it helps the user understand or approve a direction. Keep it specific and useful; do not print a long token report for routine work.
+
+- **Concept:** one sentence that states the page's visual premise.
+- **Hierarchy:** the first, second, and third things a viewer should notice.
+- **Composition:** the primary layout, focal area, proportions, and how the page changes as it scrolls.
+- **Type:** chosen roles and behavior for display, reading, interface, and data text; use weights and sizes intentionally.
+- **Color and surface:** palette roles, contrast, material, borders, shadows, and where restraint matters.
+- **Image or graphic:** what the major visual shows, why it belongs, and how it is made or sourced.
+- **Interaction:** the main action, meaningful states, and motion only where it improves feedback or atmosphere.
+- **Responsive idea:** what reorganizes, disappears, or changes priority on small screens.
+- **Avoid:** the few choices that would undermine this particular concept.
+
+Choose tokens that serve the direction and implementation. Prefer a small role-based palette and a clear spacing/type scale. Reuse existing project tokens when they are good. Do not force exact universal values or a fixed palette size onto every brand.
+
+### 4. Compose before decorating
+
+Plan the page as a sequence of visual beats, not a stack of interchangeable sections. Decide what the opening screen communicates, where the focal object lives, how the next section changes the rhythm, and where practical information appears.
+
+Give the focal area enough space and detail to carry its role. For software, show credible product UI rather than a marketing abstraction of it. For a service or shop, show the offer, object, place, or process. For editorial work, make the reading hierarchy and supporting material feel intentional.
+
+Use contrast in more than color: scale, alignment, whitespace, density, crop, line, texture, shape, and pace can all create emphasis. Variation should be purposeful. Repeating the same section composition is as weak as changing every section without a reason.
+
+A page does not need a large hero image. If the idea is typographic, data-led, or task-led, give that form the same level of care: choose its scale, framing, supporting detail, and relationship to the rest of the page.
+
+### 5. Build for the user's context
+
+- Follow the existing stack, design system, accessibility patterns, and code conventions when editing an app.
+- For a new project with no stack, choose a simple maintainable approach that fits the request. Use standalone HTML only when it is the right deliverable.
+- Use the user's assets and brand information first. Do not invent logos, testimonials, customer counts, prices, product claims, or personal details.
+- When facts are missing, use clearly plausible sample content only where a mockup requires it; do not present fabricated claims as real.
+- Use real interface text and meaningful states. Buttons should do what they say, forms should respond, and navigation should lead somewhere useful.
+- Source imagery intentionally. Prefer provided assets or project assets. If external imagery is appropriate, use an image source allowed by the project and make the dependency clear. Do not hotlink random images. Never generate a photo unless the user asks for one.
+- Create custom graphics when a specific visual needs one. Avoid generic blobs, floating shapes, and icon tiles as filler. Functional icons are fine when they improve recognition or navigation.
+- Keep content and controls readable with keyboard navigation, visible focus, sufficient contrast, reduced-motion support, and touch-friendly targets.
+- Do not remove a user's existing content or visual identity simply to make a cleaner concept.
+
+### 6. Render and critique the actual result
+
+Run the visual checker for standalone HTML:
 
 ```bash
-python3 scripts/feedback.py --brief "<brief>" --chosen <winner.html> --rejected <loser.html> \
-  --chosen-family <id> --rejected-family <id> --note "<the user's words>"
+python3 scripts/check.py <page.html> --type <landing|app|mobile|portfolio|article|commerce|event|tool|game>
 ```
 
-Use `--chosen`/`--rejected` when they compared two pages; for a reaction to one page use
-`--page <file> --family <id> --note "…"`. Then edit the taste file's **Learned rules**
-(the path is printed): turn the comment into a short general rule, merge with existing rules, let newer
-feedback replace contradicting rules, keep at most 30. If they asked for changes, apply them, re-check, show again.
+For an existing project, use its available dev/build workflow and a browser to inspect the actual route. Use the most relevant local rendering or preview tools available. Do not treat source code inspection as visual QA.
 
-## 7. Keep going until the user is happy
+Inspect both desktop and mobile screenshots. Judge the page against its art direction, not just against a detector's list:
 
-After recording feedback, apply their changes with targeted edits and show it again. When they want options
-(or you're unsure what they'd like), make **one challenger** next to the current page that changes a single
-thing — type pairing, bolder or quieter palette, density, illustration style — so their pick teaches
-something specific. Say in one line what the challenger tests. Re-read the taste file every round.
-Stop when they say it's done or pick the same page twice without changes; hand over the final page.
+**Art direction**
+- Can you state the specific idea in one sentence?
+- Does the opening screen communicate it at a glance?
+- Is there a clear focal point and a useful first read?
+- Does the page feel specific to this brand and task, or could it be swapped onto another product unchanged?
 
-## 8. Evolve the taste
+**Composition**
+- Are scale, alignment, spacing, crop, and density intentional?
+- Does the page have a visual rhythm as you scroll?
+- Does mobile have its own hierarchy and workable controls?
+- Is important content visible without clipping, collisions, or needless scrolling?
 
-`feedback.py` prints **EVOLVE** every 5 reactions. Then run `python3 scripts/evolve.py`, follow its
-instructions to rewrite the taste file (learned rules, house rules, family priority) from all the evidence,
-and save the version with `python3 scripts/evolve.py --commit`. Every version is kept in the taste folder's
-own git history, so any change can be undone. Never edit the skill's own files or scripts while evolving.
+**Craft**
+- Is type readable and expressive in the right places?
+- Do color and surfaces support the concept and keep text legible?
+- Are imagery and graphics crisp, coherent, and meaningful?
+- Do interactions have useful states and feedback?
+- Are accessibility and reduced-motion basics respected?
 
-## Scripts
+Use the critique order in `references/quality-bar.md` and fix the earliest consequential mismatch first: purpose, identity, hierarchy, composition, or specificity. Do not spend the fix pass polishing tiny details while the page still has no strong idea. Re-render after meaningful changes. Do not accept a clean detector report as proof of a beautiful page; do not add a visual flourish just to satisfy a checklist.
 
-- `scripts/taste.py` — print the user's taste (creates it on first use)
-- `scripts/check.py page.html --type <type>` — render + measured problems + screenshot paths
-- `scripts/photos.py page.html [--style …] [--mode local|gemini]` — generated photos, only when asked
-- `scripts/feedback.py …` — record a pick or comment
-- `scripts/evolve.py [--commit]` — gather evidence / save an evolved taste
-- `scripts/setup.sh` — one-time setup; re-run to change the photo mode
+For HTML checks, look at both screenshots printed by `check.py`. Fix all serious measured issues and clear visual defects. A second check is appropriate after fixes. Keep the loop short and targeted; stop when the agreed visual direction is present and the design is coherent at the tested sizes.
+
+### 7. Present the work
+
+Show the actual result where possible: open the page or preview, and include desktop and mobile screenshots when useful. Briefly say what changed, name the concept, and mention any remaining placeholder or assumption. Ask one focused question when user feedback would guide a meaningful next pass.
+
+If the user asks for changes, apply them in the existing direction. If they ask for alternatives, make one challenger that changes a named variable. Do not silently restart the design each round.
+
+### 8. Learn from feedback
+
+Record reactions, including partial feedback:
+
+```bash
+python3 scripts/feedback.py --brief "<brief>" --page <file> --family <id> --note "<user's words>"
+```
+
+For a choice between alternatives, record both with `--chosen`, `--rejected`, `--chosen-family`, and `--rejected-family`. Translate feedback into a short learned preference, not a one-off rule that overfits a single page. Newer explicit preferences replace contradictory older ones.
+
+When `feedback.py` prints `EVOLVE`, read the evidence from `python3 scripts/evolve.py`, update the user's taste file based on repeated signals, then save it with `python3 scripts/evolve.py --commit`. Never modify the skill files while evolving a user's personal taste.
+
+## Reference guide
+
+- `references/page-types.md` — what visual quality means for different kinds of pages
+- `references/product-patterns.md` — task, content, and interaction prompts by product context
+- `references/quality-bar.md` — direction card, critique order, and evaluation guidance
+- `examples/brief-to-direction.md` — worked example translating a request into content and responsive design decisions
+- `references/families.md` — optional art-direction vocabulary and references
+- `references/rules.md` — practical design and implementation defaults
+- `references/beauty.md` — deeper composition, image, type, and visual craft guidance
+- `scripts/taste.py` — read personal design preferences
+- `scripts/check.py` — render and inspect a standalone HTML page
+- `scripts/feedback.py` — record a user reaction
+- `scripts/evolve.py` — review feedback and save taste updates
+- `scripts/photos.py` — generate photos only when explicitly requested
+- `scripts/setup.sh` — install the optional local rendering environment
