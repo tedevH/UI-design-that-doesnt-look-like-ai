@@ -18,7 +18,6 @@ LANDING_ONLY = {"centered_hero", "three_card_grids", "uniform_sections", "round_
 
 def facts(styles: dict) -> str:
     summary = tokens.summary(styles)
-    features = tokens.features(styles)
     viewport = styles.get("viewport") or {}
     audit_data = styles.get("audit") or {}
     return "\n".join([
