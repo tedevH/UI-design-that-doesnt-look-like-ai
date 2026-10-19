@@ -111,15 +111,15 @@ def from_html(html: str) -> list[Tell]:
 
     libs = re.findall(r"(lucide|heroicons|font-?awesome|fontawesome|material-?icons|material-?symbols|feather-?icons|phosphor-?icons|ionicons|remixicon|bootstrap-icons|tabler-?icons)", low)
     if libs:
-        add("icon_library", 2, f"icon library in use ({', '.join(sorted(set(libs)))}) — drop it; draw anything specific yourself")
+        add("icon_library", 2, f"icon library in use ({', '.join(sorted(set(libs)))}) — review whether the chosen icons fit the product and visual language")
 
     # Imagery: stock photos and pages that lean on photo slots instead of their own visuals
     stock = re.findall(r"(?:unsplash|pexels|pixabay|shutterstock|istockphoto|gettyimages|picsum\.photos|placehold|placekitten|loremflickr)\.", low)
     if stock:
-        add("stock_photos", 3, f"{len(stock)} stock/placeholder image link(s) — draw graphics or use the user's photos")
+        add("stock_photos", 3, f"{len(stock)} stock/placeholder image link(s) — verify licensing, relevance, and whether these assets feel specific to the brief")
     slots = len(re.findall(r"<img\b(?![^>]*\ssrc=)[^>]*data-photo=", low))
     if slots >= 4:
-        add("photo_slot_heavy", 2, f"{slots} empty photo slots — draw the visuals instead; keep at most 2–3 slots for the client's own photos")
+        add("photo_slot_heavy", 2, f"{slots} empty photo slots — check whether each slot has a defined subject and whether the page communicates without the asset")
 
     # Content
     emoji = EMOJI.findall(text)
@@ -168,14 +168,13 @@ def from_styles(styles: dict) -> list[Tell]:
         found.append(Tell("wrapped_button", 3, f"button text wraps onto several lines: {', '.join(wrapped[:3])} — widen it, shorten the label or use white-space: nowrap"))
     icon_cards = (styles or {}).get("iconCards") or 0
     if icon_cards >= 3:
-        found.append(Tell("icon_feature_cards", 2, f"{icon_cards} icon-title-text cards — the template feature grid; use a list, diagram, annotated product view or varied layout"))
+        found.append(Tell("icon_feature_cards", 2, f"{icon_cards} icon-title-text cards — inspect whether the grid communicates real feature relationships or stands in for product-specific content"))
     tiles = (styles or {}).get("iconTiles") or 0
     if tiles >= 1:
-        found.append(Tell("icon_tiles", 3, f"{tiles} icon(s) in tinted squares — the AI-template icon tile; remove them"))
+        found.append(Tell("icon_tiles", 3, f"{tiles} icon(s) in tinted squares — check whether the tiles add recognition or merely repeat decoration"))
     deco = (styles or {}).get("decorativeIcons") or 0
     if deco >= 4:
-        found.append(Tell("decorative_icons", 2, f"{deco} decorative icons (badges, bullets, labels, stats) — remove them; "
-                                                    "let type, numbers and layout carry meaning"))
+        found.append(Tell("decorative_icons", 2, f"{deco} decorative icons (badges, bullets, labels, stats) — check that each icon clarifies meaning rather than adding noise"))
     overlaps = (styles or {}).get("overlaps") or 0
     if overlaps:
         found.append(Tell("text_overlap", 3, f"{overlaps} places where text overlaps other text"))
