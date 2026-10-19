@@ -10,17 +10,13 @@ Ask Claude Code something like *"design a landing page for a natural wine bar in
 2. **Commits to a direction** from one of its style families (editorial serif, Swiss minimal, warm crafted,
    playful color, quiet luxury, photo-led, product UI, expressive, calm productivity, night focus) — the one your taste favors — and a
    contrasting second direction whenever you want to compare.
-3. **Builds a centerpiece and makes it beautiful** — a rich illustrated scene, a staged product UI, a type
-   composition or generative art; depth, texture, confident color and motion — then **renders and checks**
-   each page: overlapping text, chunky fonts, AI clichés (purple gradients,
-   glass panels, emoji icons, "unlock your potential"), flat type scales. Claude also looks at its own
-   desktop and mobile screenshots and fixes what it sees before you do.
-4. **Makes its own visuals** — custom SVG illustration, patterns, diagrams, typography and real product UI —
-   instead of stock photos. Give it your own photos and it designs around them; anything only you can
-   provide (your team, your space) gets a clearly labeled slot.
-5. **Asks what you think** and keeps going: your changes get applied, and when you want options it shows one
-   challenger that tests one thing about your taste. It's built to take about as long as a plain request plus
-   a quick check — one design, one check, targeted fixes.
+3. **Composes before decorating** — the page has a clear first read, intentional rhythm, real product or
+   brand content, and a visual treatment chosen for the idea. Nothing is added just to satisfy a checklist.
+4. **Builds in context** — it follows your existing framework and design system, uses your real assets, and
+   creates custom graphics only when they add meaning. Standalone HTML is reserved for standalone concepts.
+5. **Inspects the rendered design** at desktop and mobile sizes. It critiques the concept, hierarchy,
+   composition, specificity, responsiveness, and interaction states, then fixes the most consequential
+   mismatch first.
 6. **Learns.** Every reaction is recorded; every 5, Claude rewrites your taste rules from all the evidence.
    Your taste lives in `~/.claude/ui-design-data/taste/` with its own history, so updates to the skill never
    touch it and any change can be undone.
@@ -52,7 +48,7 @@ Generated photos are off by default — the skill draws its own graphics. If you
 
 ```
 skills/ui-design/
-  SKILL.md                    the workflow Claude follows
+  SKILL.md                    the art-direction and implementation workflow
   references/rules.md         the floor: type, color, layout, content and imagery rules; the AI-cliché bans
   references/beauty.md        the ceiling: centerpiece visuals, depth, texture, color, type finesse, motion
   references/page-types.md    playbooks for landing pages, apps, mobile, portfolios, articles, shops, events, tools, games
