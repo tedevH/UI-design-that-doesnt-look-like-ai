@@ -1,95 +1,47 @@
-# Rules
+# Design defaults
 
-These are the floor. `beauty.md` is the ceiling — read both. A page that only follows these rules is clean
-but not finished.
+Use these defaults to avoid accidental template work while leaving room for the right solution. The brief, the user's assets, the existing product, and the user's taste are stronger evidence than a generic rule.
 
-## Output
-- One self-contained HTML file. Hand-written CSS in `<style>` with the palette as CSS custom properties.
-  Google Fonts via `<link>`. Vanilla JS only when an interaction needs it. No frameworks, no Tailwind.
-- Responsive down to 390px with no horizontal scroll. Every word visible at 390px and 1440px: size display
-  type with `clamp()`, allow wrapping, never clip.
+## Work in context
 
-## Typography
-- Use the art direction's fonts **at the stated weights**. Hierarchy comes from size, spacing and contrast,
-  not from piling on weight.
-- Never: Archivo Black, Unbounded, Anton, Bebas Neue, Dela Gothic One, Syne ExtraBold, Big Shoulders,
-  Monument-style extended faces, or display weights 800–900.
-- Headlines in sentence case unless 1–3 words. Body 16–18px, line-height 1.45–1.6, measure 55–75ch.
-- Inter, system-ui or Poppins alone is not a typographic choice.
+- In an existing project, follow its framework, tokens, typography, components, accessibility behavior, and file conventions when they serve the product. Extend what works; do not add a new stack for visual convenience.
+- In a new project, choose the simplest approach that supports the requested experience. A standalone HTML page is useful for a quick concept, not a universal output format.
+- Use supplied brand assets, copy, and imagery accurately. Do not invent testimonials, customer counts, prices, product claims, addresses, or personal details.
+- Use realistic sample content only to make a clearly illustrative mockup feel complete.
 
-## Color and surface
-- 3–6 colors from the art direction. Use color the way the family says: big color fields for playful or
-  expressive, restraint for luxury and Swiss.
-- Banned clichés: purple/blue/pink "AI" gradients, gradient-filled text, neon glow, glassmorphism panels
-  everywhere, default gray drop shadows on every card.
-- Allowed and encouraged when done with craft (see `beauty.md`): subtle on-palette gradients, grain,
-  layered palette-tinted shadows, a single frosted element over a rich background, depth and overlap.
-- One consistent corner-radius system (e.g. 6px for controls, 12px for cards) — not one big radius on everything.
+## Hierarchy and layout
 
-## Layout
-- A real grid with intentional asymmetry. Every section composed differently.
-- Never the AI template: centered hero → three identical icon cards → testimonial → CTA band. On landing
-  pages avoid grids of icon + title + blurb cards altogether: show features as a list with real detail, a
-  diagram, an annotated view of the product, a timeline, or sections with different layouts.
-- Buttons never wrap: labels are short and `white-space: nowrap`; long things like phone numbers are links, not pills.
-- Fixed headers never cover content: add top padding equal to the header height.
-- No negative margins or absolute positioning that makes text collide.
+- Design the content order before styling sections. Give the primary message or task a clear first read.
+- Build a real grid or alignment system, then choose where to break it. Symmetry is useful when it communicates order; asymmetry is useful when it creates a meaningful emphasis.
+- Repetition can establish rhythm. Use it intentionally and change it when the content or interaction changes.
+- Card grids, centered headlines, split heroes, full-bleed imagery, sticky navigation, and long pages are all valid when they suit the brief. Avoid assembling them from habit.
+- Keep controls and text within their containers. Let long content wrap or reflow; do not hide meaningful words to preserve a mockup's proportions.
+- Use responsive layouts that adapt hierarchy and behavior, not only width. Check narrow screens and zoom.
 
-## Content
-- Write the copy in the language the user wrote the request in, unless they ask for another. Local names,
-  places and dish or product names can stay in the local language.
-- Specific, believable copy: names, prices, times, addresses, numbers with units. Short confident sentences.
-- Show the actual thing: the menu, the product UI built in HTML, the schedule, the work.
-- Never: unlock, elevate, seamless, revolutionize, empower, effortless, supercharge, next-generation,
-  cutting-edge, all-in-one, "get started today", "trusted by thousands", lorem ipsum, John Doe, Acme,
-  round vanity stats without context, emoji used as icons.
-- No fake telemetry decoration (coordinates, "SYSTEM STATUS", serial codes, sector labels, monospace label
-  clutter) unless the product is literally an engineering tool.
+## Type and color
 
-## Imagery — graphics first, never stock
-Most good sites don't use stock photos. Their visuals are the brand's own: typography, illustration,
-color, the product itself, and the client's real photos. So:
+- Use a type system with deliberate roles and readable size, line-height, weight, and measure. Strong contrast does not require extreme weights or a novel typeface.
+- Use the project's fonts and brand tokens when available. For a new identity, select typography and color from the art direction and confirm the pair works in the rendered page.
+- Define color roles and check text contrast, interactive states, and meaning conveyed through color.
+- Avoid recognizable default combinations when they are unrelated to the brand, including default purple gradients, gradient-filled headlines, neon glows, and glass panels on every surface. These treatments are allowed when the project calls for them and they are executed with care.
 
-- **Default to graphics you make in code:** custom inline SVG illustrations, icons, patterns, diagrams, maps,
-  charts, typographic compositions (a huge numeral, a word set as image), CSS shapes and color fields, and
-  for software the real product UI built in HTML. Pick one graphic language per page and keep it consistent.
-- **The user's own photos:** if they give you photos (files, a folder, or URLs of their own site), use them
-  with `<img src="…" alt="…">` and `object-fit: cover`, and design around them.
-- **Photos only the client can provide** (their team, venue, actual products): if the page truly needs one,
-  leave a slot and say so — `<img data-photo="Your photo: the shop counter at opening time" data-aspect="4:3"
-  alt="…">`. It renders as a labeled striped block. Use at most 2–3 slots; never build the page around them.
-- **Never** hotlink web images, never use stock photography, and never generate photos unless the user
-  explicitly asks for generated photos (then run `scripts/photos.py`).
+## Imagery and graphic language
 
-### Icons — almost never
-Generic line icons are the most recognizable AI-template tell: a heart, clock, house, chat bubble, calendar,
-shield or star in a tinted rounded square above every feature; a sparkle or icon in front of every badge,
-label, list item or stat; checkmark bullets everywhere.
-- **Don't decorate with icons.** No icon tiles, no icon-before-every-label, no icon bullets, no icon in pills
-  or eyebrow labels, no star/heart/sparkle ornaments, no icon libraries (Lucide, Heroicons, Font Awesome,
-  Material Icons, Feather, Phosphor). Let typography, numbers, color and layout carry meaning.
-- **Functional icons only, in interfaces:** navigation, buttons and inputs in apps and tools (play, search,
-  close, settings, arrows) — small (16–20px), one consistent stroke, never inside colored tiles.
-- **When a visual would genuinely help, draw something specific** to this brand as part of the art direction
-  (the clinic's yellow front door, a sardine tin, a kiln) at a meaningful size — not a symbol standing in
-  for an idea.
-- Instead of icon bullets use numbers, en dashes, small caps labels or plain well-spaced text.
+- Prefer the user's real assets, product, work, data, or place when they are available and relevant.
+- For external or generated images, follow the user's direction and project rules. Do not hotlink random assets or generate photos without the user's request.
+- Use icons when they improve recognition, navigation, or task completion. Avoid repeating generic icons in identical colored tiles as a substitute for showing the product or explaining an idea.
+- Keep illustrations, charts, and icon sets coherent in line, shape, color, and detail. Draw only what improves understanding or gives the design a specific voice.
+- Decorative shapes, shadows, texture, and motion should support a visual idea. Remove them when they add noise.
 
-### Graphics craft
-- One style per page: same stroke width (e.g. 1.5 or 2px, `stroke-linecap: round`), same corner logic,
-  colors only from the palette, consistent level of detail.
-- Draw specific things for this brand (a sardine tin, a kiln, a route map, the dashboard) — no generic blobs,
-  waves, abstract gradients, floating 3D shapes or clip-art people.
-- Keep each SVG under ~60 lines with a `viewBox`, scale it with CSS, `aria-hidden="true"` when decorative.
-  Never repeat long path data; build patterns with `<pattern>` or CSS backgrounds.
-- Graphics should do work: explain a process, show the product, carry the hero. Decoration alone is noise.
+## Content and interaction
 
-## Craft checklist (look at the screenshot)
-- Is there one clear focal point above the fold?
-- Does spacing have rhythm — tight within groups, generous between sections?
-- Do edges align to a grid? Is anything floating?
-- Is body text comfortably readable (contrast ≥ 4.5:1, size, measure)?
-- Would a design director believe a studio made this for this specific brand?
+- Write in the user's requested language and tone. Use concrete content and concise labels.
+- Make links and buttons behave as labeled. Provide useful form validation, error and success feedback, and sensible empty and loading states where the design includes them.
+- Use semantic HTML or the project's equivalent, keyboard access, visible focus, sufficient contrast, reduced-motion support, and suitable touch targets.
+- Prefer familiar interaction patterns unless the design has a clear reason to introduce a new one.
 
+## Review
 
-The user's **House rules** in their taste file override everything in this file.
+Inspect rendered desktop and mobile views. Look for weak hierarchy, generic visuals, awkward density, inconsistent spacing, clipping, overflow, and missing states. Fix the issue that most harms the user's goal first. A heuristic or checklist can point to a problem; it cannot decide whether the design is good.
+
+The user's house rules and explicit requests take precedence over these defaults.
