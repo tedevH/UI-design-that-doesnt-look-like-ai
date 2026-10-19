@@ -8,7 +8,7 @@ The central idea is simple: a design should grow from the product, its audience,
 
 1. **Reads the project before designing.** It identifies the stack, existing visual language, available assets, and relevant screens, then works in that context.
 2. **Finds a product-specific visual premise.** A short direction card connects audience, task, hierarchy, composition, visual system, interaction, responsive behavior, and restraint.
-3. **Uses references as prompts, not templates.** Page-type guidance, product patterns, and style families help ask better questions without prescribing a stock layout.
+3. **Uses references as prompts, not templates.** Page-type guidance, product patterns, and style families help ask better questions without prescribing a stock layout. A complete Fieldnote dashboard specimen shows one direction carried through content, data, and responsive structure.
 4. **Builds real content and behavior.** It prioritizes credible product UI, useful page content, working controls, truthful claims, and the assets the user actually has.
 5. **Inspects rendered work.** The standalone HTML checker captures desktop and mobile screenshots, reports measurable layout/accessibility signals separately from subjective style signals, and saves a JSON report. It does not claim to judge beauty automatically.
 6. **Learns the user's preferences.** Feedback can update a personal taste file without modifying the shared skill or skill reference files.
@@ -51,6 +51,7 @@ Generated photos are off by default. Optional photo generation can be configured
 skills/ui-design/
   SKILL.md                         workflow for art direction, implementation, and critique
   references/
+    evaluation.md                 blind, repeatable comparison protocol
     page-types.md                  page-specific quality and structure prompts
     product-patterns.md            tasks, content, and interaction by product context
     quality-bar.md                 direction card, critique order, evaluation guidance
@@ -60,6 +61,8 @@ skills/ui-design/
     taste-template.md              starter preferences for a new user
   examples/
     brief-to-direction.md          worked example from request to responsive design decisions
+    showcase/tide-station.html     complete data-led responsive interface specimen
+    showcase/README.md             direction notes and sample-data caveat
   scripts/
     check.py                        standalone render, measurements, and style signals
     lib/audit.py                    objective layout and accessibility signals
@@ -72,7 +75,7 @@ skills/ui-design/
 
 The checker can report things such as horizontal overflow, broken images, missing accessible names, and possible contrast issues. It also detects patterns that merit a human look. Those style signals are not pass/fail rules: a centered hero, serif typeface, icon library, gradient, or card grid can be exactly right for a particular brief.
 
-A polished result still requires looking at the actual render and judging purpose, identity, hierarchy, composition, specificity, coherence, rhythm, responsive behavior, and finish. For meaningful comparisons, hold the brief and implementation context constant, render both results at the same viewports, and compare them against the same rubric. The example in this repository demonstrates a process; it is not evidence of user preference or product performance.
+A polished result still requires looking at the actual render and judging purpose, identity, hierarchy, composition, specificity, coherence, rhythm, responsive behavior, and finish. For meaningful comparisons, follow `references/evaluation.md`: hold the brief and implementation context constant, anonymize outputs, and compare the renders independently against the same rubric. The included dashboard is an illustrative specimen with fictional readings; it is not evidence of user preference or product performance. Its browser visual review is still pending.
 
 ## Research
 
