@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Render a page (desktop + mobile) and report measured design problems.
 
-usage: check.py page.html
+usage: check.py page.html [--type landing|app|mobile|portfolio|article|commerce|event|tool|game]
 Prints facts, problems with evidence, and the two screenshot paths to look at.
 Exit code 1 if anything serious was found.
 """
@@ -29,16 +29,25 @@ def facts(styles: dict) -> str:
     ])
 
 
+# Landing-page clichés that are normal elsewhere (a flashcard grid is not "three identical cards").
+LANDING_ONLY = {"centered_hero", "three_card_grids", "uniform_sections", "round_vanity_stats", "icon_feature_cards"}
+
+
 def main() -> int:
-    if len(sys.argv) != 2:
-        print(__doc__)
-        return 2
-    page = Path(sys.argv[1]).resolve()
+    import argparse
+
+    ap = argparse.ArgumentParser(usage=__doc__)
+    ap.add_argument("page")
+    ap.add_argument("--type", default="landing")
+    a = ap.parse_args()
+    page = Path(a.page).resolve()
     html = page.read_text()
     shots = page.parent / f"{page.stem}-shots"
     with Renderer() as r:
         styles = r.capture(shots, url=page.as_uri(), mobile=True)
     found = tells.detect(html, styles)
+    if a.type != "landing":
+        found = [t for t in found if t.name not in LANDING_ONLY]
     print("FACTS\n" + facts(styles))
     print("\nPROBLEMS" + (" (fix all of these)" if found else ": none measured"))
     for t in found:

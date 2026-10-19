@@ -1,15 +1,18 @@
 # UI design that doesn't look like AI
 
-A Claude Code skill that designs websites and landing pages the way a design studio would — and learns
-**your** taste from every design you pick.
+A Claude Code skill that designs websites and app interfaces the way a design studio would — landing pages,
+study apps, dashboards, mobile screens, portfolios, blogs, shops, event pages, tools and small games — and
+learns **your** taste from every design you pick.
 
 Ask Claude Code something like *"design a landing page for a natural wine bar in Lisbon"*. The skill:
 
 1. **Reads your taste** — rules learned from your past picks override its defaults.
 2. **Designs two directions** in different style families (editorial serif, Swiss minimal, warm crafted,
-   playful color, quiet luxury, photo-led, product UI, expressive) — one you tend to like, one you haven't
+   playful color, quiet luxury, photo-led, product UI, expressive, calm productivity, night focus) — one you tend to like, one you haven't
    seen much, so your taste keeps getting tested.
-3. **Builds, renders and checks** each page: overlapping text, chunky fonts, AI clichés (purple gradients,
+3. **Builds a centerpiece and makes it beautiful** — a rich illustrated scene, a staged product UI, a type
+   composition or generative art; depth, texture, confident color and motion — then **renders and checks**
+   each page: overlapping text, chunky fonts, AI clichés (purple gradients,
    glass panels, emoji icons, "unlock your potential"), flat type scales. Claude also looks at its own
    desktop and mobile screenshots and fixes what it sees before you do.
 4. **Makes its own visuals** — custom SVG illustration, patterns, diagrams, typography and real product UI —
@@ -49,8 +52,10 @@ Generated photos are off by default — the skill draws its own graphics. If you
 ```
 skills/ui-design/
   SKILL.md                    the workflow Claude follows
-  references/rules.md         type, color, layout, content and imagery rules; the AI-cliché bans
-  references/families.md      eight style families, with notes on strong real sites in each
+  references/rules.md         the floor: type, color, layout, content and imagery rules; the AI-cliché bans
+  references/beauty.md        the ceiling: centerpiece visuals, depth, texture, color, type finesse, motion
+  references/page-types.md    playbooks for landing pages, apps, mobile, portfolios, articles, shops, events, tools, games
+  references/families.md      ten style families, with notes on strong real sites in each
   references/taste-template.md   the blank taste every user starts from
   scripts/                    taste, check, photos, feedback, evolve, setup (+ a small renderer and detector)
 ```

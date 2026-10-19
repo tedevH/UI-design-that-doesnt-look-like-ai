@@ -1,6 +1,7 @@
 # Style families
 
-Pick two different families per brief. Each lists its look, its typography, and notes on strong real
+Families work for every page type — landing pages, apps, portfolios, articles, tools. Pick two different
+families per brief. Each lists its look, its typography, and notes on strong real
 sites in the family (written by a local vision model from screenshots). Learn the principles; never copy.
 
 ## editorial-serif — Editorial serif
@@ -75,3 +76,27 @@ sites in the family (written by a local vision model from screenshots). Learn th
     sections: Full-bleed hero image with text overlay → Footer with legal information and social media links
     why it works: The site's strength lies in its bold, abstract imagery and the confident use of a limited color palette. The unconventional layout and typography choices create a memorable and distinctive brand identity. The simplicity of the mobile version maintains the impact.
     signature: The use of a heavily stylized, abstract image as the primary visual element, combined with a minimal typographic treatment and a restricted color palette, creates a powerful and instantly recognizable brand statement.
+
+## calm-productivity — Calm productivity
+
+**Look:** The quiet confidence of the best tools (Things, Linear, Bear, Readwise): soft off-white or deep
+graphite surfaces, one gentle accent plus a small set of category colors, crisp hairlines, precise spacing,
+delightful micro-details (a progress ring, a satisfying check animation, a tiny illustrated empty state).
+Rich through precision and a few moments of color, not decoration.
+
+**Typography:** A refined UI sans (Inter Tight, Geist, Figtree, Manrope) at 400–600 for interface text, with
+an optional serif (Newsreader, Source Serif 4) for reading surfaces and big numbers. Tabular numerals.
+
+**Good for:** study apps, planners, habit trackers, note apps, dashboards, docs.
+
+## night-focus — Night focus
+
+**Look:** A dark, atmospheric workspace for deep focus: near-black with a hint of color (ink blue, aubergine,
+forest), soft radial light behind the main object, warm accent like lamplight, subtle grain, large calm
+numerals. Feels like studying at 1 a.m. with a good lamp — cozy, not neon.
+
+**Typography:** A warm grotesk or rounded sans (Figtree, Nunito Sans, DM Sans) for UI, a characterful serif or
+mono for the big timer/number (Fraunces, IBM Plex Mono), never all-caps heavy display.
+
+**Good for:** focus timers, study sessions, music or reading apps, games, night-time tools.
+

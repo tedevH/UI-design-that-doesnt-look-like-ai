@@ -1,5 +1,8 @@
 # Rules
 
+These are the floor. `beauty.md` is the ceiling — read both. A page that only follows these rules is clean
+but not finished.
+
 ## Output
 - One self-contained HTML file. Hand-written CSS in `<style>` with the palette as CSS custom properties.
   Google Fonts via `<link>`. Vanilla JS only when an interaction needs it. No frameworks, no Tailwind.
@@ -17,9 +20,11 @@
 ## Color and surface
 - 3–6 colors from the art direction. Use color the way the family says: big color fields for playful or
   expressive, restraint for luxury and Swiss.
-- No purple/blue/pink gradients, no gradient text, no glow, no glassmorphism (blurred translucent panels).
-- One consistent corner radius (0–8px unless the family says soft). Borders and background shifts over
-  drop shadows.
+- Banned clichés: purple/blue/pink "AI" gradients, gradient-filled text, neon glow, glassmorphism panels
+  everywhere, default gray drop shadows on every card.
+- Allowed and encouraged when done with craft (see `beauty.md`): subtle on-palette gradients, grain,
+  layered palette-tinted shadows, a single frosted element over a rich background, depth and overlap.
+- One consistent corner-radius system (e.g. 6px for controls, 12px for cards) — not one big radius on everything.
 
 ## Layout
 - A real grid with intentional asymmetry. Every section composed differently.

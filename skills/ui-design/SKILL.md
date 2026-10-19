@@ -1,12 +1,14 @@
 ---
 name: ui-design
-description: Design websites, landing pages and UI screens that look made by a real design studio, not AI-generated or template-like, and keep learning the user's taste from their picks. Use when asked to design, build, mock up, redesign or restyle a website, landing page, homepage, marketing page or UI screen, or when the user reacts to a design made with this skill.
+description: Design beautiful websites and app interfaces that look made by a real design studio, not AI-generated or template-like, and keep learning the user's taste from their picks. Use when asked to design, build, mock up, redesign or restyle a website, landing page, web or mobile app screen (study app, dashboard, planner, tracker), portfolio, blog or docs page, shop page, event page, tool or small game, or when the user reacts to a design made with this skill.
 ---
 
 # UI design that doesn't look like AI
 
-You are the designer. This skill gives you the user's learned taste, eight distinct style families, the
-rules that separate studio work from AI templates, and scripts that render and check your pages. Work like a
+You are the designer. This skill gives you the user's learned taste, ten distinct style families, page-type
+playbooks (landing pages, apps, mobile, portfolios, articles, shops, events, tools, games), the rules that
+separate studio work from AI templates, a guide to making pages genuinely beautiful, and scripts that render
+and check your work. Work like a
 studio: commit to a direction, make its visuals yourself, build it with care, look at the result, fix it, let the user choose, learn.
 
 All script paths below are relative to this skill's base directory. Run them with `python3`.
@@ -19,9 +21,11 @@ recent comments). **The user's house rules and learned rules override this skill
 
 ## 1. Understand the brief
 
-Note for yourself: audience, tone (3–4 adjectives), the concrete content the page must show (menu with
-prices, pricing table, schedule, real product UI…), and what would feel wrong for this brand. Invent
-plausible specifics — names, prices, places, numbers with units. Ask only if something essential is unknowable.
+First decide the **page type** and read its section in `references/page-types.md` — a study app is not a
+landing page. Then note for yourself: who uses it, the tone (3–4 adjectives), the concrete content it must
+show (the flashcard deck, the pricing table, the schedule, the real product UI…), and what would feel wrong.
+Invent plausible specifics — names, numbers with units, real-looking data. Ask only if something essential
+is unknowable.
 
 ## 2. Choose two directions
 
@@ -30,13 +34,16 @@ user hasn't seen much (so their taste keeps being tested). If the user named a s
 with different art directions. For each, write an art direction: one-line concept, palette (3–6 hex colors
 with roles), Google Fonts pairing **with weights**, the **graphic language** (what you'll draw — illustration
 style, patterns, diagrams, product UI — and its stroke, detail and color rules), 6–8 sections each composed
-differently, and one signature move. Skip the photo-led family unless the user gave you their own photos.
+differently, the **centerpiece visual** (see `references/beauty.md` §1), and one signature move. Skip the
+photo-led family unless the user gave you their own photos.
 
 ## 3. Build
 
 One self-contained HTML file per variant in the user's project (default `designs/<slug>/a.html` and `b.html`).
-Follow `references/rules.md` exactly. Draw the visuals yourself (inline SVG, CSS, typography, product UI in
-HTML). If the user gave you photos, use them; otherwise no stock or generated photos.
+Follow `references/rules.md` (the floor) **and** `references/beauty.md` (the ceiling). Build the centerpiece
+first and give it real care — it's what makes the page. Draw visuals yourself (inline SVG, CSS, typography,
+product UI in HTML); use the user's photos if they gave any; no stock or generated photos. Apps, tools and
+games must actually work.
 
 ## 4. Imagery
 
@@ -46,16 +53,20 @@ labeled slot — `data-photo="Your photo: …"` — at most 2–3 per page, and 
 Only if the user explicitly asks for generated photos, run `python3 scripts/photos.py <page.html> --style
 "…"` in the background (local ≈ 30–40 s per photo) and keep working.
 
-## 5. Check and fix (always, before showing anything)
+## 5. Check, fix, then make it beautiful (always, before showing anything)
 
-Run `python3 scripts/check.py <page.html>`. It renders desktop and mobile screenshots and reports measured
-problems: overlapping text, chunky type, fake telemetry, gradients, emoji icons, clichés, flat type scale.
+Run `python3 scripts/check.py <page.html> --type <page type>`. It renders desktop and mobile screenshots and
+reports measured problems: overlapping text, chunky type, fake telemetry, AI gradients, emoji icons,
+clichés, stock photos, flat type scale.
 
-- Fix every reported problem.
-- **Look at both screenshots yourself** (Read the PNG paths it prints) and critique honestly against
-  `references/rules.md` and the art direction: hierarchy, spacing rhythm, alignment, contrast, whether a
-  studio would sign it. Fix what you see.
-- Re-run the check. Stop when it's clean and you'd be proud of it (at most 3 passes).
+1. Fix every reported problem.
+2. **Look at both screenshots yourself** (Read the PNG paths it prints) and fix what's off: hierarchy,
+   spacing rhythm, alignment, contrast, mobile layout.
+3. **Beauty pass:** go through the checklist at the end of `references/beauty.md` against the screenshot and
+   fix every "no" — centerpiece, depth, color moment, expressive type, texture, motion. If it's merely tidy,
+   push the centerpiece and color further.
+4. Re-run the check and look again. Stop when it's clean and you'd genuinely be proud to ship it (at most
+   3 passes).
 
 ## 6. Present and ask
 
@@ -93,7 +104,7 @@ own git history, so any change can be undone. Never edit the skill's own files o
 ## Scripts
 
 - `scripts/taste.py` — print the user's taste (creates it on first use)
-- `scripts/check.py page.html` — render + measured problems + screenshot paths
+- `scripts/check.py page.html --type <type>` — render + measured problems + screenshot paths
 - `scripts/photos.py page.html [--style …] [--mode local|gemini]` — generated photos, only when asked
 - `scripts/feedback.py …` — record a pick or comment
 - `scripts/evolve.py [--commit]` — gather evidence / save an evolved taste
