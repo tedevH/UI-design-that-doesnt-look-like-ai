@@ -9,6 +9,7 @@ import math
 import re
 import sys
 from pathlib import Path
+from knowledge import rank as rank_knowledge
 
 SKILL_DIR = Path(__file__).resolve().parents[1]
 DATA_FILE = SKILL_DIR / "data" / "product-contexts.json"
@@ -108,6 +109,13 @@ def render_markdown(brief: str, context: dict | None, ranked: list[dict], stack:
     else:
         lines += ["## Product context", "", "No catalog match stood out. Infer the user's task and evidence from the brief, or rerun with `--context <id>` after reviewing `--list`.", ""]
 
+    knowledge = rank_knowledge(brief, limit=top)
+    if knowledge:
+        lines += ["## Connected design knowledge", "", "Retrieved task patterns and checks (relevance hints, not style prescriptions):", ""]
+        for item in knowledge:
+            evidence = ", ".join(item["matched_terms"]) or f"related to {item['related_to']}"
+            lines.append(f"- **{item['title']}** ({item['domain']}) — {item['summary']} *Evidence: {evidence}.*")
+        lines.append("")
     lines += ["## Direction decisions", "", "Resolve these from the user's product, assets, brand, and content. The catalog does not choose a style recipe.", "",
               "- What should the user understand or do first?", "- What specific product detail can become the focal material?",
               "- Which visual form best expresses it: interface, data, image, typography, diagram, object, or scene?",
@@ -155,6 +163,7 @@ def main() -> int:
         parser.error("--top must be between 1 and 10")
 
     ranked = rank_contexts(args.brief, contexts)
+    knowledge = rank_knowledge(args.brief, limit=args.top)
     context = resolve_context(args, contexts, ranked)
     stack_text = None
     if args.stack:
@@ -166,6 +175,7 @@ def main() -> int:
             "matches": [{"id": row["context"]["id"], "title": row["context"]["title"], "relevance": row["score"],
                          "matched_terms": row["matched_terms"], "matched_aliases": row["matched_aliases"]}
                         for row in ranked[:args.top]],
+            "knowledge": knowledge,
             "stack": args.stack,
             "stack_guidance": stack_text,
         }, indent=2, ensure_ascii=False) + "\n"

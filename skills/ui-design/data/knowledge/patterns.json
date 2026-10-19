@@ -1,0 +1,13 @@
+{
+  "domain": "patterns",
+  "records": [
+    {"id":"pattern:editorial-index","title":"Editorial index","summary":"Use a strong typographic lead, useful grouping, and a clear reading path for content discovery.","tags":["editorial","article","news","reading","content","magazine"],"connects":["style:typographic","ux:content-hierarchy"]},
+    {"id":"pattern:decision-dashboard","title":"Decision dashboard","summary":"Organize a dashboard around one decision, its primary signal, supporting evidence, and a next investigation.","tags":["dashboard","analytics","operations","metrics","charts","decision"],"connects":["chart:time-series","ux:data-context"]},
+    {"id":"pattern:comparison","title":"Comparison workspace","summary":"Keep comparable attributes aligned and make the meaningful differences easy to scan before commitment.","tags":["compare","comparison","pricing","plans","products","finance"],"connects":["ux:comparison-integrity","style:quiet-precision"]},
+    {"id":"pattern:guided-task","title":"Guided task flow","summary":"Break a consequential process into understandable steps, with progress, recovery, and review before submission.","tags":["form","application","onboarding","checkout","booking","workflow"],"connects":["ux:recovery","style:quiet-precision"]},
+    {"id":"pattern:search-results","title":"Search and results","summary":"Keep query, filters, result count, sorting, and result details in a coherent loop, including empty states.","tags":["search","filter","marketplace","booking","catalog","results"],"connects":["ux:filter-state","style:content-led"]},
+    {"id":"pattern:product-proof","title":"Product proof page","summary":"Show a real workflow and contextual evidence so visitors can understand the product before a conversion ask.","tags":["saas","marketing","landing","software","product","demo"],"connects":["style:product-evidence","ux:truthful-content"]},
+    {"id":"pattern:single-purpose-tool","title":"Single-purpose tool","summary":"Make inputs, assumptions, result, and next action visible in one focused working surface.","tags":["calculator","utility","tool","converter","generator","result"],"connects":["ux:input-feedback","style:quiet-precision"]},
+    {"id":"pattern:media-library","title":"Media library","summary":"Support resume, discovery, and collection with content art and metadata doing the visual work.","tags":["media","music","video","streaming","podcast","library"],"connects":["style:content-led","ux:accessible-controls"]}
+  ]
+}

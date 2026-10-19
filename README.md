@@ -59,6 +59,7 @@ skills/ui-design/
   SKILL.md                         workflow for art direction, implementation, and critique
   data/
     product-contexts.json          searchable product-task and interaction catalog
+    knowledge/                     connected pattern, style, chart, and UX catalogs
     README.md                       catalog schema and editorial contribution rules
   references/
     stacks/README.md               stack guide index; separate files cover web and native platforms
@@ -76,7 +77,11 @@ skills/ui-design/
     showcase/README.md             direction notes and sample-data caveat
   scripts/
     check.py                        standalone render, measurements, and style signals
-    plan.py                         offline product-context lookup and brief generator
+    plan.py                         offline task retrieval, graph-neighbor expansion, and brief generator
+    knowledge.py                    bounded lexical retrieval over connected catalogs
+    validate_knowledge.py           catalog graph and relevance-case validator
+  tests/
+    test_knowledge.py               dependency-free planner and graph checks
     lib/audit.py                    objective layout and accessibility signals
     lib/tells.py                    subjective heuristics for human review
     taste.py, feedback.py, evolve.py personal preference workflow
