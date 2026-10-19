@@ -109,6 +109,10 @@ def from_html(html: str) -> list[Tell]:
     if sections and len(set(re.findall(r"<section[^>]*class=\"([^\"]*)\"", low))) == 1 and sections >= 4:
         add("uniform_sections", 1, f"{sections} sections with identical classes")
 
+    libs = re.findall(r"(lucide|heroicons|font-?awesome|fontawesome|material-?icons|material-?symbols|feather-?icons|phosphor-?icons|ionicons|remixicon|bootstrap-icons|tabler-?icons)", low)
+    if libs:
+        add("icon_library", 2, f"icon library in use ({', '.join(sorted(set(libs)))}) — drop it; draw anything specific yourself")
+
     # Imagery: stock photos and pages that lean on photo slots instead of their own visuals
     stock = re.findall(r"(?:unsplash|pexels|pixabay|shutterstock|istockphoto|gettyimages|picsum\.photos|placehold|placekitten|loremflickr)\.", low)
     if stock:
@@ -165,6 +169,13 @@ def from_styles(styles: dict) -> list[Tell]:
     icon_cards = (styles or {}).get("iconCards") or 0
     if icon_cards >= 3:
         found.append(Tell("icon_feature_cards", 2, f"{icon_cards} icon-title-text cards — the template feature grid; use a list, diagram, annotated product view or varied layout"))
+    tiles = (styles or {}).get("iconTiles") or 0
+    if tiles >= 1:
+        found.append(Tell("icon_tiles", 3, f"{tiles} icon(s) in tinted squares — the AI-template icon tile; remove them"))
+    deco = (styles or {}).get("decorativeIcons") or 0
+    if deco >= 4:
+        found.append(Tell("decorative_icons", 2, f"{deco} decorative icons (badges, bullets, labels, stats) — remove them; "
+                                                    "let type, numbers and layout carry meaning"))
     overlaps = (styles or {}).get("overlaps") or 0
     if overlaps:
         found.append(Tell("text_overlap", 3, f"{overlaps} places where text overlaps other text"))

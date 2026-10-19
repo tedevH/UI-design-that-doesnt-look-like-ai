@@ -61,6 +61,20 @@ color, the product itself, and the client's real photos. So:
 - **Never** hotlink web images, never use stock photography, and never generate photos unless the user
   explicitly asks for generated photos (then run `scripts/photos.py`).
 
+### Icons — almost never
+Generic line icons are the most recognizable AI-template tell: a heart, clock, house, chat bubble, calendar,
+shield or star in a tinted rounded square above every feature; a sparkle or icon in front of every badge,
+label, list item or stat; checkmark bullets everywhere.
+- **Don't decorate with icons.** No icon tiles, no icon-before-every-label, no icon bullets, no icon in pills
+  or eyebrow labels, no star/heart/sparkle ornaments, no icon libraries (Lucide, Heroicons, Font Awesome,
+  Material Icons, Feather, Phosphor). Let typography, numbers, color and layout carry meaning.
+- **Functional icons only, in interfaces:** navigation, buttons and inputs in apps and tools (play, search,
+  close, settings, arrows) — small (16–20px), one consistent stroke, never inside colored tiles.
+- **When a visual would genuinely help, draw something specific** to this brand as part of the art direction
+  (the clinic's yellow front door, a sardine tin, a kiln) at a meaningful size — not a symbol standing in
+  for an idea.
+- Instead of icon bullets use numbers, en dashes, small caps labels or plain well-spaced text.
+
 ### Graphics craft
 - One style per page: same stroke width (e.g. 1.5 or 2px, `stroke-linecap: round`), same corner logic,
   colors only from the palette, consistent level of detail.

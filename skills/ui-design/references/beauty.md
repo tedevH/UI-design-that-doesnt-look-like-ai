@@ -39,7 +39,7 @@ Flat pages look unfinished. Create planes:
   warmer cream, a radial light behind the centerpiece, a duotone. Banned only: purple/blue/pink AI gradients,
   gradient text, neon glow.
 - Fine details: hairline rules, tick marks, small labels, a dotted leader in a price list, a stamp, a
-  hand-drawn underline (an SVG path) under one key word.
+  hand-drawn underline (an SVG path) under one key word. Not generic icons — see "Icons" in rules.md.
 
 ## 4. Color with conviction
 

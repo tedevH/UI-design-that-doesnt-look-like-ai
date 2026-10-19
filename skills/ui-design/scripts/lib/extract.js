@@ -197,6 +197,25 @@
     if (small && iconish && heading && er.width < vw * 0.6) out.iconCards++;
   }
 
+  // Icons: small SVG/icon-font glyphs. Functional ones live in nav, buttons, links and form controls;
+  // the rest are decoration. Icon tiles are icons sitting in a small tinted rounded box.
+  out.decorativeIcons = 0; out.iconTiles = 0; out.functionalIcons = 0;
+  const iconEls = Array.from(document.querySelectorAll("svg, i[class], span[class*='icon'], [data-lucide], [class*='lucide'], [class*='fa-']"));
+  for (const ic of iconEls) {
+    if (ic.parentElement && ic.parentElement.closest("svg")) continue;  // nested svg parts
+    const r = ic.getBoundingClientRect();
+    if (r.width < 6 || r.height < 6 || r.width > 40 || r.height > 40) continue;  // big drawings are illustrations
+    if (getComputedStyle(ic).display === "none") continue;
+    if (ic.closest("nav, button, a, input, select, label, [role=button], [role=tab], header .logo, .brand, [class*='logo']")) { out.functionalIcons++; continue; }
+    out.decorativeIcons++;
+    const box = ic.parentElement;
+    if (box) {
+      const b = box.getBoundingClientRect(), bc = getComputedStyle(box);
+      const tinted = bc.backgroundColor !== "rgba(0, 0, 0, 0)" && bc.backgroundColor !== "transparent";
+      if (tinted && b.width <= 72 && b.height <= 72 && b.width >= r.width + 8 && parseFloat(bc.borderTopLeftRadius) >= 4) out.iconTiles++;
+    }
+  }
+
   const h1 = out.headings.find((h) => h.tag === "h1") || out.headings[0];
   if (h1) {
     const centered = h1.align === "center" || (h1.left > vw * 0.15 && Math.abs(h1.cx - vw / 2) < 30);
