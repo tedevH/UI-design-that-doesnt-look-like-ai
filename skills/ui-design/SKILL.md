@@ -9,7 +9,8 @@ You are the designer. This skill gives you the user's learned taste, ten distinc
 playbooks (landing pages, apps, mobile, portfolios, articles, shops, events, tools, games), the rules that
 separate studio work from AI templates, a guide to making pages genuinely beautiful, and scripts that render
 and check your work. Work like a
-studio: commit to a direction, make its visuals yourself, build it with care, look at the result, fix it, let the user choose, learn.
+studio: commit to a direction, make its visuals yourself, build it right the first time, check it once,
+show it, learn from the reaction.
 
 All script paths below are relative to this skill's base directory. Run them with `python3`.
 If a script says first-time setup is needed, run `bash scripts/setup.sh --photos none` once (~2 minutes).
@@ -27,53 +28,48 @@ show (the flashcard deck, the pricing table, the schedule, the real product UI�
 Invent plausible specifics — names, numbers with units, real-looking data. Ask only if something essential
 is unknowable.
 
-## 2. Choose two directions
+## Speed
 
-Read `references/families.md`. Pick **two different style families**: one the taste file favors, one the
-user hasn't seen much (so their taste keeps being tested). If the user named a style, make both within it
-with different art directions. For each, write an art direction: one-line concept, palette (3–6 hex colors
-with roles), Google Fonts pairing **with weights**, the **graphic language** (what you'll draw — illustration
-style, patterns, diagrams, product UI — and its stroke, detail and color rules), 6–8 sections each composed
-differently, the **centerpiece visual** (see `references/beauty.md` §1), and one signature move. Skip the
-photo-led family unless the user gave you their own photos.
+Aim for roughly the time a plain request would take, plus a minute for checking. Get it right while
+writing instead of in loops: keep planning to a few lines in your head (no long written plans), write the
+page once, then make small targeted `Edit`s — never rewrite the whole file to fix something. One design by
+default; a second only when the user asks to compare.
 
-## 3. Build
+## 2. Choose a direction
 
-One self-contained HTML file per variant in the user's project (default `designs/<slug>/a.html` and `b.html`).
-Follow `references/rules.md` (the floor) **and** `references/beauty.md` (the ceiling). Build the centerpiece
-first and give it real care — it's what makes the page. Draw visuals yourself (inline SVG, CSS, typography,
-product UI in HTML); use the user's photos if they gave any; no stock or generated photos. Apps, tools and
-games must actually work.
+Skim `references/families.md` and pick **one** family — the one the taste file favors for this kind of
+brief, or the best fit if there's no taste yet. Decide quickly: palette (3–6 hex), Google Fonts pairing with
+weights, the graphic language, the **centerpiece visual** (`references/beauty.md` §1), and the sections.
+If the user asks for options, make a second page in a clearly different family. Skip photo-led unless the
+user gave you their own photos.
 
-## 4. Imagery
+## 3. Build — right the first time
 
-Graphics first (see "Imagery" in `references/rules.md`). If the user gave you their own photos, use them with
-relative paths. If a section truly needs a photo only the client has (their team, their venue), leave a
-labeled slot — `data-photo="Your photo: …"` — at most 2–3 per page, and tell the user what to send.
-Only if the user explicitly asks for generated photos, run `python3 scripts/photos.py <page.html> --style
-"…"` in the background (local ≈ 30–40 s per photo) and keep working.
+One self-contained HTML file (default `designs/<slug>/page.html`; `b.html` for a second direction). Write it
+in a single pass with the whole bar in mind: `references/rules.md` (the floor) and `references/beauty.md`
+(the ceiling) — a rich centerpiece, depth, one bold color moment, an expressive type moment, texture,
+gentle motion. Draw visuals yourself (inline SVG, CSS, typography, product UI in HTML); no generic icons,
+no stock or generated photos; use the user's photos if they gave any. Apps, tools and games must work.
+If a section truly needs a photo only the client has, leave a labeled `data-photo="Your photo: …"` slot
+(at most 2–3) and tell the user what to send. Generated photos only if the user explicitly asks
+(`python3 scripts/photos.py <page> --style "…"`, run in the background).
 
-## 5. Check, fix, then make it beautiful (always, before showing anything)
+## 4. One check, one fix pass
 
-Run `python3 scripts/check.py <page.html> --type <page type>`. It renders desktop and mobile screenshots and
-reports measured problems: overlapping text, chunky type, fake telemetry, AI gradients, emoji icons,
-clichés, stock photos, flat type scale.
+Run `python3 scripts/check.py <page.html> --type <page type>` (≈5 s). Then, in one pass:
+- fix every problem it reports with small `Edit`s;
+- Read the **desktop** screenshot once and fix what's clearly off — broken layout, a weak or missing
+  centerpiece, poor contrast, something that looks templated (the beauty checklist in `beauty.md`, as a
+  quick scan, not a separate round).
 
-1. Fix every reported problem.
-2. **Look at both screenshots yourself** (Read the PNG paths it prints) and fix what's off: hierarchy,
-   spacing rhythm, alignment, contrast, mobile layout.
-3. **Beauty pass:** go through the checklist at the end of `references/beauty.md` against the screenshot and
-   fix every "no" — centerpiece, depth, color moment, expressive type, texture, motion. If it's merely tidy,
-   push the centerpiece and color further.
-4. Re-run the check and look again. Stop when it's clean and you'd genuinely be proud to ship it (at most
-   3 passes).
+Re-run `check.py` only if it reported a `[!!!]` problem; otherwise you're done. Never more than two checks.
 
-## 6. Present and ask
+## 5. Present and ask
 
-Show both variants once they're clean. Give the screenshot paths, each variant's family and
-concept in one line, and anything you're unsure about. Then ask **which they prefer and why**. One question.
+Show the page: the screenshot paths, the family and concept in one line, and anything you're unsure about.
+Ask what they think — what to change, or whether they'd like a second direction to compare. One question.
 
-## 7. Learn from every reaction
+## 6. Learn from every reaction
 
 Record it, even partial feedback ("A, but the font is too thin"):
 
@@ -82,19 +78,20 @@ python3 scripts/feedback.py --brief "<brief>" --chosen <winner.html> --rejected 
   --chosen-family <id> --rejected-family <id> --note "<the user's words>"
 ```
 
-For a comment on one page use `--page <file> --note "…"`. Then edit the taste file's **Learned rules**
+Use `--chosen`/`--rejected` when they compared two pages; for a reaction to one page use
+`--page <file> --family <id> --note "…"`. Then edit the taste file's **Learned rules**
 (the path is printed): turn the comment into a short general rule, merge with existing rules, let newer
 feedback replace contradicting rules, keep at most 30. If they asked for changes, apply them, re-check, show again.
 
-## 8. Keep looping until the user is happy
+## 7. Keep going until the user is happy
 
-After recording feedback, start the next round unless the user is done or asked for a single page:
-keep the winner and push it further using the feedback, and pit it against **one challenger** that changes a
-single thing to test an open question about their taste (type pairing, bolder or quieter palette, density,
-photos vs illustration). Say in one line what the challenger tests. Re-read the taste file every round.
+After recording feedback, apply their changes with targeted edits and show it again. When they want options
+(or you're unsure what they'd like), make **one challenger** next to the current page that changes a single
+thing — type pairing, bolder or quieter palette, density, illustration style — so their pick teaches
+something specific. Say in one line what the challenger tests. Re-read the taste file every round.
 Stop when they say it's done or pick the same page twice without changes; hand over the final page.
 
-## 9. Evolve the taste
+## 8. Evolve the taste
 
 `feedback.py` prints **EVOLVE** every 5 reactions. Then run `python3 scripts/evolve.py`, follow its
 instructions to rewrite the taste file (learned rules, house rules, family priority) from all the evidence,

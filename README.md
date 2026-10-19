@@ -7,9 +7,9 @@ learns **your** taste from every design you pick.
 Ask Claude Code something like *"design a landing page for a natural wine bar in Lisbon"*. The skill:
 
 1. **Reads your taste** — rules learned from your past picks override its defaults.
-2. **Designs two directions** in different style families (editorial serif, Swiss minimal, warm crafted,
-   playful color, quiet luxury, photo-led, product UI, expressive, calm productivity, night focus) — one you tend to like, one you haven't
-   seen much, so your taste keeps getting tested.
+2. **Commits to a direction** from one of its style families (editorial serif, Swiss minimal, warm crafted,
+   playful color, quiet luxury, photo-led, product UI, expressive, calm productivity, night focus) — the one your taste favors — and a
+   contrasting second direction whenever you want to compare.
 3. **Builds a centerpiece and makes it beautiful** — a rich illustrated scene, a staged product UI, a type
    composition or generative art; depth, texture, confident color and motion — then **renders and checks**
    each page: overlapping text, chunky fonts, AI clichés (purple gradients,
@@ -18,8 +18,9 @@ Ask Claude Code something like *"design a landing page for a natural wine bar in
 4. **Makes its own visuals** — custom SVG illustration, patterns, diagrams, typography and real product UI —
    instead of stock photos. Give it your own photos and it designs around them; anything only you can
    provide (your team, your space) gets a clearly labeled slot.
-5. **Asks which you prefer and why** — and keeps looping: the winner gets refined against one challenger
-   that tests one thing about your taste, until you're happy.
+5. **Asks what you think** and keeps going: your changes get applied, and when you want options it shows one
+   challenger that tests one thing about your taste. It's built to take about as long as a plain request plus
+   a quick check — one design, one check, targeted fixes.
 6. **Learns.** Every reaction is recorded; every 5, Claude rewrites your taste rules from all the evidence.
    Your taste lives in `~/.claude/ui-design-data/taste/` with its own history, so updates to the skill never
    touch it and any change can be undone.
