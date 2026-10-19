@@ -1,0 +1,11 @@
+{
+  "domain": "styles",
+  "records": [
+    {"id":"style:typographic","title":"Typographic structure","summary":"Use type scale, measure, weight, and spacing to create hierarchy; reserve display behavior for real editorial moments.","tags":["editorial","typography","article","portfolio","reading"],"connects":["pattern:editorial-index","ux:content-hierarchy"]},
+    {"id":"style:quiet-precision","title":"Quiet precision","summary":"Favor exact labels, deliberate alignment, restrained color, and visible state for consequential or data-dense work.","tags":["finance","dashboard","data","forms","b2b","operations"],"connects":["pattern:decision-dashboard","ux:data-context"]},
+    {"id":"style:product-evidence","title":"Product as evidence","summary":"Let believable product UI, real workflow detail, and contextual annotation carry the visual identity.","tags":["saas","software","product","landing","developer","demo"],"connects":["pattern:product-proof","ux:truthful-content"]},
+    {"id":"style:content-led","title":"Content-led composition","summary":"Give source material, photography, artwork, or listings enough space to establish identity; keep controls legible and secondary.","tags":["commerce","media","travel","marketplace","food","content"],"connects":["pattern:media-library","ux:accessible-controls"]},
+    {"id":"style:place-and-material","title":"Place and material","summary":"Use locally meaningful imagery, color, texture, and language only when supported by the actual place, service, or assets.","tags":["hospitality","travel","civic","community","events","place"],"connects":["pattern:search-results","ux:truthful-content"]},
+    {"id":"style:playful-utility","title":"Playful utility","summary":"Use expressive details to reward exploration while keeping task controls, status, and accessibility predictable.","tags":["education","learning","games","consumer","wellness","playful"],"connects":["pattern:single-purpose-tool","ux:accessible-controls"]}
+  ]
+}

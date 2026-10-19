@@ -151,9 +151,10 @@ When `feedback.py` prints `EVOLVE`, read the evidence from `python3 scripts/evol
 
 - `references/page-types.md` — what visual quality means for different kinds of pages
 - `references/product-patterns.md` — task, content, and interaction prompts by product context
-- `data/product-contexts.json` — searchable, offline product-task catalog
-- `data/README.md` — catalog fields and contribution rules
-- `scripts/plan.py` — retrieve a task-centered brief and optional stack guidance
+- `data/product-contexts.json` and `data/knowledge/` — connected offline catalogs for tasks, patterns, visual approaches, charts, and UX checks
+- `data/README.md` and `data/knowledge/README.md` — schemas, graph edges, and contribution rules
+- `scripts/plan.py` — retrieve task-centered prompts, bounded graph neighbors, and optional stack guidance
+- `scripts/validate_knowledge.py` — validate catalog links and representative retrieval cases
 - `references/quality-bar.md` — direction card and critique order
 - `references/evaluation.md` — repeatable blind comparison protocol for design workflows
 - `examples/brief-to-direction.md` — worked example translating a request into content and responsive design decisions

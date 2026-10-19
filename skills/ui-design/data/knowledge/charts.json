@@ -1,0 +1,10 @@
+{
+  "domain": "charts",
+  "records": [
+    {"id":"chart:time-series","title":"Time series","summary":"Use when order over time matters; label units, range, sampling, and comparison, and avoid implying continuity the data lacks.","tags":["time","trend","line chart","monitoring","analytics","history"],"connects":["pattern:decision-dashboard","ux:data-context"]},
+    {"id":"chart:category-comparison","title":"Category comparison","summary":"Use aligned bars for magnitude comparisons; keep baselines honest and labels close to the values.","tags":["bar chart","compare","categories","ranking","sales","survey"],"connects":["pattern:comparison","ux:comparison-integrity"]},
+    {"id":"chart:distribution","title":"Distribution","summary":"Use a distribution view when spread, skew, or outliers matter more than a single average.","tags":["histogram","box plot","distribution","statistics","spread","variance"],"connects":["pattern:decision-dashboard","ux:data-context"]},
+    {"id":"chart:part-to-whole","title":"Part to whole","summary":"Use a simple part-to-whole view only for a small number of meaningful categories with a common total.","tags":["pie","donut","share","composition","percentage","budget"],"connects":["pattern:decision-dashboard","ux:data-context"]},
+    {"id":"chart:table","title":"Comparison table","summary":"Use a table when exact values, multiple attributes, sorting, or accessible row-by-row comparison matter.","tags":["table","exact values","inventory","finance","comparison","data"],"connects":["pattern:comparison","ux:comparison-integrity"]}
+  ]
+}

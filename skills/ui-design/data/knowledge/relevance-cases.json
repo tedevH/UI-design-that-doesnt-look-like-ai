@@ -1,0 +1,12 @@
+{
+  "cases": [
+    {"brief":"analytics dashboard showing a time series and data freshness", "expected":"ux:data-context"},
+    {"brief":"compare monthly pricing plans and total cost in a table", "expected":"ux:comparison-integrity"},
+    {"brief":"search marketplace listings with filters and empty results", "expected":"ux:filter-state"},
+    {"brief":"editorial article index with strong typography and reading hierarchy", "expected":"pattern:editorial-index"},
+    {"brief":"SaaS landing page with a real workflow demo and truthful product evidence", "expected":"pattern:product-proof"},
+    {"brief":"accessible media player controls with keyboard and reduced motion", "expected":"ux:accessible-controls"},
+    {"brief":"calculator utility that validates inputs and gives a clear result", "expected":"ux:input-feedback"},
+    {"brief":"payment form explains errors and allows recovery before confirmation", "expected":"ux:recovery"}
+  ]
+}
