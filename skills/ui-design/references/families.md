@@ -1,8 +1,10 @@
 # Style families
 
-Families work for every page type — landing pages, apps, portfolios, articles, tools. Pick two different
-families per brief. Each lists its look, its typography, and notes on strong real
-sites in the family (written by a local vision model from screenshots). Learn the principles; never copy.
+Use these as optional art-direction vocabulary when it helps explain a visual direction. Choose one family
+as a starting point, then tailor its composition, materials, imagery, type, and color to the actual product.
+A page may combine compatible traits from two families, but do not combine labels just to make a direction
+sound more specific. Make a second direction only when the user asks to compare. Learn principles from
+references; never copy a site's layout or identity.
 
 ## editorial-serif — Editorial serif
 
