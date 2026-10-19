@@ -125,7 +125,7 @@ Inspect both desktop and mobile screenshots. Judge the page against its art dire
 - Do interactions have useful states and feedback?
 - Are accessibility and reduced-motion basics respected?
 
-Use the critique order in `references/quality-bar.md` and fix the earliest consequential mismatch first: purpose, identity, hierarchy, composition, or specificity. Do not spend the fix pass polishing tiny details while the page still has no strong idea. Re-render after meaningful changes. Do not accept a clean detector report as proof of a beautiful page; do not add a visual flourish just to satisfy a checklist.
+Use the critique order in `references/quality-bar.md` and fix the earliest consequential mismatch first: purpose, identity, hierarchy, composition, or specificity. Do not spend the fix pass polishing tiny details while the page still has no strong idea. Re-render after meaningful changes. Do not accept a clean detector report as proof of a beautiful page; do not add a visual flourish just to satisfy a checklist. When comparing against another workflow or claiming an improvement, use the paired, blind review protocol in `references/evaluation.md`; never treat a heuristic count or one model rating as proof of superiority.
 
 For HTML checks, look at both screenshots printed by `check.py`. Fix all serious measured issues and clear visual defects. A second check is appropriate after fixes. Keep the loop short and targeted; stop when the agreed visual direction is present and the design is coherent at the tested sizes.
 
@@ -151,8 +151,10 @@ When `feedback.py` prints `EVOLVE`, read the evidence from `python3 scripts/evol
 
 - `references/page-types.md` — what visual quality means for different kinds of pages
 - `references/product-patterns.md` — task, content, and interaction prompts by product context
-- `references/quality-bar.md` — direction card, critique order, and evaluation guidance
+- `references/quality-bar.md` — direction card and critique order
+- `references/evaluation.md` — repeatable blind comparison protocol for design workflows
 - `examples/brief-to-direction.md` — worked example translating a request into content and responsive design decisions
+- `examples/showcase/` — a complete static, data-led interface specimen with a documented direction
 - `references/families.md` — optional art-direction vocabulary and references
 - `references/rules.md` — practical design and implementation defaults
 - `references/beauty.md` — deeper composition, image, type, and visual craft guidance
