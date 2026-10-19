@@ -38,7 +38,7 @@ For a standalone design, choose the simplest useful format. A single HTML file i
 
 Script paths in this guide are relative to the skill directory. Run a script from that directory or use its full path. If a visual check reports that Playwright or Chromium is missing, run `bash scripts/setup.sh` once from the skill directory.
 
-Decide the page type from the user's goal, not from visual appearance alone. Read the relevant section of `references/page-types.md`. For product-specific content and interaction, consult `references/product-patterns.md`; use it to identify what the user must see and do, never as a template. Infer ordinary missing details; ask only when a decision would materially change the design or required functionality.
+Decide the page type from the user's goal, not from visual appearance alone. Read the relevant section of `references/page-types.md`. For a complex brief or an unfamiliar product domain, run `python3 scripts/plan.py "<brief>" --stack <stack-id>` to retrieve relevant task and stack prompts. Review the match evidence: the catalog is an offline lookup, not a style assignment or certainty score. For product-specific content and interaction, consult `references/product-patterns.md`; use it to identify what the user must see and do, never as a template. Infer ordinary missing details; ask only when a decision would materially change the design or required functionality.
 
 ### 2. Find the visual idea
 
@@ -151,11 +151,15 @@ When `feedback.py` prints `EVOLVE`, read the evidence from `python3 scripts/evol
 
 - `references/page-types.md` — what visual quality means for different kinds of pages
 - `references/product-patterns.md` — task, content, and interaction prompts by product context
+- `data/product-contexts.json` — searchable, offline product-task catalog
+- `data/README.md` — catalog fields and contribution rules
+- `scripts/plan.py` — retrieve a task-centered brief and optional stack guidance
 - `references/quality-bar.md` — direction card and critique order
 - `references/evaluation.md` — repeatable blind comparison protocol for design workflows
 - `examples/brief-to-direction.md` — worked example translating a request into content and responsive design decisions
 - `examples/showcase/` — a complete static, data-led interface specimen with a documented direction
 - `references/families.md` — optional art-direction vocabulary and references
+- `references/stacks/README.md` — index of framework-specific implementation guides
 - `references/rules.md` — practical design and implementation defaults
 - `references/beauty.md` — deeper composition, image, type, and visual craft guidance
 - `scripts/taste.py` — read personal design preferences

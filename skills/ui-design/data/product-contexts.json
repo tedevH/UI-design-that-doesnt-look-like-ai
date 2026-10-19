@@ -1,0 +1,171 @@
+{
+  "schema_version": 1,
+  "description": "Original task-centered lookup data. Matches are prompts for human interpretation, not an automatic style assignment.",
+  "contexts": [
+    {
+      "id": "saas-product",
+      "title": "SaaS product marketing",
+      "aliases": ["saas", "software product", "subscription software", "b2b software", "product landing page", "app landing page"],
+      "primary_tasks": ["Understand the product and the job it performs", "Judge whether it fits the team's workflow", "Try it, book a demo, or compare plans"],
+      "decision_inputs": ["Who uses the product and who approves it?", "Which workflow is hard to understand from a short explanation?", "What can be shown honestly today?"],
+      "content_to_show": ["A credible product screen or workflow", "A concrete use case with real labels and states", "Pricing, trial, demo, or integration details when known"],
+      "interaction_states": ["Working product controls in the sample UI", "Primary conversion action and its destination", "Disclosure and error states for forms"],
+      "visual_opportunities": ["Make one real product workflow the focal material", "Use the interface's own information structure as the graphic language", "Show context around a screen so it is legible"],
+      "common_misses": ["Invented dashboard metrics", "A generic feature-card grid standing in for product evidence", "Unverified customer logos, testimonials, or performance claims"]
+    },
+    {
+      "id": "analytics-operations",
+      "title": "Analytics and operations dashboard",
+      "aliases": ["analytics", "dashboard", "operations", "monitoring", "metrics", "business intelligence", "data visualization", "charts"],
+      "primary_tasks": ["Notice what changed", "Understand why the change matters", "Choose the next investigation or action"],
+      "decision_inputs": ["What decision is this view supporting?", "What comparison and time range make the signal meaningful?", "Which data is live, sampled, or illustrative?"],
+      "content_to_show": ["One primary metric with units and comparison", "A labeled chart or table with time context", "Filters, data freshness, and an actionable anomaly when relevant"],
+      "interaction_states": ["Selected time range and filters", "Loading, empty, stale, and error states", "Drill-down or export path if the task needs it"],
+      "visual_opportunities": ["Let a meaningful data pattern create the focal point", "Use restrained status colors with a clear legend", "Balance dense tables and summaries by decision importance"],
+      "common_misses": ["A grid of unrelated KPI tiles", "Charts with no units or readable labels", "Color-only status and precision that the data cannot support"]
+    },
+    {
+      "id": "finance-tools",
+      "title": "Finance and money tools",
+      "aliases": ["banking", "fintech", "budget", "payments", "invoice", "billing", "investment", "money", "financial"],
+      "primary_tasks": ["Understand amount, timing, fees, and status", "Compare options or assess exposure", "Commit, cancel, or recover from an action"],
+      "decision_inputs": ["What money or obligation is at stake?", "Which fees, dates, and conditions change the decision?", "Can the action be reversed?"],
+      "content_to_show": ["Exact totals, currency, units, and dates", "Fees, terms, and status labels near the relevant decision", "A clear confirmation or recovery path"],
+      "interaction_states": ["Review before committing", "Pending, failed, reversed, and completed states", "Input validation that explains the next step"],
+      "visual_opportunities": ["Use aligned tabular figures and quiet hierarchy", "Make risk and timing legible without alarmist color", "Reserve emphasis for the decision and its consequence"],
+      "common_misses": ["Fake account balances or returns", "Urgency timers and ambiguous green/red meanings", "Decorative charts detached from a user decision"]
+    },
+    {
+      "id": "healthcare-service",
+      "title": "Healthcare and care services",
+      "aliases": ["healthcare", "clinic", "medical", "doctor", "dental", "therapy", "patient", "pharmacy", "care provider"],
+      "primary_tasks": ["Find a trustworthy service or answer", "Complete a care-related task", "Know what will happen and how private information is used"],
+      "decision_inputs": ["Is this for urgent care, routine care, or general information?", "What details are confirmed by the provider?", "What accessibility or language needs matter?"],
+      "content_to_show": ["Services, eligibility, location, access, and contact details", "Plain-language next steps and expectations", "Privacy and emergency guidance where relevant"],
+      "interaction_states": ["Appointment availability and confirmation", "Clear form errors and alternatives to digital contact", "Accessible focus, labels, and status feedback"],
+      "visual_opportunities": ["Create reassurance through clarity and wayfinding", "Choose warmth or clinical precision from the real context", "Make the next action visible without pressure"],
+      "common_misses": ["Unsupported treatment outcomes", "Invented clinician identities or testimonials", "Vague wellness language instead of service facts"]
+    },
+    {
+      "id": "learning-study",
+      "title": "Learning and study products",
+      "aliases": ["education", "learning", "study app", "flashcards", "course", "student", "tutor", "lesson", "classroom"],
+      "primary_tasks": ["Learn or recall a specific concept", "Understand progress and gaps", "Know what to practice next"],
+      "decision_inputs": ["What is the learner trying to understand?", "What does success mean for this session?", "Which feedback helps learning rather than just engagement?"],
+      "content_to_show": ["A real lesson, problem, passage, or practice item", "Progress tied to meaningful learning outcomes", "A clear next step and feedback explanation"],
+      "interaction_states": ["Answer, reveal, retry, and completion states", "Progress that remains understandable when interrupted", "Accessible reading and keyboard interaction"],
+      "visual_opportunities": ["Treat the learning material as the main reading surface", "Use progress as a quiet orientation cue", "Make recall or annotation feel focused and tactile"],
+      "common_misses": ["Streaks and badges that replace learning feedback", "A timer competing with the lesson", "Invented performance claims or grades"]
+    },
+    {
+      "id": "local-hospitality",
+      "title": "Local business, food, and hospitality",
+      "aliases": ["restaurant", "cafe", "coffee shop", "bakery", "bar", "hotel", "hospitality", "local business", "menu", "visit us"],
+      "primary_tasks": ["Decide whether to visit, book, or order", "Check current practical details", "Understand the place and what makes it worth choosing"],
+      "decision_inputs": ["Where is it and when is it open?", "What is available and at what price?", "What real aspect of the place can anchor the design?"],
+      "content_to_show": ["Location, hours, contact, access, and booking or ordering path", "Menu or service details and prices when known", "Real atmosphere, materials, people, or process"],
+      "interaction_states": ["Current hours and availability", "Reservation/order confirmation and change path", "Mobile-ready map and contact actions"],
+      "visual_opportunities": ["Use the actual place, product, or process as a visual anchor", "Let a menu or schedule create typography and rhythm", "Pair photography with precise logistical content"],
+      "common_misses": ["Stock lifestyle photos that could describe any venue", "Fictional awards and reviews", "Hidden prices or vague 'discover our story' filler"]
+    },
+    {
+      "id": "product-commerce",
+      "title": "Product commerce and retail",
+      "aliases": ["ecommerce", "e-commerce", "shop", "store", "retail", "product page", "checkout", "shopping", "catalog"],
+      "primary_tasks": ["Inspect an item", "Compare variants and fit", "Understand delivery, returns, and care before buying"],
+      "decision_inputs": ["What details reduce uncertainty about the item?", "Which variants change price or availability?", "What purchase information must be shown before checkout?"],
+      "content_to_show": ["Product imagery at useful scale and angles", "Price, variants, availability, delivery, returns, and care", "Comparison details when multiple options exist"],
+      "interaction_states": ["Variant selection and unavailable states", "Cart feedback and price updates", "Validation and recovery across checkout"],
+      "visual_opportunities": ["Give the object room and credible scale", "Use swatches, specs, and packaging as part of the information design", "Keep price and purchase conditions easy to scan"],
+      "common_misses": ["Fake reviews or scarcity claims", "Tiny product imagery", "Controls that look selectable but do nothing"]
+    },
+    {
+      "id": "portfolio-agency",
+      "title": "Portfolio, creator, and agency work",
+      "aliases": ["portfolio", "designer", "creative studio", "agency", "freelancer", "case study", "work samples", "artist"],
+      "primary_tasks": ["Assess the quality and relevance of the work", "Understand the creator's role and point of view", "Make contact or discuss a project"],
+      "decision_inputs": ["Which projects best represent the work?", "What role and context can be stated accurately?", "What should a prospective client do next?"],
+      "content_to_show": ["The work itself at a useful scale", "Role, context, date, and outcome when known", "Contact path and availability when relevant"],
+      "interaction_states": ["Project navigation and media controls", "Accessible image descriptions and captions", "Working contact or inquiry path"],
+      "visual_opportunities": ["Let the projects define page rhythm and color", "Create an authored index or case-study composition", "Use the creator's own artifacts as graphic material"],
+      "common_misses": ["Generic thumbnail grids", "Unverified outcome metrics", "A hero that consumes more space than the work"]
+    },
+    {
+      "id": "editorial-docs",
+      "title": "Editorial, knowledge, and documentation",
+      "aliases": ["blog", "documentation", "docs", "article", "editorial", "knowledge base", "guide", "publication", "newsletter"],
+      "primary_tasks": ["Read and understand", "Scan to find a specific answer", "Navigate and return to useful material"],
+      "decision_inputs": ["Is the user reading linearly or looking up a detail?", "What figures, caveats, or sources need to stay adjacent?", "How does navigation help orientation?"],
+      "content_to_show": ["Title and author/context when useful", "Clear heading structure, figures, and references", "Wayfinding for long or interconnected material"],
+      "interaction_states": ["Contents navigation and current section", "Code, copy, search, or citation states where relevant", "Readable behavior under zoom and text scaling"],
+      "visual_opportunities": ["Use measure, annotations, captions, footnotes, and image cadence", "Let typography support both reading and scanning", "Create deliberate shifts between text and supporting material"],
+      "common_misses": ["Marketing layouts around long-form reading", "Weak heading hierarchy", "Callouts that interrupt the reading flow"]
+    },
+    {
+      "id": "events-community",
+      "title": "Events and communities",
+      "aliases": ["event", "conference", "meetup", "festival", "community", "workshop", "webinar", "concert", "registration"],
+      "primary_tasks": ["Decide whether the event is relevant", "Understand when and where it happens", "Register and prepare to attend"],
+      "decision_inputs": ["What is confirmed about schedule and participants?", "What access format and time zone apply?", "What does attendance cost and require?"],
+      "content_to_show": ["Date, time zone, venue or access link", "Schedule, participants, cost, and registration status", "Accessibility and practical attendance details"],
+      "interaction_states": ["Registration, waitlist, and sold-out states", "Calendar and directions actions", "Clear change and cancellation information"],
+      "visual_opportunities": ["Use a real artifact, venue, or subject cue", "Balance atmosphere with high-scan logistics", "Let schedule structure create a distinctive composition"],
+      "common_misses": ["Stock conference imagery", "Invented speakers", "A registration button with no event details"]
+    },
+    {
+      "id": "utility-creator-tool",
+      "title": "Utilities and creator tools",
+      "aliases": ["utility", "calculator", "converter", "generator", "editor", "creator tool", "upload tool", "format tool"],
+      "primary_tasks": ["Complete one focused task", "Understand the result and its limits", "Copy, export, or reuse the output"],
+      "decision_inputs": ["What are the minimum inputs?", "What constraints or assumptions affect the result?", "What output format is useful next?"],
+      "content_to_show": ["Inputs, defaults, and constraints", "Live or submitted result with units/context", "Copy, download, or share path when needed"],
+      "interaction_states": ["Empty, invalid, processing, result, and failure", "Keyboard operation and clear focus order", "Confirmation for destructive reset or replacement"],
+      "visual_opportunities": ["Make the input-output relationship the composition", "Give the result enough prominence to be useful", "Use progressive disclosure only for secondary options"],
+      "common_misses": ["Marketing framing around a one-screen utility", "Results that cannot be reused", "Controls with unclear defaults"]
+    },
+    {
+      "id": "booking-marketplace",
+      "title": "Booking and marketplaces",
+      "aliases": ["booking", "marketplace", "appointment", "reservation", "rental", "listing", "availability calendar", "service provider"],
+      "primary_tasks": ["Find a suitable listing or time", "Compare total cost and fit", "Reserve and understand what happens next"],
+      "decision_inputs": ["Which criteria define a suitable match?", "What fees, location, and cancellation rules apply?", "How trustworthy and current is availability?"],
+      "content_to_show": ["Search criteria, relevant results, and comparison facts", "Total price, fees, location, and availability", "Provider/service details and cancellation terms"],
+      "interaction_states": ["Search, filtered, no results, and loading", "Selected date/time and unavailable slots", "Booking confirmation, cancellation, and modification"],
+      "visual_opportunities": ["Make comparison easy without flattening all results into identical tiles", "Keep total price and availability adjacent", "Use maps or calendars when they directly answer the task"],
+      "common_misses": ["Hidden fees", "Fake scarcity or reviews", "A calendar that is difficult to scan or operate"]
+    },
+    {
+      "id": "public-information",
+      "title": "Public information and civic services",
+      "aliases": ["government", "municipal", "public service", "civic", "city service", "permit", "benefits", "transport information"],
+      "primary_tasks": ["Find the correct service or policy", "Understand eligibility and required steps", "Complete the task without ambiguity"],
+      "decision_inputs": ["Who is eligible and what evidence is needed?", "What is the official source and update date?", "Can a person complete this without digital-only access?"],
+      "content_to_show": ["Eligibility, required documents, deadlines, and official contact", "Step-by-step process and exceptions", "Language, accessibility, and offline alternatives"],
+      "interaction_states": ["Progress and save/resume where relevant", "Plain-language validation and error recovery", "Current service availability and maintenance notices"],
+      "visual_opportunities": ["Use strong wayfinding and procedural hierarchy", "Make state and requirements scannable", "Design for varied literacy, language, and device conditions"],
+      "common_misses": ["Unexplained internal terminology", "Decorative complexity that hides eligibility", "Unverified policy details or inaccessible PDF-only tasks"]
+    },
+    {
+      "id": "developer-tool",
+      "title": "Developer tools and technical platforms",
+      "aliases": ["developer tool", "api", "sdk", "ide", "code editor", "deployment", "infrastructure", "devops", "database platform"],
+      "primary_tasks": ["Understand the integration or workflow", "Get a working first result", "Diagnose failures and choose a next action"],
+      "decision_inputs": ["Which stack, environment, and permission model apply?", "What is the shortest credible success path?", "Which error is actionable and which is infrastructure context?"],
+      "content_to_show": ["A real code or configuration example", "Expected output and version/environment assumptions", "Errors, logs, and recovery path"],
+      "interaction_states": ["Copy feedback and code language context", "Progress, failure, retry, and permission states", "Version selection and deprecation information"],
+      "visual_opportunities": ["Use code, logs, topology, or a real interface as visual material", "Treat density as an information hierarchy problem", "Make a successful workflow legible without fake terminal decoration"],
+      "common_misses": ["Fake syntax and non-runnable snippets", "Unexplained telemetry labels", "Hiding version and permission assumptions"]
+    },
+    {
+      "id": "media-entertainment",
+      "title": "Media and entertainment",
+      "aliases": ["music app", "streaming", "podcast", "video", "game", "entertainment", "media library", "playlist"],
+      "primary_tasks": ["Discover or resume meaningful content", "Understand media details and access", "Control playback or participation"],
+      "decision_inputs": ["Is the main task discovery, playback, collection, or purchase?", "What content art is licensed and available?", "Which controls must remain reachable?"],
+      "content_to_show": ["Real or clearly labeled sample content", "Useful metadata and availability", "Progress, saved state, and controls relevant to the task"],
+      "interaction_states": ["Play, pause, seek, loading, and unavailable", "Keyboard or touch controls", "Reduced-motion and sound behavior"],
+      "visual_opportunities": ["Let the content's own visual language shape the interface", "Use motion only to reinforce state or atmosphere", "Build discovery rhythm from real metadata and artwork"],
+      "common_misses": ["Generic dark mode with neon accents", "Decorative media cards with no real interaction", "Autoplay or motion that takes control from the user"]
+    }
+  ]
+}
