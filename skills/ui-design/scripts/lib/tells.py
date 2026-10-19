@@ -159,6 +159,12 @@ def from_styles(styles: dict) -> list[Tell]:
         found.append(Tell("centered_hero", 1, "centered hero headline"))
     if f["emoji"] >= 3:
         found.append(Tell("emoji_icons", 3, f"{int(f['emoji'])} emoji"))
+    wrapped = (styles or {}).get("wrappedButtons") or []
+    if wrapped:
+        found.append(Tell("wrapped_button", 3, f"button text wraps onto several lines: {', '.join(wrapped[:3])} — widen it, shorten the label or use white-space: nowrap"))
+    icon_cards = (styles or {}).get("iconCards") or 0
+    if icon_cards >= 3:
+        found.append(Tell("icon_feature_cards", 2, f"{icon_cards} icon-title-text cards — the template feature grid; use a list, diagram, annotated product view or varied layout"))
     overlaps = (styles or {}).get("overlaps") or 0
     if overlaps:
         found.append(Tell("text_overlap", 3, f"{overlaps} places where text overlaps other text"))

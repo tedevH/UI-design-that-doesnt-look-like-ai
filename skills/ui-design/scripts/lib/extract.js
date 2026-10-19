@@ -162,6 +162,41 @@
   }
   out.overlaps = overlaps;
 
+  // Buttons whose label wraps onto several lines (a phone number squeezed into a pill, etc.).
+  out.wrappedButtons = [];
+  for (const el of document.querySelectorAll("a, button")) {
+    const cs = getComputedStyle(el), r = el.getBoundingClientRect();
+    const looksLikeButton = (cs.backgroundColor !== "rgba(0, 0, 0, 0)" && cs.backgroundColor !== "transparent") ||
+      parseFloat(cs.borderTopWidth) > 0 || parseFloat(cs.borderTopLeftRadius) >= 12;
+    if (!looksLikeButton || r.width < 2 || r.height < 2 || !el.innerText.trim()) continue;
+    // Intentionally multi-line buttons (label + sub-label in block children) are fine.
+    if (Array.from(el.querySelectorAll("*")).some((c) => ["block", "flex", "grid", "list-item"].includes(getComputedStyle(c).display) && c.innerText?.trim())) continue;
+    // Count distinct line boxes of the text itself (icons excluded).
+    const tops = new Set();
+    const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+    while (walker.nextNode()) {
+      const n = walker.currentNode;
+      if (!n.textContent.trim()) continue;
+      const range = document.createRange(); range.selectNodeContents(n);
+      for (const q of range.getClientRects()) if (q.width > 1) tops.add(Math.round(q.top / 4));
+    }
+    const lh = parseFloat(cs.lineHeight) || parseFloat(cs.fontSize) * 1.3;
+    const textH = tops.size * lh;
+    if (textH > lh * 1.8 && el.innerText.trim().length < 40) out.wrappedButtons.push(el.innerText.trim().replace(/\s+/g, " ").slice(0, 40));
+  }
+
+  // Icon cards: a box that opens with a small icon, then a heading — the feature-grid template.
+  out.iconCards = 0;
+  for (const el of all) {
+    const first = el.firstElementChild;
+    if (!first || el.children.length < 2) continue;
+    const fr = first.getBoundingClientRect(), er = el.getBoundingClientRect();
+    const small = fr.width > 0 && fr.width <= 64 && fr.height <= 64;
+    const iconish = first.tagName === "svg" || first.querySelector?.("svg, img") || /icon/i.test(first.className?.baseVal ?? first.className ?? "");
+    const heading = Array.from(el.children).slice(1, 3).some((c) => /^H[2-5]$/.test(c.tagName));
+    if (small && iconish && heading && er.width < vw * 0.6) out.iconCards++;
+  }
+
   const h1 = out.headings.find((h) => h.tag === "h1") || out.headings[0];
   if (h1) {
     const centered = h1.align === "center" || (h1.left > vw * 0.15 && Math.abs(h1.cx - vw / 2) < 30);

@@ -28,7 +28,10 @@ but not finished.
 
 ## Layout
 - A real grid with intentional asymmetry. Every section composed differently.
-- Never the AI template: centered hero → three identical icon cards → testimonial → CTA band.
+- Never the AI template: centered hero → three identical icon cards → testimonial → CTA band. On landing
+  pages avoid grids of icon + title + blurb cards altogether: show features as a list with real detail, a
+  diagram, an annotated view of the product, a timeline, or sections with different layouts.
+- Buttons never wrap: labels are short and `white-space: nowrap`; long things like phone numbers are links, not pills.
 - Fixed headers never cover content: add top padding equal to the header height.
 - No negative margins or absolute positioning that makes text collide.
 
