@@ -1,0 +1,12 @@
+{
+  "name": "tedevh-design",
+  "description": "UI design that doesn't look like AI",
+  "owner": { "name": "tedevH" },
+  "plugins": [
+    {
+      "name": "ui-design",
+      "source": "./",
+      "description": "Studio-quality web design with a taste that learns from your picks."
+    }
+  ]
+}

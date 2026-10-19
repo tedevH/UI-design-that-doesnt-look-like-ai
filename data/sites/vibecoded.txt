@@ -1,8 +1,0 @@
-# URLs of sites that look AI-generated. Collect these yourself:
-# - public galleries/showcases of AI site builders (look for projects on their
-#   default hosting subdomains),
-# - "I built this in a weekend with AI" launch posts,
-# - template marketplaces for AI-builder templates.
-# Faster: run `notai negatives`, which generates hundreds of archetypal
-# vibecoded pages locally from data/briefs.txt.
-# One URL per line.

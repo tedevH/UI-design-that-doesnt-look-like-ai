@@ -1,0 +1,8 @@
+{
+  "name": "ui-design",
+  "version": "1.0.0",
+  "description": "Design websites and landing pages that look made by a design studio, not AI — and learn your taste from every pick.",
+  "author": { "name": "tedevH" },
+  "repository": "https://github.com/tedevH/UI-design-that-doesnt-look-like-ai",
+  "keywords": ["design", "landing-page", "ui", "web-design", "taste"]
+}
