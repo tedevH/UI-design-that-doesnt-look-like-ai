@@ -224,7 +224,7 @@
 
   // Objective checks to complement, not replace, visual inspection.
   const parseColor = (value) => {
-    const m = value && value.match(/rgba?\\((\\d+),\\s*(\\d+),\\s*(\\d+)(?:,\\s*([\\d.]+))?\\)/);
+    const m = value && value.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)/);
     return m ? { r: +m[1], g: +m[2], b: +m[3], a: m[4] === undefined ? 1 : +m[4] } : null;
   };
   const composite = (fg, bg) => {
@@ -265,7 +265,7 @@
     const ratio = contrast(composite(fg, bg), bg);
     const size = px(cs.fontSize), weight = parseInt(cs.fontWeight, 10) || 400;
     const minimum = size >= 24 || (size >= 18.66 && weight >= 700) ? 3 : 4.5;
-    if (ratio < minimum) lowContrast.push({ text: own.replace(/\\s+/g, " ").slice(0, 48), ratio: Math.round(ratio * 100) / 100, minimum });
+    if (ratio < minimum) lowContrast.push({ text: own.replace(/\s+/g, " ").slice(0, 48), ratio: Math.round(ratio * 100) / 100, minimum });
   }
 
   const unlabeledControls = [];
@@ -274,7 +274,7 @@
   for (const el of controls) {
     const r = el.getBoundingClientRect(), cs = getComputedStyle(el);
     if (!visible(el, r, cs)) continue;
-    const labelledBy = (el.getAttribute("aria-labelledby") || "").split(/\\s+/).filter(Boolean)
+    const labelledBy = (el.getAttribute("aria-labelledby") || "").split(/\s+/).filter(Boolean)
       .map((id) => document.getElementById(id)?.innerText || "").join(" ").trim();
     const labels = el.labels ? Array.from(el.labels).map((l) => l.innerText).join(" ").trim() : "";
     const imageAlt = Array.from(el.querySelectorAll("img[alt]")).map((img) => img.alt).join(" ").trim();
