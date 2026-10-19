@@ -1,31 +1,23 @@
 # UI design that doesn't look like AI
 
-A Claude Code skill that designs websites and app interfaces the way a design studio would — landing pages,
-study apps, dashboards, mobile screens, portfolios, blogs, shops, event pages, tools and small games — and
-learns **your** taste from every design you pick.
+A design skill for building and improving websites and app interfaces with product-specific art direction, deliberate composition, and careful implementation. It is for landing pages, software, dashboards, mobile screens, portfolios, editorial pages, shops, events, utilities, and small games.
 
-Ask Claude Code something like *"design a landing page for a natural wine bar in Lisbon"*. The skill:
+The central idea is simple: a design should grow from the product, its audience, and the work a person came to do. A list of banned styles cannot make a page distinctive. This skill helps turn a brief into a visual premise, build that premise in the user's project, and critique the rendered result at desktop and mobile sizes.
 
-1. **Reads your taste** — rules learned from your past picks override its defaults.
-2. **Commits to a direction** from one of its style families (editorial serif, Swiss minimal, warm crafted,
-   playful color, quiet luxury, photo-led, product UI, expressive, calm productivity, night focus) — the one your taste favors — and a
-   contrasting second direction whenever you want to compare.
-3. **Composes before decorating** — the page has a clear first read, intentional rhythm, real product or
-   brand content, and a visual treatment chosen for the idea. Nothing is added just to satisfy a checklist.
-4. **Builds in context** — it follows your existing framework and design system, uses your real assets, and
-   creates custom graphics only when they add meaning. Standalone HTML is reserved for standalone concepts.
-5. **Inspects the rendered design** at desktop and mobile sizes. It critiques the concept, hierarchy,
-   composition, specificity, responsiveness, and interaction states, then fixes the most consequential
-   mismatch first.
-6. **Learns.** Every reaction is recorded; every 5, Claude rewrites your taste rules from all the evidence.
-   Your taste lives in `~/.claude/ui-design-data/taste/` with its own history, so updates to the skill never
-   touch it and any change can be undone.
+## What it does
+
+1. **Reads the project before designing.** It identifies the stack, existing visual language, available assets, and relevant screens, then works in that context.
+2. **Finds a product-specific visual premise.** A short direction card connects audience, task, hierarchy, composition, visual system, interaction, responsive behavior, and restraint.
+3. **Uses references as prompts, not templates.** Page-type guidance, product patterns, and style families help ask better questions without prescribing a stock layout.
+4. **Builds real content and behavior.** It prioritizes credible product UI, useful page content, working controls, truthful claims, and the assets the user actually has.
+5. **Inspects rendered work.** The standalone HTML checker captures desktop and mobile screenshots, reports measurable layout/accessibility signals separately from subjective style signals, and saves a JSON report. It does not claim to judge beauty automatically.
+6. **Learns the user's preferences.** Feedback can update a personal taste file without modifying the shared skill or skill reference files.
 
 ## Install
 
-As a plugin (inside Claude Code):
+As a plugin inside Claude Code:
 
-```
+```text
 /plugin marketplace add tedevH/UI-design-that-doesnt-look-like-ai
 /plugin install ui-design@tedevh-design
 ```
@@ -37,29 +29,51 @@ git clone https://github.com/tedevH/UI-design-that-doesnt-look-like-ai ~/.claude
 ln -s ~/.claude/ui-design-skill/skills/ui-design ~/.claude/skills/ui-design
 ```
 
-The first time it runs, Claude runs `scripts/setup.sh` (about 2 minutes: a Python environment and a
-headless browser for screenshots). Requirements: Python 3.10+ and Claude Code.
+Requirements: Python 3.10+ and Claude Code. The first visual check needs the optional Python and headless browser environment; install it from the skill directory:
 
-Generated photos are off by default — the skill draws its own graphics. If you ever want them, run
-`bash scripts/setup.sh --photos local` (free, Apple Silicon, ~10 GB FLUX.1-schnell download) or
-`--photos gemini` (~$0.03 per photo, needs `GEMINI_API_KEY`), then ask Claude for generated photos.
+```bash
+bash scripts/setup.sh
+```
+
+To check a standalone HTML file and choose contextual style signals:
+
+```bash
+python3 scripts/check.py ./page.html --type landing
+```
+
+Supported page types: `landing`, `app`, `mobile`, `portfolio`, `article`, `commerce`, `event`, `tool`, and `game`. The checker writes screenshots and `check.json` next to the input file. For an existing application, use its actual dev server and inspect the real route; the standalone checker is not a substitute for application-level visual review.
+
+Generated photos are off by default. Optional photo generation can be configured with `bash scripts/setup.sh --photos local` or `--photos gemini`; see the setup script for requirements and cost details.
 
 ## What's inside
 
-```
+```text
 skills/ui-design/
-  SKILL.md                    the art-direction and implementation workflow
-  references/rules.md         contextual design and implementation defaults
-  references/beauty.md        composition, imagery, type, and visual craft
-  references/page-types.md    playbooks for landing pages, apps, mobile, portfolios, articles, shops, events, tools, games
-  references/families.md      ten style families, with notes on strong real sites in each
-  references/taste-template.md   the blank taste every user starts from
-  scripts/                    taste, check, photos, feedback, evolve, setup (+ a small renderer and detector)
+  SKILL.md                         workflow for art direction, implementation, and critique
+  references/
+    page-types.md                  page-specific quality and structure prompts
+    product-patterns.md            tasks, content, and interaction by product context
+    quality-bar.md                 direction card, critique order, evaluation guidance
+    families.md                    optional visual vocabulary and references
+    rules.md                       practical design and implementation guidance
+    beauty.md                      composition, image, type, and visual craft
+    taste-template.md              starter preferences for a new user
+  examples/
+    brief-to-direction.md          worked example from request to responsive design decisions
+  scripts/
+    check.py                        standalone render, measurements, and style signals
+    lib/audit.py                    objective layout and accessibility signals
+    lib/tells.py                    subjective heuristics for human review
+    taste.py, feedback.py, evolve.py personal preference workflow
+    setup.sh, photos.py             optional environment and photo tools
 ```
 
-## Where this came from
+## Quality and limits
 
-The `research` branch has the pipeline used to build this: scraping ~190 well-designed and corporate sites,
-a vibecoded-page detector, a screenshot critic, style clustering, local-model fine-tuning experiments, and a
-with/without-skill evaluation. The lessons from it are baked into `rules.md` and `families.md`; the skill
-itself doesn't need any of it.
+The checker can report things such as horizontal overflow, broken images, missing accessible names, and possible contrast issues. It also detects patterns that merit a human look. Those style signals are not pass/fail rules: a centered hero, serif typeface, icon library, gradient, or card grid can be exactly right for a particular brief.
+
+A polished result still requires looking at the actual render and judging purpose, identity, hierarchy, composition, specificity, coherence, rhythm, responsive behavior, and finish. For meaningful comparisons, hold the brief and implementation context constant, render both results at the same viewports, and compare them against the same rubric. The example in this repository demonstrates a process; it is not evidence of user preference or product performance.
+
+## Research
+
+The `research` branch contains experiments behind the project, including site analysis, style clustering, and evaluation work. Those experiments informed the references, but the installed skill uses its own small rendering and feedback workflow.
