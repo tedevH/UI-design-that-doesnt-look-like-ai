@@ -38,7 +38,7 @@ def main() -> int:
 
     ap = argparse.ArgumentParser(usage=__doc__)
     ap.add_argument("page")
-    ap.add_argument("--type", default="landing")
+    ap.add_argument("--type", default="landing", choices=["landing", "app", "mobile", "portfolio", "article", "commerce", "event", "tool", "game"])
     a = ap.parse_args()
     page = Path(a.page).resolve()
     html = page.read_text()
