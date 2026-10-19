@@ -45,7 +45,7 @@ def main() -> int:
         print(f"  [{'!' * t.severity:<3}] {t.name}: {t.evidence}")
     empty = html.count("data-photo=") - html.count('src="images/')
     if empty > 0:
-        print(f"\nNOTE: {empty} photo slot(s) without an image yet (shown as striped blocks).")
+        print(f"\nNOTE: {empty} slot(s) waiting for the user's own photos (shown as striped blocks). Tell the user what to send.")
     print(f"\nSCREENSHOTS (look at both)\n  desktop: {shots / 'desktop.png'}\n  mobile:  {shots / 'mobile.png'}")
     (shots / "check.json").write_text(json.dumps({"tells": [t.as_dict() for t in found],
                                                   "overlaps": styles.get("overlaps", 0)}, indent=2))

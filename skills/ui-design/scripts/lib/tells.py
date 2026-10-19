@@ -109,6 +109,14 @@ def from_html(html: str) -> list[Tell]:
     if sections and len(set(re.findall(r"<section[^>]*class=\"([^\"]*)\"", low))) == 1 and sections >= 4:
         add("uniform_sections", 1, f"{sections} sections with identical classes")
 
+    # Imagery: stock photos and pages that lean on photo slots instead of their own visuals
+    stock = re.findall(r"(?:unsplash|pexels|pixabay|shutterstock|istockphoto|gettyimages|picsum\.photos|placehold|placekitten|loremflickr)\.", low)
+    if stock:
+        add("stock_photos", 3, f"{len(stock)} stock/placeholder image link(s) — draw graphics or use the user's photos")
+    slots = len(re.findall(r"<img\b(?![^>]*\ssrc=)[^>]*data-photo=", low))
+    if slots >= 4:
+        add("photo_slot_heavy", 2, f"{slots} empty photo slots — draw the visuals instead; keep at most 2–3 slots for the client's own photos")
+
     # Content
     emoji = EMOJI.findall(text)
     if len(emoji) >= 3:

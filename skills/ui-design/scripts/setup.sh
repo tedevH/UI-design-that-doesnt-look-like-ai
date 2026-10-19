@@ -1,21 +1,16 @@
 #!/usr/bin/env bash
-# One-time setup for the ui-design skill (~2 minutes, plus the photo model if you pick local photos).
-#   bash setup.sh                 # asks which photo mode you want
-#   bash setup.sh --photos none   # local | gemini | none
+# One-time setup for the ui-design skill (~2 minutes).
+#   bash setup.sh                   # default: no generated photos (the skill draws graphics, uses your photos)
+#   bash setup.sh --photos local    # optional: generated photos on this Mac (FLUX, ~10 GB, Apple Silicon)
+#   bash setup.sh --photos gemini   # optional: generated photos via Gemini (~$0.03 each, GEMINI_API_KEY)
 set -euo pipefail
 DATA="${UI_DESIGN_DATA:-$HOME/.claude/ui-design-data}"
 MODE="${2:-}"
 [ "${1:-}" = "--photos" ] || MODE=""
 mkdir -p "$DATA"
 
-if [ -z "$MODE" ]; then
-  echo "How should the skill make photos for pages?"
-  echo "  local  - FLUX on this Mac: free, ~30-40 s per photo, ~10 GB download (Apple Silicon only)"
-  echo "  gemini - Google's image model: ~10 s and ~\$0.03 per photo, needs GEMINI_API_KEY"
-  echo "  none   - leave labeled photo slots in the page"
-  read -r -p "photos [none]: " MODE
-  MODE="${MODE:-none}"
-fi
+# The skill draws its own graphics and uses your photos; generated photos are optional and off by default.
+MODE="${MODE:-none}"
 case "$MODE" in local|gemini|none) ;; *) echo "unknown photo mode: $MODE"; exit 1 ;; esac
 
 echo "== Python environment in $DATA/venv"

@@ -12,7 +12,9 @@ Ask Claude Code something like *"design a landing page for a natural wine bar in
 3. **Builds, renders and checks** each page: overlapping text, chunky fonts, AI clichés (purple gradients,
    glass panels, emoji icons, "unlock your potential"), flat type scales. Claude also looks at its own
    desktop and mobile screenshots and fixes what it sees before you do.
-4. **Adds photos** made for the page (optional): free on your Mac, or fast through Gemini.
+4. **Makes its own visuals** — custom SVG illustration, patterns, diagrams, typography and real product UI —
+   instead of stock photos. Give it your own photos and it designs around them; anything only you can
+   provide (your team, your space) gets a clearly labeled slot.
 5. **Asks which you prefer and why** — and keeps looping: the winner gets refined against one challenger
    that tests one thing about your taste, until you're happy.
 6. **Learns.** Every reaction is recorded; every 5, Claude rewrites your taste rules from all the evidence.
@@ -35,15 +37,12 @@ git clone https://github.com/tedevH/UI-design-that-doesnt-look-like-ai ~/.claude
 ln -s ~/.claude/ui-design-skill/skills/ui-design ~/.claude/skills/ui-design
 ```
 
-The first time it runs, Claude runs `scripts/setup.sh` (about 2 minutes) and asks how to make photos:
+The first time it runs, Claude runs `scripts/setup.sh` (about 2 minutes: a Python environment and a
+headless browser for screenshots). Requirements: Python 3.10+ and Claude Code.
 
-| Mode | Speed | Cost | Needs |
-|---|---|---|---|
-| `local` | ~30–40 s per photo | free | Apple Silicon Mac, ~10 GB download (FLUX.1-schnell, Apache-2.0) |
-| `gemini` | ~10 s per photo | ~$0.03 per photo | `GEMINI_API_KEY` |
-| `none` | instant | free | — pages keep labeled photo slots |
-
-Requirements: Python 3.10+ and Claude Code. Re-run `bash scripts/setup.sh` any time to change the photo mode.
+Generated photos are off by default — the skill draws its own graphics. If you ever want them, run
+`bash scripts/setup.sh --photos local` (free, Apple Silicon, ~10 GB FLUX.1-schnell download) or
+`--photos gemini` (~$0.03 per photo, needs `GEMINI_API_KEY`), then ask Claude for generated photos.
 
 ## What's inside
 

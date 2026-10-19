@@ -21,7 +21,7 @@ sites in the family (written by a local vision model from screenshots). Learn th
 
 ## warm-crafted — Warm crafted
 
-**Look:** Tactile and human: earthy palette (clay, olive, oat, terracotta), soft photography of hands and materials, rounded image corners, relaxed rhythm, handmade details.
+**Look:** Tactile and human: earthy palette (clay, olive, oat, terracotta), hand-drawn-feeling SVG illustration of materials and tools (or the user's own photos), rounded corners, relaxed rhythm, handmade details.
 
 **Typography:** Soft serif display (Gambetta-like: Lora, Libre Caslon Display, Fraunces soft) at 400–500 with a humanist sans for text (Figtree, Karla). Sentence case.
 
@@ -37,15 +37,15 @@ sites in the family (written by a local vision model from screenshots). Learn th
 
 ## quiet-luxury — Quiet luxury
 
-**Look:** Expensive restraint: huge white or stone space, a few large monochrome or muted photographs, tiny tracked uppercase labels, slow pace, almost no color.
+**Look:** Expensive restraint: huge white or stone space, a few large, quiet visuals (the user's own product photos, or restrained line drawings), tiny tracked uppercase labels, slow pace, almost no color.
 
 **Typography:** Light or regular display serif or fashion sans (Cormorant Garamond 300, Italiana, Jost 300) with small tracked labels (letter-spacing 0.15em). Never bold.
 
 **References:** leica-camera-com, everlane-com, wearecollins-com, rapha-cc, apple-com
 
-## photo-led — Photo-led immersive
+## photo-led — Photo-led immersive (only with the user's own photos)
 
-**Look:** Cinematic, full-bleed photography carries the page; type sits on or beside images; dark or photo-derived palette; long scroll of image-and-caption scenes.
+**Look:** Use only when the user provides strong photos of their own. Cinematic, full-bleed photography carries the page; type sits on or beside images; dark or photo-derived palette; long scroll of image-and-caption scenes.
 
 **Typography:** Medium-weight grotesk (Inter Tight 500, Manrope 500) or elegant serif; display large but not heavy; captions small.
 
@@ -61,7 +61,7 @@ sites in the family (written by a local vision model from screenshots). Learn th
 
 ## expressive — Expressive experimental
 
-**Look:** One daring idea — type as image, an unusual grid, an oversized number, a custom SVG graphic, a striking color or photo treatment — executed with discipline everywhere else. Feels like a design studio site.
+**Look:** One daring idea — type as image, an unusual grid, an oversized number, a custom SVG graphic, a striking color treatment — executed with discipline everywhere else. Feels like a design studio site.
 
 **Typography:** Characterful display (Instrument Serif italic, Space Grotesk, Syne 500, Fraunces italic) at regular weight, paired with a neutral text face.
 

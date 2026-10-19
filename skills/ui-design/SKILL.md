@@ -7,10 +7,10 @@ description: Design websites, landing pages and UI screens that look made by a r
 
 You are the designer. This skill gives you the user's learned taste, eight distinct style families, the
 rules that separate studio work from AI templates, and scripts that render and check your pages. Work like a
-studio: commit to a direction, build it with care, look at the result, fix it, let the user choose, learn.
+studio: commit to a direction, make its visuals yourself, build it with care, look at the result, fix it, let the user choose, learn.
 
 All script paths below are relative to this skill's base directory. Run them with `python3`.
-If a script says first-time setup is needed, run `bash scripts/setup.sh` once (it asks how to make photos).
+If a script says first-time setup is needed, run `bash scripts/setup.sh --photos none` once (~2 minutes).
 
 ## 0. Read the user's taste
 
@@ -28,19 +28,23 @@ plausible specifics — names, prices, places, numbers with units. Ask only if s
 Read `references/families.md`. Pick **two different style families**: one the taste file favors, one the
 user hasn't seen much (so their taste keeps being tested). If the user named a style, make both within it
 with different art directions. For each, write an art direction: one-line concept, palette (3–6 hex colors
-with roles), Google Fonts pairing **with weights**, photo style (lens, light, grade), 6–8 sections each
-composed differently, and one signature move.
+with roles), Google Fonts pairing **with weights**, the **graphic language** (what you'll draw — illustration
+style, patterns, diagrams, product UI — and its stroke, detail and color rules), 6–8 sections each composed
+differently, and one signature move. Skip the photo-led family unless the user gave you their own photos.
 
 ## 3. Build
 
 One self-contained HTML file per variant in the user's project (default `designs/<slug>/a.html` and `b.html`).
-Follow `references/rules.md` exactly. Photos are `<img data-photo="…" data-aspect="…">` slots, never web links.
+Follow `references/rules.md` exactly. Draw the visuals yourself (inline SVG, CSS, typography, product UI in
+HTML). If the user gave you photos, use them; otherwise no stock or generated photos.
 
-## 4. Photos — start them, don't wait for them
+## 4. Imagery
 
-Right away, start `python3 scripts/photos.py <page.html> --style "<the art direction's photo style>"` **in the
-background** for each page and keep working. It's the slow step (local photos take ~30–40 s each) and it
-uses the user's chosen photo mode (local, gemini or none). Slots without photos render as striped blocks.
+Graphics first (see "Imagery" in `references/rules.md`). If the user gave you their own photos, use them with
+relative paths. If a section truly needs a photo only the client has (their team, their venue), leave a
+labeled slot — `data-photo="Your photo: …"` — at most 2–3 per page, and tell the user what to send.
+Only if the user explicitly asks for generated photos, run `python3 scripts/photos.py <page.html> --style
+"…"` in the background (local ≈ 30–40 s per photo) and keep working.
 
 ## 5. Check and fix (always, before showing anything)
 
@@ -55,8 +59,7 @@ problems: overlapping text, chunky type, fake telemetry, gradients, emoji icons,
 
 ## 6. Present and ask
 
-Show both variants as soon as the layout is clean — photos may still be filling in; say so and re-run
-`check.py` when they land to refresh the screenshots. Give the screenshot paths, each variant's family and
+Show both variants once they're clean. Give the screenshot paths, each variant's family and
 concept in one line, and anything you're unsure about. Then ask **which they prefer and why**. One question.
 
 ## 7. Learn from every reaction
@@ -91,7 +94,7 @@ own git history, so any change can be undone. Never edit the skill's own files o
 
 - `scripts/taste.py` — print the user's taste (creates it on first use)
 - `scripts/check.py page.html` — render + measured problems + screenshot paths
-- `scripts/photos.py page.html [--style …] [--mode local|gemini|none]` — fill photo slots
+- `scripts/photos.py page.html [--style …] [--mode local|gemini]` — generated photos, only when asked
 - `scripts/feedback.py …` — record a pick or comment
 - `scripts/evolve.py [--commit]` — gather evidence / save an evolved taste
 - `scripts/setup.sh` — one-time setup; re-run to change the photo mode
