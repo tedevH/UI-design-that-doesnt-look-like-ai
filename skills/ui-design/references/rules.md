@@ -28,6 +28,8 @@
 - No negative margins or absolute positioning that makes text collide.
 
 ## Content
+- Write the copy in the language the user wrote the request in, unless they ask for another. Local names,
+  places and dish or product names can stay in the local language.
 - Specific, believable copy: names, prices, times, addresses, numbers with units. Short confident sentences.
 - Show the actual thing: the menu, the product UI built in HTML, the schedule, the work.
 - Never: unlock, elevate, seamless, revolutionize, empower, effortless, supercharge, next-generation,
