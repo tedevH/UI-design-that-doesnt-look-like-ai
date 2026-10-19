@@ -152,6 +152,7 @@ When `feedback.py` prints `EVOLVE`, read the evidence from `python3 scripts/evol
 - `references/page-types.md` — what visual quality means for different kinds of pages
 - `references/product-patterns.md` — task, content, and interaction prompts by product context
 - `references/quality-bar.md` — direction card, critique order, and evaluation guidance
+- `examples/brief-to-direction.md` — worked example translating a request into content and responsive design decisions
 - `references/families.md` — optional art-direction vocabulary and references
 - `references/rules.md` — practical design and implementation defaults
 - `references/beauty.md` — deeper composition, image, type, and visual craft guidance
