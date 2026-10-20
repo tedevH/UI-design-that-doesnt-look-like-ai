@@ -32,6 +32,13 @@ def inspect_view(name: str, styles: dict[str, Any]) -> list[Finding]:
             "Find the element extending past the viewport; make the layout reflow without hiding essential content."
         ))
 
+    edge = (styles or {}).get("edgeText") or []
+    if edge:
+        out.append(Finding(
+            "text_at_viewport_edge", "error", name, f"text touches the screen edge: {'; '.join(edge[:3])}",
+            "Restore side padding on the containing section (a padding shorthand often overrides a wrapper's horizontal padding)."
+        ))
+
     for src in (a.get("brokenImages") or [])[:5]:
         out.append(Finding(
             "broken_image", "error", name, src[:120],

@@ -142,7 +142,15 @@
     const cs = getComputedStyle(el);
     if (!visible(el, r, cs) || r.top + window.scrollY > vh * 4 || r.width > vw * 1.05) continue;
     // Per-fragment boxes: a paragraph split across CSS columns or lines must not count as one big box.
-    texts.push({ el, rects: Array.from(el.getClientRects()).filter((q) => q.width > 1 && q.height > 1) });
+    // Measure the glyphs themselves (ranges over the element's own text nodes), not the element's box:
+    // a full-width paragraph next to a margin note must not count as overlapping it.
+    const rects = [];
+    for (const n of el.childNodes) {
+      if (n.nodeType !== 3 || !n.textContent.trim()) continue;
+      const range = document.createRange(); range.selectNodeContents(n);
+      for (const q of range.getClientRects()) if (q.width > 1 && q.height > 1) rects.push(q);
+    }
+    texts.push({ el, rects });
   }
   const hit = (a, b) => {
     for (const p of a) for (const q of b) {
@@ -161,6 +169,15 @@
     }
   }
   out.overlaps = overlaps;
+
+  // Text touching the viewport edge (missing side padding), measured on the glyphs.
+  out.edgeText = [];
+  for (const t of texts) {
+    if (out.edgeText.length >= 5) break;
+    // Only visible glyphs: skip text parked off-screen for screen readers.
+    const onScreen = t.rects.filter((q) => q.right > 0 && q.left < vw && q.width > 1);
+    if (onScreen.some((q) => q.left < 6 || q.right > vw - 6)) out.edgeText.push((t.el.innerText || "").trim().slice(0, 40));
+  }
 
   // Buttons whose label wraps onto several lines (a phone number squeezed into a pill, etc.).
   out.wrappedButtons = [];
