@@ -28,7 +28,8 @@ PRODUCT_LINKS = {
     "media-entertainment": ["pattern:media-library", "style:content-led", "ux:accessible-controls"],
 }
 
-STOP = {"a", "an", "the", "and", "for", "with", "from", "that", "this", "into", "your", "make", "build", "design", "page", "app", "site", "website", "screen", "interface", "use", "want", "need", "please"}
+STOP = {"a", "an", "the", "and", "for", "with", "from", "that", "this", "into", "your", "make", "build", "design", "page", "app", "site", "website", "screen", "interface", "use", "want", "need", "please",
+        "of", "to", "in", "on", "is", "it", "by", "at", "as", "or", "be", "we", "our", "my", "its", "are", "has", "have", "you", "redesign", "homepage"}
 
 
 def tokens(text: str) -> list[str]:

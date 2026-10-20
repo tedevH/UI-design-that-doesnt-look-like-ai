@@ -91,7 +91,7 @@ class Renderer:
         finally:
             ctx.close()
 
-        viewports = {"desktop": desktop_styles}
+        viewports = {"desktop": dict(desktop_styles)}  # a copy, so desktop_styles["viewports"] isn't circular
         if mobile:
             ctx, page = self._page(MOBILE, mobile=True)
             try:
