@@ -1,0 +1,490 @@
+{
+  "schema_version": 1,
+  "relations": [
+    {
+      "id": "uses_pattern",
+      "from_domains": [
+        "product"
+      ],
+      "to_domains": [
+        "patterns"
+      ],
+      "weight": 0.84,
+      "description": "This product context commonly uses this task composition.",
+      "label": "uses this task composition"
+    },
+    {
+      "id": "suggests_visual_approach",
+      "from_domains": [
+        "product"
+      ],
+      "to_domains": [
+        "styles"
+      ],
+      "weight": 0.69,
+      "description": "This visual approach may suit the context when supported by the real product and assets.",
+      "label": "suggests a visual approach"
+    },
+    {
+      "id": "highlights_check",
+      "from_domains": [
+        "product"
+      ],
+      "to_domains": [
+        "ux"
+      ],
+      "weight": 0.72,
+      "description": "This context brings this user-experience check into focus.",
+      "label": "highlights a usability check"
+    },
+    {
+      "id": "pairs_with",
+      "from_domains": [
+        "patterns"
+      ],
+      "to_domains": [
+        "styles"
+      ],
+      "weight": 0.78,
+      "description": "This visual approach can express the pattern when it fits the brief.",
+      "label": "can be expressed with this visual approach"
+    },
+    {
+      "id": "may_visualize_with",
+      "from_domains": [
+        "patterns"
+      ],
+      "to_domains": [
+        "charts"
+      ],
+      "weight": 0.81,
+      "description": "This chart form may help communicate the pattern’s information.",
+      "label": "can be communicated with this chart"
+    },
+    {
+      "id": "requires_check",
+      "from_domains": [
+        "patterns"
+      ],
+      "to_domains": [
+        "ux"
+      ],
+      "weight": 0.82,
+      "description": "This user-experience check protects the pattern’s usability.",
+      "label": "needs this usability check"
+    },
+    {
+      "id": "requires_context",
+      "from_domains": [
+        "charts"
+      ],
+      "to_domains": [
+        "ux"
+      ],
+      "weight": 0.84,
+      "description": "This check provides the context needed to interpret the chart.",
+      "label": "needs this interpretation context"
+    },
+    {
+      "id": "constrains",
+      "from_domains": [
+        "styles"
+      ],
+      "to_domains": [
+        "ux"
+      ],
+      "weight": 0.7,
+      "description": "This check keeps the visual approach usable and truthful.",
+      "label": "is kept usable by this check"
+    },
+    {
+      "id": "suggests_chart",
+      "from_domains": [
+        "product"
+      ],
+      "to_domains": [
+        "charts"
+      ],
+      "weight": 0.73,
+      "description": "This chart form may fit a specific product decision or comparison.",
+      "label": "suggests this chart when the task needs it"
+    }
+  ],
+  "edges": [
+    {
+      "from": "product:saas-product",
+      "relation": "uses_pattern",
+      "to": "pattern:product-proof"
+    },
+    {
+      "from": "product:saas-product",
+      "relation": "suggests_visual_approach",
+      "to": "style:product-evidence"
+    },
+    {
+      "from": "product:saas-product",
+      "relation": "highlights_check",
+      "to": "ux:truthful-content"
+    },
+    {
+      "from": "product:analytics-operations",
+      "relation": "uses_pattern",
+      "to": "pattern:decision-dashboard"
+    },
+    {
+      "from": "product:analytics-operations",
+      "relation": "suggests_visual_approach",
+      "to": "style:quiet-precision"
+    },
+    {
+      "from": "product:analytics-operations",
+      "relation": "highlights_check",
+      "to": "ux:data-context"
+    },
+    {
+      "from": "product:finance-tools",
+      "relation": "uses_pattern",
+      "to": "pattern:comparison"
+    },
+    {
+      "from": "product:finance-tools",
+      "relation": "suggests_chart",
+      "to": "chart:table"
+    },
+    {
+      "from": "product:finance-tools",
+      "relation": "highlights_check",
+      "to": "ux:comparison-integrity"
+    },
+    {
+      "from": "product:healthcare-service",
+      "relation": "uses_pattern",
+      "to": "pattern:guided-task"
+    },
+    {
+      "from": "product:healthcare-service",
+      "relation": "suggests_visual_approach",
+      "to": "style:quiet-precision"
+    },
+    {
+      "from": "product:healthcare-service",
+      "relation": "highlights_check",
+      "to": "ux:recovery"
+    },
+    {
+      "from": "product:learning-study",
+      "relation": "uses_pattern",
+      "to": "pattern:guided-task"
+    },
+    {
+      "from": "product:learning-study",
+      "relation": "suggests_visual_approach",
+      "to": "style:playful-utility"
+    },
+    {
+      "from": "product:learning-study",
+      "relation": "highlights_check",
+      "to": "ux:accessible-controls"
+    },
+    {
+      "from": "product:local-hospitality",
+      "relation": "uses_pattern",
+      "to": "pattern:search-results"
+    },
+    {
+      "from": "product:local-hospitality",
+      "relation": "suggests_visual_approach",
+      "to": "style:place-and-material"
+    },
+    {
+      "from": "product:local-hospitality",
+      "relation": "highlights_check",
+      "to": "ux:comparison-integrity"
+    },
+    {
+      "from": "product:product-commerce",
+      "relation": "uses_pattern",
+      "to": "pattern:comparison"
+    },
+    {
+      "from": "product:product-commerce",
+      "relation": "suggests_visual_approach",
+      "to": "style:content-led"
+    },
+    {
+      "from": "product:product-commerce",
+      "relation": "highlights_check",
+      "to": "ux:truthful-content"
+    },
+    {
+      "from": "product:portfolio-agency",
+      "relation": "uses_pattern",
+      "to": "pattern:editorial-index"
+    },
+    {
+      "from": "product:portfolio-agency",
+      "relation": "suggests_visual_approach",
+      "to": "style:typographic"
+    },
+    {
+      "from": "product:portfolio-agency",
+      "relation": "highlights_check",
+      "to": "ux:content-hierarchy"
+    },
+    {
+      "from": "product:editorial-docs",
+      "relation": "uses_pattern",
+      "to": "pattern:editorial-index"
+    },
+    {
+      "from": "product:editorial-docs",
+      "relation": "suggests_visual_approach",
+      "to": "style:typographic"
+    },
+    {
+      "from": "product:editorial-docs",
+      "relation": "highlights_check",
+      "to": "ux:content-hierarchy"
+    },
+    {
+      "from": "product:events-community",
+      "relation": "uses_pattern",
+      "to": "pattern:search-results"
+    },
+    {
+      "from": "product:events-community",
+      "relation": "suggests_visual_approach",
+      "to": "style:place-and-material"
+    },
+    {
+      "from": "product:events-community",
+      "relation": "highlights_check",
+      "to": "ux:accessible-controls"
+    },
+    {
+      "from": "product:utility-creator-tool",
+      "relation": "uses_pattern",
+      "to": "pattern:single-purpose-tool"
+    },
+    {
+      "from": "product:utility-creator-tool",
+      "relation": "suggests_visual_approach",
+      "to": "style:quiet-precision"
+    },
+    {
+      "from": "product:utility-creator-tool",
+      "relation": "highlights_check",
+      "to": "ux:input-feedback"
+    },
+    {
+      "from": "product:booking-marketplace",
+      "relation": "uses_pattern",
+      "to": "pattern:search-results"
+    },
+    {
+      "from": "product:booking-marketplace",
+      "relation": "uses_pattern",
+      "to": "pattern:comparison"
+    },
+    {
+      "from": "product:booking-marketplace",
+      "relation": "highlights_check",
+      "to": "ux:filter-state"
+    },
+    {
+      "from": "product:public-information",
+      "relation": "uses_pattern",
+      "to": "pattern:guided-task"
+    },
+    {
+      "from": "product:public-information",
+      "relation": "suggests_visual_approach",
+      "to": "style:place-and-material"
+    },
+    {
+      "from": "product:public-information",
+      "relation": "highlights_check",
+      "to": "ux:truthful-content"
+    },
+    {
+      "from": "product:developer-tool",
+      "relation": "uses_pattern",
+      "to": "pattern:product-proof"
+    },
+    {
+      "from": "product:developer-tool",
+      "relation": "suggests_visual_approach",
+      "to": "style:product-evidence"
+    },
+    {
+      "from": "product:developer-tool",
+      "relation": "highlights_check",
+      "to": "ux:recovery"
+    },
+    {
+      "from": "product:media-entertainment",
+      "relation": "uses_pattern",
+      "to": "pattern:media-library"
+    },
+    {
+      "from": "product:media-entertainment",
+      "relation": "suggests_visual_approach",
+      "to": "style:content-led"
+    },
+    {
+      "from": "pattern:editorial-index",
+      "relation": "pairs_with",
+      "to": "style:typographic"
+    },
+    {
+      "from": "pattern:editorial-index",
+      "relation": "requires_check",
+      "to": "ux:content-hierarchy"
+    },
+    {
+      "from": "pattern:decision-dashboard",
+      "relation": "may_visualize_with",
+      "to": "chart:time-series"
+    },
+    {
+      "from": "pattern:decision-dashboard",
+      "relation": "may_visualize_with",
+      "to": "chart:distribution"
+    },
+    {
+      "from": "pattern:decision-dashboard",
+      "relation": "requires_check",
+      "to": "ux:data-context"
+    },
+    {
+      "from": "pattern:decision-dashboard",
+      "relation": "pairs_with",
+      "to": "style:quiet-precision"
+    },
+    {
+      "from": "pattern:comparison",
+      "relation": "may_visualize_with",
+      "to": "chart:category-comparison"
+    },
+    {
+      "from": "pattern:comparison",
+      "relation": "may_visualize_with",
+      "to": "chart:table"
+    },
+    {
+      "from": "pattern:comparison",
+      "relation": "requires_check",
+      "to": "ux:comparison-integrity"
+    },
+    {
+      "from": "pattern:comparison",
+      "relation": "pairs_with",
+      "to": "style:quiet-precision"
+    },
+    {
+      "from": "pattern:guided-task",
+      "relation": "requires_check",
+      "to": "ux:recovery"
+    },
+    {
+      "from": "pattern:guided-task",
+      "relation": "pairs_with",
+      "to": "style:quiet-precision"
+    },
+    {
+      "from": "pattern:search-results",
+      "relation": "requires_check",
+      "to": "ux:filter-state"
+    },
+    {
+      "from": "pattern:search-results",
+      "relation": "pairs_with",
+      "to": "style:content-led"
+    },
+    {
+      "from": "pattern:product-proof",
+      "relation": "pairs_with",
+      "to": "style:product-evidence"
+    },
+    {
+      "from": "pattern:product-proof",
+      "relation": "requires_check",
+      "to": "ux:truthful-content"
+    },
+    {
+      "from": "pattern:single-purpose-tool",
+      "relation": "requires_check",
+      "to": "ux:input-feedback"
+    },
+    {
+      "from": "pattern:single-purpose-tool",
+      "relation": "pairs_with",
+      "to": "style:quiet-precision"
+    },
+    {
+      "from": "pattern:media-library",
+      "relation": "pairs_with",
+      "to": "style:content-led"
+    },
+    {
+      "from": "pattern:media-library",
+      "relation": "requires_check",
+      "to": "ux:accessible-controls"
+    },
+    {
+      "from": "chart:time-series",
+      "relation": "requires_context",
+      "to": "ux:data-context"
+    },
+    {
+      "from": "chart:category-comparison",
+      "relation": "requires_context",
+      "to": "ux:comparison-integrity"
+    },
+    {
+      "from": "chart:distribution",
+      "relation": "requires_context",
+      "to": "ux:data-context"
+    },
+    {
+      "from": "chart:part-to-whole",
+      "relation": "requires_context",
+      "to": "ux:data-context"
+    },
+    {
+      "from": "chart:table",
+      "relation": "requires_context",
+      "to": "ux:comparison-integrity"
+    },
+    {
+      "from": "style:typographic",
+      "relation": "constrains",
+      "to": "ux:content-hierarchy"
+    },
+    {
+      "from": "style:quiet-precision",
+      "relation": "constrains",
+      "to": "ux:data-context"
+    },
+    {
+      "from": "style:product-evidence",
+      "relation": "constrains",
+      "to": "ux:truthful-content"
+    },
+    {
+      "from": "style:content-led",
+      "relation": "constrains",
+      "to": "ux:accessible-controls"
+    },
+    {
+      "from": "style:place-and-material",
+      "relation": "constrains",
+      "to": "ux:truthful-content"
+    },
+    {
+      "from": "style:playful-utility",
+      "relation": "constrains",
+      "to": "ux:accessible-controls"
+    }
+  ]
+}

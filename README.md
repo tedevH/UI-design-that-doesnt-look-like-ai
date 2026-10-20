@@ -9,7 +9,7 @@ The central idea is simple: a design should grow from the product, its audience,
 1. **Reads the project before designing.** It identifies the stack, existing visual language, available assets, and relevant screens, then works in that context.
 2. **Finds a product-specific visual premise.** A short direction card connects audience, task, hierarchy, composition, visual system, interaction, responsive behavior, and restraint.
 3. **Uses references as prompts, not templates.** Page-type guidance, product patterns, and style families help ask better questions without prescribing a stock layout. A complete Fieldnote dashboard specimen shows one direction carried through content, data, and responsive structure.
-4. **Builds real content and behavior.** It prioritizes credible product UI, useful page content, working controls, truthful claims, and the assets the user actually has. An offline product-context catalog retrieves task-specific prompts, and stack guides tailor implementation checks to common web and native platforms.
+4. **Builds real content and behavior.** It prioritizes credible product UI, useful page content, working controls, truthful claims, and the assets the user actually has. An offline, typed knowledge graph connects task contexts to relevant patterns and checks; stack guides tailor implementation advice to common web and native platforms.
 5. **Inspects rendered work.** The standalone HTML checker captures desktop and mobile screenshots, reports measurable layout/accessibility signals separately from subjective style signals, and saves a JSON report. It does not claim to judge beauty automatically.
 6. **Learns the user's preferences.** Feedback can update a personal taste file without modifying the shared skill or skill reference files.
 
@@ -42,7 +42,7 @@ python3 skills/ui-design/scripts/plan.py "Energy dashboard for a small facilitie
 python3 skills/ui-design/scripts/plan.py --list
 ```
 
-The planner works offline using curated task contexts. Matches are relevance hints, not style assignments. For standalone HTML visual checks:
+The planner works offline using curated task contexts and bounded, directed graph traversal. Matches include evidence or a graph path and are relevance hints, not style assignments. Use `--graph-hops 0` for direct matches only. For standalone HTML visual checks:
 
 ```bash
 python3 skills/ui-design/scripts/check.py ./page.html --type landing
@@ -59,7 +59,7 @@ skills/ui-design/
   SKILL.md                         workflow for art direction, implementation, and critique
   data/
     product-contexts.json          searchable product-task and interaction catalog
-    knowledge/                     connected pattern, style, chart, and UX catalogs
+    knowledge/                     graph node catalogs, typed relationships, and relevance cases
     README.md                       catalog schema and editorial contribution rules
   references/
     stacks/README.md               stack guide index; separate files cover web and native platforms
@@ -77,9 +77,9 @@ skills/ui-design/
     showcase/README.md             direction notes and sample-data caveat
   scripts/
     check.py                        standalone render, measurements, and style signals
-    plan.py                         offline task retrieval, graph-neighbor expansion, and brief generator
-    knowledge.py                    bounded lexical retrieval over connected catalogs
-    validate_knowledge.py           catalog graph and relevance-case validator
+    plan.py                         offline task retrieval, bounded graph traversal, and brief generator
+    knowledge.py                    field-weighted search and evidence-carrying traversal loop
+    validate_knowledge.py           catalog, edge, path, and relevance validator
   tests/
     test_knowledge.py               dependency-free planner and graph checks
     lib/audit.py                    objective layout and accessibility signals

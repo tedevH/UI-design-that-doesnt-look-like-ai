@@ -19,4 +19,4 @@ The planner uses lexical relevance ranking with match evidence. Scores are ranki
 
 ## Connected catalogs
 
-Related patterns, visual approaches, chart choices, and UX checks live in [`knowledge/`](knowledge/README.md). Those files use stable IDs and explicit links. The planner ranks brief matches, then follows a bounded one-hop neighborhood; it does not load a large runtime or make a network request. Run `python3 scripts/validate_knowledge.py` from the skill directory to check schemas, links, and representative relevance cases, or `python3 -m unittest discover -s tests -v` for the planner contract checks.
+Related patterns, visual approaches, chart choices, and UX checks live in [`knowledge/`](knowledge/README.md). Product contexts and other nodes connect through typed, directed relationships. The planner follows a bounded graph loop and returns matched evidence or a path explanation. Run `python3 scripts/validate_knowledge.py` from the skill directory to check schemas, links, and representative relevance cases, or `python3 -m unittest discover -s tests -v` for the planner contract checks.

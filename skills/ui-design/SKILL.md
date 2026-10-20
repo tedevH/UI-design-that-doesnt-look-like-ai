@@ -38,7 +38,7 @@ For a standalone design, choose the simplest useful format. A single HTML file i
 
 Script paths in this guide are relative to the skill directory. Run a script from that directory or use its full path. If a visual check reports that Playwright or Chromium is missing, run `bash scripts/setup.sh` once from the skill directory.
 
-Decide the page type from the user's goal, not from visual appearance alone. Read the relevant section of `references/page-types.md`. For a complex brief or an unfamiliar product domain, run `python3 scripts/plan.py "<brief>" --stack <stack-id>` to retrieve relevant task and stack prompts. Review the match evidence: the catalog is an offline lookup, not a style assignment or certainty score. For product-specific content and interaction, consult `references/product-patterns.md`; use it to identify what the user must see and do, never as a template. Infer ordinary missing details; ask only when a decision would materially change the design or required functionality.
+Decide the page type from the user's goal, not from visual appearance alone. Read the relevant section of `references/page-types.md`. For a complex brief or an unfamiliar product domain, run `python3 scripts/plan.py "<brief>" --stack <stack-id>` to retrieve relevant task and stack prompts. Review its matched terms and graph paths: these are offline relevance hints, not a style assignment or certainty score. For product-specific content and interaction, consult `references/product-patterns.md`; use it to identify what the user must see and do, never as a template. Infer ordinary missing details; ask only when a decision would materially change the design or required functionality.
 
 ### 2. Find the visual idea
 
