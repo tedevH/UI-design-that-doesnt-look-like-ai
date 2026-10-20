@@ -1,13 +1,108 @@
 {
   "domain": "ux",
   "records": [
-    {"id":"ux:content-hierarchy","title":"Content hierarchy","summary":"Make the user's next question visible in headings, grouping, and reading order; do not rely on size or color alone.","tags":["hierarchy","editorial","accessibility","content","reading"],"connects":["pattern:editorial-index","style:typographic"]},
-    {"id":"ux:data-context","title":"Data context","summary":"Show units, time range, source or freshness, and comparison context near important measurements.","tags":["data","chart","analytics","metrics","dashboard","freshness"],"connects":["pattern:decision-dashboard","chart:time-series"]},
-    {"id":"ux:comparison-integrity","title":"Comparison integrity","summary":"Compare like with like; disclose assumptions, total cost, ranges, and missing values that can change a decision.","tags":["comparison","pricing","finance","table","marketplace","decision"],"connects":["pattern:comparison","chart:table"]},
-    {"id":"ux:recovery","title":"Recovery and reversibility","summary":"Explain errors in context, preserve entered work, and give a clear route to retry, undo, or get help.","tags":["error","form","checkout","application","payment","recovery"],"connects":["pattern:guided-task","style:quiet-precision"]},
-    {"id":"ux:filter-state","title":"Filter state","summary":"Keep active filters, result count, clear-all, and no-results recovery understandable and keyboard operable.","tags":["search","filters","results","marketplace","catalog","accessibility"],"connects":["pattern:search-results","style:content-led"]},
-    {"id":"ux:truthful-content","title":"Truthful content","summary":"Mark illustrative content, avoid invented proof or precision, and keep claims traceable to supplied facts.","tags":["trust","claims","sample data","saas","marketing","civic"],"connects":["pattern:product-proof","style:product-evidence"]},
-    {"id":"ux:input-feedback","title":"Input and result feedback","summary":"Make constraints, defaults, validation, processing, and result updates perceivable without requiring color or motion.","tags":["calculator","form","utility","input","result","feedback"],"connects":["pattern:single-purpose-tool","style:playful-utility"]},
-    {"id":"ux:accessible-controls","title":"Accessible controls","summary":"Provide visible focus, semantic names, sufficient target size, keyboard operation, and reduced-motion behavior.","tags":["accessibility","keyboard","media","touch","controls","motion"],"connects":["pattern:media-library","style:content-led"]}
+    {
+      "id": "ux:content-hierarchy",
+      "title": "Content hierarchy",
+      "summary": "Make the user's next question visible in headings, grouping, and reading order; do not rely on size or color alone.",
+      "tags": [
+        "hierarchy",
+        "editorial",
+        "accessibility",
+        "content",
+        "reading"
+      ]
+    },
+    {
+      "id": "ux:data-context",
+      "title": "Data context",
+      "summary": "Show units, time range, source or freshness, and comparison context near important measurements.",
+      "tags": [
+        "data",
+        "chart",
+        "analytics",
+        "metrics",
+        "dashboard",
+        "freshness"
+      ]
+    },
+    {
+      "id": "ux:comparison-integrity",
+      "title": "Comparison integrity",
+      "summary": "Compare like with like; disclose assumptions, total cost, ranges, and missing values that can change a decision.",
+      "tags": [
+        "comparison",
+        "pricing",
+        "finance",
+        "table",
+        "marketplace",
+        "decision"
+      ]
+    },
+    {
+      "id": "ux:recovery",
+      "title": "Recovery and reversibility",
+      "summary": "Explain errors in context, preserve entered work, and give a clear route to retry, undo, or get help.",
+      "tags": [
+        "error",
+        "form",
+        "checkout",
+        "application",
+        "payment",
+        "recovery"
+      ]
+    },
+    {
+      "id": "ux:filter-state",
+      "title": "Filter state",
+      "summary": "Keep active filters, result count, clear-all, and no-results recovery understandable and keyboard operable.",
+      "tags": [
+        "search",
+        "filters",
+        "results",
+        "marketplace",
+        "catalog",
+        "accessibility"
+      ]
+    },
+    {
+      "id": "ux:truthful-content",
+      "title": "Truthful content",
+      "summary": "Mark illustrative content, avoid invented proof or precision, and keep claims traceable to supplied facts.",
+      "tags": [
+        "trust",
+        "claims",
+        "sample data",
+        "saas",
+        "marketing",
+        "civic"
+      ]
+    },
+    {
+      "id": "ux:input-feedback",
+      "title": "Input and result feedback",
+      "summary": "Make constraints, defaults, validation, processing, and result updates perceivable without requiring color or motion.",
+      "tags": [
+        "calculator",
+        "form",
+        "utility",
+        "input",
+        "result",
+        "feedback"
+      ]
+    },
+    {
+      "id": "ux:accessible-controls",
+      "title": "Accessible controls",
+      "summary": "Provide visible focus, semantic names, sufficient target size, keyboard operation, and reduced-motion behavior.",
+      "tags": [
+        "accessibility",
+        "keyboard",
+        "media",
+        "touch",
+        "controls",
+        "motion"
+      ]
+    }
   ]
 }

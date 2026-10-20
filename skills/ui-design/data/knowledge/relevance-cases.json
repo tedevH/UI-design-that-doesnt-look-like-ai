@@ -1,12 +1,94 @@
 {
   "cases": [
-    {"brief":"analytics dashboard showing a time series and data freshness", "expected":"ux:data-context"},
-    {"brief":"compare monthly pricing plans and total cost in a table", "expected":"ux:comparison-integrity"},
-    {"brief":"search marketplace listings with filters and empty results", "expected":"ux:filter-state"},
-    {"brief":"editorial article index with strong typography and reading hierarchy", "expected":"pattern:editorial-index"},
-    {"brief":"SaaS landing page with a real workflow demo and truthful product evidence", "expected":"pattern:product-proof"},
-    {"brief":"accessible media player controls with keyboard and reduced motion", "expected":"ux:accessible-controls"},
-    {"brief":"calculator utility that validates inputs and gives a clear result", "expected":"ux:input-feedback"},
-    {"brief":"payment form explains errors and allows recovery before confirmation", "expected":"ux:recovery"}
+    {
+      "brief": "analytics dashboard showing a time series and data freshness",
+      "expected": "chart:time-series",
+      "expected_all": [
+        "ux:data-context"
+      ]
+    },
+    {
+      "brief": "compare monthly pricing plans and total cost in a table",
+      "expected": "ux:comparison-integrity"
+    },
+    {
+      "brief": "search marketplace listings with filters and empty results",
+      "expected": "ux:filter-state"
+    },
+    {
+      "brief": "editorial article index with strong typography and reading hierarchy",
+      "expected": "pattern:editorial-index"
+    },
+    {
+      "brief": "SaaS landing page with a real workflow demo and truthful product evidence",
+      "expected": "pattern:product-proof"
+    },
+    {
+      "brief": "accessible media player controls with keyboard and reduced motion",
+      "expected": "ux:accessible-controls"
+    },
+    {
+      "brief": "calculator utility that validates inputs and gives a clear result",
+      "expected": "ux:input-feedback"
+    },
+    {
+      "brief": "payment form explains errors and allows recovery before confirmation",
+      "expected": "ux:recovery"
+    },
+    {
+      "brief": "podcast library discovery and playback",
+      "expected": "pattern:media-library"
+    },
+    {
+      "brief": "finance editorial article index about comparing investment risk",
+      "expected": "pattern:editorial-index",
+      "expected_all": [
+        "pattern:comparison"
+      ]
+    },
+    {
+      "brief": "table",
+      "expected": "chart:table"
+    },
+    {
+      "brief": "developer API SDK deployment infrastructure",
+      "expected": "pattern:product-proof",
+      "context_seed": "developer-tool"
+    },
+    {
+      "brief": "a page that is just blorpt qzx frobnicate",
+      "expected": null
+    },
+    {
+      "brief": "energy dashboard with site comparison, trend history, data freshness, stale readings, chart, table, and operational decision",
+      "expected": "pattern:decision-dashboard"
+    },
+    {
+      "brief": "deep cut archive",
+      "expected": "ux:accessible-controls",
+      "expected_path": [
+        "product:media-entertainment",
+        "pattern:media-library",
+        "ux:accessible-controls"
+      ],
+      "context_seed": "media-entertainment"
+    },
+    {
+      "brief": "analytics dashboard with a time series and context ",
+      "expected": "chart:time-series",
+      "max_hops": 0
+    },
+    {
+      "brief": "",
+      "expected": null
+    },
+    {
+      "brief": "UI app design ",
+      "expected": null
+    },
+    {
+      "brief": "data freshness timestamp units context for key metrics",
+      "expected": "ux:data-context"
+    }
   ]
 }

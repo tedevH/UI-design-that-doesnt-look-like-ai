@@ -19,7 +19,7 @@ STOP_WORDS = {
     "into", "is", "it", "its", "make", "my", "of", "on", "or", "our", "page", "screen", "that",
     "the", "their", "this", "to", "use", "we", "with", "you", "your", "website", "app", "interface",
     "build", "create", "design", "redesign", "improve", "beautiful", "modern", "clean", "responsive",
-    "simple", "better", "please", "want", "need", "help", "make", "ui", "ux", "screen", "site", "web",
+    "simple", "better", "please", "want", "need", "help", "make", "ui", "ux", "screen", "site", "web", "just",
 }
 
 
@@ -86,7 +86,7 @@ def resolve_context(args, contexts: list[dict], ranked: list[dict]) -> dict | No
     return ranked[0]["context"] if ranked else None
 
 
-def render_markdown(brief: str, context: dict | None, ranked: list[dict], stack: str | None, top: int) -> str:
+def render_markdown(brief: str, context: dict | None, ranked: list[dict], stack: str | None, top: int, knowledge: list[dict]) -> str:
     lines = ["# Design planning brief", "", f"**Request:** {brief}", ""]
     if context:
         row = next((r for r in ranked if r["context"]["id"] == context["id"]), None)
@@ -109,12 +109,10 @@ def render_markdown(brief: str, context: dict | None, ranked: list[dict], stack:
     else:
         lines += ["## Product context", "", "No catalog match stood out. Infer the user's task and evidence from the brief, or rerun with `--context <id>` after reviewing `--list`.", ""]
 
-    knowledge = rank_knowledge(brief, limit=top)
     if knowledge:
         lines += ["## Connected design knowledge", "", "Retrieved task patterns and checks (relevance hints, not style prescriptions):", ""]
         for item in knowledge:
-            evidence = ", ".join(item["matched_terms"]) or f"related to {item['related_to']}"
-            lines.append(f"- **{item['title']}** ({item['domain']}) — {item['summary']} *Evidence: {evidence}.*")
+            lines.append(f"- **{item['title']}** ({item['domain']}) — {item['summary']} *{item['evidence']}.*")
         lines.append("")
     lines += ["## Direction decisions", "", "Resolve these from the user's product, assets, brand, and content. The catalog does not choose a style recipe.", "",
               "- What should the user understand or do first?", "- What specific product detail can become the focal material?",
@@ -146,6 +144,7 @@ def main() -> int:
     parser.add_argument("--context", help="select a catalog context by id, overriding search")
     parser.add_argument("--stack", choices=stack_ids, help="append implementation guidance for this stack")
     parser.add_argument("--top", type=int, default=3, help="number of relevant contexts to consider (default: 3)")
+    parser.add_argument("--graph-hops", type=int, choices=range(4), default=3, help="maximum directed graph steps (default: 3; use 0 for direct matches)")
     parser.add_argument("--format", choices=("markdown", "json"), default="markdown")
     parser.add_argument("--output", type=Path, help="write the plan to a file instead of stdout")
     parser.add_argument("--list", action="store_true", help="list product context ids and stack guides")
@@ -163,8 +162,8 @@ def main() -> int:
         parser.error("--top must be between 1 and 10")
 
     ranked = rank_contexts(args.brief, contexts)
-    knowledge = rank_knowledge(args.brief, limit=args.top)
     context = resolve_context(args, contexts, ranked)
+    knowledge = rank_knowledge(args.brief, context_id=context["id"] if context else None, limit=args.top, max_hops=args.graph_hops)
     stack_text = None
     if args.stack:
         stack_text = (STACK_DIR / f"{args.stack}.md").read_text(encoding="utf-8")
@@ -180,7 +179,7 @@ def main() -> int:
             "stack_guidance": stack_text,
         }, indent=2, ensure_ascii=False) + "\n"
     else:
-        output = render_markdown(args.brief, context, ranked, stack_text, args.top)
+        output = render_markdown(args.brief, context, ranked, stack_text, args.top, knowledge)
     if args.output:
         destination = args.output.expanduser()
         destination.parent.mkdir(parents=True, exist_ok=True)
